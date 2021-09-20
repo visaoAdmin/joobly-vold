@@ -32,19 +32,35 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>assets/WaiterLITE-UI-01.jpeg</pixmap>
+    <pixmap>../assets/WaiterLITE-UI-13.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>330</y>
-     <width>421</width>
-     <height>131</height>
+     <x>70</x>
+     <y>210</y>
+     <width>341</width>
+     <height>341</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="menuButton">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>50</y>
+     <width>131</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -56,7 +72,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="WaiterLITE01.qrc"/>
+  <include location="../WaiterLITE01.qrc"/>
  </resources>
  <connections/>
 </ui>

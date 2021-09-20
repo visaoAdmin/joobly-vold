@@ -1,81 +1,134 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout, QWidget
 import sys
+from PyQt5.uic import loadUi
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QDialog
 import os 
-import time
-from rpi_ws281x import *
-import argparse
-
-# LED strip configuration:
-LED_COUNT      = 24      # Number of LED pixels.
-LED_PIN        = 19      # GPIO pin connected to the pixels (18 uses PWM!).
-#LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
-LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
-LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
-LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
-LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
-LED_CHANNEL    = 1       # set to '1' for GPIOs 13, 19, 41, 45 or 53
-
-strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    # Intialize the library (must be called once before other functions).
-strip.begin()
-
-def lightUp(color):
-    for i in range(strip.numPixels()):
-        strip.setPixelColor(i,  color)
-        # strip.setPixelColor(i, Color(0, 255, 255) )
-        strip.show()
-
 
 def yellowLight():
-    lightUp(Color(250,165,0))
+    os.system("sudo python3 /home/pi/scripts/neopixel-yellow.py")
 
 def blueLight():
-    lightUp(Color(0,255,255))
+    os.system("sudo python3 /home/pi/scripts/neopixel.py")
 
+def navigateToScreen(Screen):
+        nextScreen = Screen()
+        mainStackedWidget.addWidget(nextScreen)
+        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
 
-def window():
-    app = QApplication(sys.argv)
-    # win = QMainWindow()
-    # win.setGeometry(0,0,480,800)
-    # win.setWindowTitle("Yeee")
-
-    # os.system("sudo python3 /home/pi/scripts/neopixel.py")
+class SplashScreen(QDialog):
+    def __init__(self):
+        super(SplashScreen, self).__init__()
+        loadUi("ui/Splash.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWelcome)
     
-    window = QWidget()
+    def navigateToWelcome(self):
+        navigateToScreen(WelcomeScreen)
 
-    btnBlue = QPushButton("Blue")
-    btnBlue.setMinimumHeight(120)
-    btnBlue.clicked.connect(blueLight)
 
-    btnYellow = QPushButton("Yellow")
-    btnYellow.setMinimumHeight(120)
-    btnYellow.clicked.connect(yellowLight)
+class WelcomeScreen(QDialog):
+    def __init__(self):
+        super(WelcomeScreen, self).__init__()
+        loadUi("ui/02Welcome.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWelcome)
 
-    btnClose = QPushButton("Close")
-    btnClose.setMinimumHeight(120)
-    btnClose.clicked.connect(window.close)
+    def navigateToWelcome(self):
+        navigateToScreen(WifiListScreen)
 
-    # # win.layout.addWidget(btnBlue)
-
-    # layout = QHBoxLayout()
-    # layout.addWidget(btnYellow)
-    # layout.addWidget(btnBlue)
-    # layout.addWidget(QPushButton)
-
-    # win.setLayout(layout)
-
+class WifiListScreen(QDialog):
+    def __init__(self):
+        super(WifiListScreen, self).__init__()
+        loadUi("ui/03WifiList.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWifiConnected)
     
-    window.setWindowTitle('Woobly')
-    layout = QHBoxLayout()
-    layout.addWidget(btnBlue)
-    layout.addWidget(btnYellow)
-    layout.addWidget(btnClose)
-    window.setLayout(layout)
-    window.showFullScreen()
+    def navigateToWifiConnected(self):
+        navigateToScreen(WifiConnectedScreen)
+
+class WifiConnectedScreen(QDialog):
+    def __init__(self):
+        super(WifiConnectedScreen, self).__init__()
+        loadUi("ui/04WifiConnectedScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
+    
+    def navigateToIdleLockScreen(self):
+        navigateToScreen(IdleLockScreen)
+
+class IdleLockScreen(QDialog):
+    def __init__(self):
+        super(IdleLockScreen, self).__init__()
+        loadUi("ui/05IdleLockScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWaiterPinScreen)
+    
+    def navigateToWaiterPinScreen(self):
+        navigateToScreen(WaiterPinScreen)
+
+class WaiterPinScreen(QDialog):
+    def __init__(self):
+        super(WaiterPinScreen, self).__init__()
+        loadUi("ui/06WaiterPinScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToConfirmTable)
+    
+    def navigateToConfirmTable(self):
+        navigateToScreen(ConfirmTable)
+
+class ConfirmTable(QDialog):
+    def __init__(self):
+        super(ConfirmTable, self).__init__()
+        loadUi("ui/07ConfirmTable.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
+    
+    def navigateToChooseNumberOfGuests(self):
+        navigateToScreen(ChooseNumberOfGuests)
+
+class ChooseNumberOfGuests(QDialog):
+    def __init__(self):
+        super(ChooseNumberOfGuests, self).__init__()
+        loadUi("ui/08ChooseNumberOfGuests.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
+    
+    def navigateToCheckedInScreen(self):
+        navigateToScreen(CheckedInScreen)
+
+class CheckedInScreen(QDialog):
+    def __init__(self):
+        super(CheckedInScreen, self).__init__()
+        loadUi("ui/09CheckedInScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
+    
+    def navigateToTapForServiceScreen(self):
+        navigateToScreen(TapForServiceScreen)
+
+class TapForServiceScreen(QDialog):
+    def __init__(self):
+        super(TapForServiceScreen, self).__init__()
+        loadUi("ui/10TapForServiceScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
+    
+    def navigateToCloseServiceScreen(self):
+        navigateToScreen(CloseServiceScreen)
+
+class CloseServiceScreen(QDialog):
+    def __init__(self):
+        super(CloseServiceScreen, self).__init__()
+        loadUi("ui/11CloseServiceScreen.ui", self)
+    #     self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
+    
+    # def navigateToCloseServiceScreen(self):
+    #     navigateToScreen(CloseServiceScreen)
 
 
-    # win.show()
+
+#Main
+app=QApplication(sys.argv)
+mainStackedWidget=QtWidgets.QStackedWidget()
+mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
+mainwindow=SplashScreen()
+mainStackedWidget.addWidget(mainwindow)
+mainStackedWidget.setFixedWidth(480)
+mainStackedWidget.setFixedHeight(800)
+mainStackedWidget.show()
+
+try:
     sys.exit(app.exec())
-
-window()
+except:
+    print("Exiting")
