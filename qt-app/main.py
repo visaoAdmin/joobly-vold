@@ -280,7 +280,7 @@ mainwindow=SplashScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
-mainStackedWidget.show()
+mainStackedWidget.showFullScreen()
 
 try:
     sys.exit(app.exec())
