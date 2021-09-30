@@ -61,6 +61,7 @@ class IdleLockScreen(QDialog):
         super(IdleLockScreen, self).__init__()
         loadUi("ui/05IdleLockScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterPinScreen)
+        self.appCloseButton.clicked.connect(mainStackedWidget.close)
     
     def navigateToWaiterPinScreen(self):
         navigateToScreen(WaiterPinScreen)
@@ -174,11 +175,14 @@ class DrinkItemScreen(QDialog):
     def __init__(self):
         super(DrinkItemScreen, self).__init__()
         loadUi("ui/14DrinkItemScreen.ui", self)
-        # self.goToNextButton.clicked.connect(self.navigateToDrinkItemScreen)
+        self.goToNextButton.clicked.connect(self.navigateToCartScreen)
         self.backButton.clicked.connect(self.navigateBack)
     
     def navigateBack(self):
         navigateToScreen(DinerActionMenuScreen)
+    
+    def navigateToCartScreen(self):
+        navigateToScreen(CartScreen)
 
 # class FoodMenuScreen(QDialog):
 #     def __init__(self):
