@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QDialog
 import os 
+import signal
 
 isWaiterCalled = False
 
@@ -281,6 +282,8 @@ mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
 mainStackedWidget.showFullScreen()
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 try:
     sys.exit(app.exec())
