@@ -1,18 +1,22 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QApplication, QDialog
 import os 
 import signal
+import urllib.request
+import requests
 
 isWaiterCalled = False
 
 def yellowLight():
-    os.system("sudo python3 /home/pi/scripts/neopixel-yellow.py")
+    # os.system("sudo python3 /home/pi/scripts/neopixel-yellow.py")
+    print("yellow light");
 
 def blueLight():
-    os.system("sudo python3 /home/pi/scripts/neopixel.py")
+    # os.system("sudo python3 /home/pi/scripts/neopixel.py")
+    print("blue light");
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
@@ -140,6 +144,17 @@ class DinerActionMenuScreen(QDialog):
         loadUi("ui/12DinerActionMenuScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
         self.backButton.clicked.connect(self.navigateBack)
+        url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+        data = urllib.request.urlopen(url).read()
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+        
+        self.qrimage.setPixmap(pixmap.scaled(200, 200))
+        # response = requests.get('http://jsonplaceholder.typicode.com/todos/1')
+        # title = response.json()['title']
+        # self.remoteApiLabel.setText(title);
+
     
     def navigateToQuickMenuScreen(self):
         navigateToScreen(QuickMenuScreen)
@@ -281,11 +296,13 @@ class ThankYouScreen(QDialog):
 app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
-mainwindow=SplashScreen()
+# mainwindow=SplashScreen()
+mainwindow=DinerActionMenuScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
-mainStackedWidget.showFullScreen()
+mainStackedWidget.show()
+# mainStackedWidget.showFullScreen()
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
