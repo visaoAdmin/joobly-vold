@@ -7,8 +7,26 @@ import os
 import signal
 import urllib.request
 import requests
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed
 
 isWaiterCalled = False
+hangoutId=None
+callNumber = 1
+serviceCallStartTime=None
+
+# get current time in seconds
+def getCurrentTime():
+    import time
+    return time.time()
+
+
+def getHangoutId ():
+    # return 4 digit random string
+    def getRandomString():
+        import random
+        return ''.join(random.choice('0123456789') for i in range(4))
+    return getRandomString()
+    
 
 def yellowLight():
     # os.system("sudo python3 /home/pi/scripts/neopixel-yellow.py")
@@ -95,6 +113,9 @@ class ChooseNumberOfGuests(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
     
     def navigateToCheckedInScreen(self):
+        global hangoutId
+        hangoutId = "TBCCH-01-2022-06-28-"+getHangoutId()
+        startHangout("TBCCH-01", 2, "1111", hangoutId)
         navigateToScreen(CheckedInScreen)
 
 class CheckedInScreen(QDialog):
@@ -113,8 +134,12 @@ class TapForServiceScreen(QDialog):
         yellowLight()
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
+        global callNumber
     
     def navigateToCloseServiceScreen(self):
+        global hangoutId, serviceCallStartTime
+        serviceCallStartTime=getCurrentTime()
+        callWaiter("TBCCH-01", hangoutId, callNumber)
         navigateToScreen(CloseServiceScreen)
     
     def navigateToDinerActionMenu(self):
@@ -131,8 +156,11 @@ class CloseServiceScreen(QDialog):
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
     
     def navigateToTapForServiceScreen(self):
-        global isWaiterCalled
+        global isWaiterCalled,callNumber
         isWaiterCalled = False
+        waiterArrived("TBCCH-01", hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+        callNumber = callNumber+1
+        navigateToScreen(CloseServiceScreen)
         navigateToScreen(TapForServiceScreen)
     
     def navigateToDinerActionMenu(self):
@@ -297,7 +325,7 @@ app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
 # mainwindow=SplashScreen()
-mainwindow=DinerActionMenuScreen()
+mainwindow=ChooseNumberOfGuests()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
