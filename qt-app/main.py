@@ -1,13 +1,14 @@
+from re import S
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtWidgets import QApplication, QDialog, QSlider
 import os 
 import signal
 import urllib.request
 import requests
-from api import startHangout,callWaiter, waiterArrived, serviceDelayed
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience
 
 isWaiterCalled = False
 hangoutId=None
@@ -114,7 +115,7 @@ class ChooseNumberOfGuests(QDialog):
     
     def navigateToCheckedInScreen(self):
         global hangoutId
-        hangoutId = "TBCCH-01-2022-06-28-"+getHangoutId()
+        hangoutId = "TBCCH-01-2022-06-29-"+getHangoutId()
         startHangout("TBCCH-01", 2, "1111", hangoutId)
         navigateToScreen(CheckedInScreen)
 
@@ -128,13 +129,33 @@ class CheckedInScreen(QDialog):
         navigateToScreen(TapForServiceScreen)
 
 class TapForServiceScreen(QDialog):
+
+    previousExperience="Good"
+    experience=None
+
     def __init__(self):
         super(TapForServiceScreen, self).__init__()
         loadUi("ui/10TapForServiceScreen.ui", self)
         yellowLight()
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
-        global callNumber
+        slider = self.experienceSlider
+        slider.setMinimum(0)
+        slider.setMaximum(10)
+        slider.valueChanged.connect(self.onExperienceChanged)
+        slider.sliderReleased.connect(self.experienceMarked)
+
+    def onExperienceChanged(self, value):
+        print(value)
+        if (value >= 6):
+            self.experience = "Good"
+        if (value < 6):
+            self.experience = "Bad"
+
+    def experienceMarked(self):
+        if(self.previousExperience != self.experience):
+            notifyExperience("TBCCH-01", hangoutId, self.experience, self.previousExperience)
+            self.previousExperience = self.experience
     
     def navigateToCloseServiceScreen(self):
         global hangoutId, serviceCallStartTime
