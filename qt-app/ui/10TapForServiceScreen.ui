@@ -1,78 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>480</width>
-    <height>800</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Dialog</string>
-  </property>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>480</width>
-     <height>800</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>../assets/WaiterLITE-UI-13 2.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="goToNextButton">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>210</y>
-     <width>341</width>
-     <height>341</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="menuButton">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>50</y>
-     <width>131</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
- </widget>
- <resources>
-  <include location="../WaiterLITE01.qrc"/>
- </resources>
- <connections/>
+    <class>Dialog</class>
+    <widget class="QDialog" name="Dialog">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>480</width>
+                <height>800</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Dialog</string>
+        </property>
+        <widget class="QLabel" name="label_2">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>480</width>
+                    <height>800</height>
+                </rect>
+            </property>
+            <property name="autoFillBackground">
+                <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+                <string notr="true" />
+            </property>
+            <property name="text">
+                <string />
+            </property>
+            <property name="pixmap">
+                <pixmap>../assets/WaiterLITE-UI-13 2.png</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="goToNextButton">
+            <property name="geometry">
+                <rect>
+                    <x>70</x>
+                    <y>210</y>
+                    <width>341</width>
+                    <height>341</height>
+                </rect>
+            </property>
+            <property name="styleSheet">
+                <string notr="true">background-color: transparent; border: 0px;</string>
+            </property>
+            <property name="text">
+                <string />
+            </property>
+        </widget>
+        <widget class="QPushButton" name="menuButton">
+            <property name="geometry">
+                <rect>
+                    <x>50</x>
+                    <y>50</y>
+                    <width>131</width>
+                    <height>61</height>
+                </rect>
+            </property>
+            <property name="styleSheet">
+                <string notr="true">background-color: transparent; border: 0px;</string>
+            </property>
+            <property name="text">
+                <string />
+            </property>
+        </widget>
+        <widget class="QSlider" name="experienceSlider">
+            <property name="geometry">
+                <rect>
+                    <x>30</x>
+                    <y>730</y>
+                    <width>421</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="styleSheet">
+                <string notr="true">background-color: transparent; border: 0px;</string>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+        </widget>
+    </widget>
+    <resources>
+        <include location="../WaiterLITE01.qrc" />
+    </resources>
+    <connections />
 </ui>

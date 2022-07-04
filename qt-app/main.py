@@ -1,12 +1,33 @@
+from re import S
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QApplication, QDialog, QSlider
 import os 
 import signal
+import urllib.request
+import requests
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience
 
 isWaiterCalled = False
+hangoutId=None
+callNumber = 1
+serviceCallStartTime=None
+
+# get current time in seconds
+def getCurrentTime():
+    import time
+    return time.time()
+
+
+def getHangoutId ():
+    # return 4 digit random string
+    def getRandomString():
+        import random
+        return ''.join(random.choice('0123456789') for i in range(4))
+    return getRandomString()
+    
 
 def yellowLight():
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
@@ -91,6 +112,9 @@ class ChooseNumberOfGuests(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
     
     def navigateToCheckedInScreen(self):
+        global hangoutId
+        hangoutId = "TBCCH-01-2022-06-29-"+getHangoutId()
+        startHangout("TBCCH-01", 2, "1111", hangoutId)
         navigateToScreen(CheckedInScreen)
 
 class CheckedInScreen(QDialog):
@@ -103,14 +127,38 @@ class CheckedInScreen(QDialog):
         navigateToScreen(TapForServiceScreen)
 
 class TapForServiceScreen(QDialog):
+
+    previousExperience="Good"
+    experience=None
+
     def __init__(self):
         super(TapForServiceScreen, self).__init__()
         loadUi("ui/10TapForServiceScreen.ui", self)
         yellowLight()
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
+        slider = self.experienceSlider
+        slider.setMinimum(0)
+        slider.setMaximum(10)
+        slider.valueChanged.connect(self.onExperienceChanged)
+        slider.sliderReleased.connect(self.experienceMarked)
+
+    def onExperienceChanged(self, value):
+        print(value)
+        if (value >= 6):
+            self.experience = "Good"
+        if (value < 6):
+            self.experience = "Bad"
+
+    def experienceMarked(self):
+        if(self.previousExperience != self.experience):
+            notifyExperience("TBCCH-01", hangoutId, self.experience, self.previousExperience)
+            self.previousExperience = self.experience
     
     def navigateToCloseServiceScreen(self):
+        global hangoutId, serviceCallStartTime
+        serviceCallStartTime=getCurrentTime()
+        callWaiter("TBCCH-01", hangoutId, callNumber)
         navigateToScreen(CloseServiceScreen)
     
     def navigateToDinerActionMenu(self):
@@ -127,8 +175,11 @@ class CloseServiceScreen(QDialog):
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
     
     def navigateToTapForServiceScreen(self):
-        global isWaiterCalled
+        global isWaiterCalled,callNumber
         isWaiterCalled = False
+        waiterArrived("TBCCH-01", hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+        callNumber = callNumber+1
+        navigateToScreen(CloseServiceScreen)
         navigateToScreen(TapForServiceScreen)
     
     def navigateToDinerActionMenu(self):
@@ -140,6 +191,17 @@ class DinerActionMenuScreen(QDialog):
         loadUi("ui/12DinerActionMenuScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
         self.backButton.clicked.connect(self.navigateBack)
+        url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+        data = urllib.request.urlopen(url).read()
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+        
+        self.qrimage.setPixmap(pixmap.scaled(200, 200))
+        # response = requests.get('http://jsonplaceholder.typicode.com/todos/1')
+        # title = response.json()['title']
+        # self.remoteApiLabel.setText(title);
+
     
     def navigateToQuickMenuScreen(self):
         navigateToScreen(QuickMenuScreen)
@@ -285,7 +347,8 @@ mainwindow=WelcomeScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
-mainStackedWidget.showFullScreen()
+mainStackedWidget.show()
+# mainStackedWidget.showFullScreen()
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
