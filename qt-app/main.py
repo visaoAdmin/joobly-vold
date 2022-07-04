@@ -281,7 +281,7 @@ class ThankYouScreen(QDialog):
 app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
-mainwindow=SplashScreen()
+mainwindow=WelcomeScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
