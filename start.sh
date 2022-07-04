@@ -2,4 +2,4 @@
 cd /home/pi/waiterlite-raspberry && 
 git pull origin &
 ./startup-scripts.sh &
-cd qt-app && python3 main.py
+cd qt-app && /usr/bin/python3 main.py
