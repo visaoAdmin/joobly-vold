@@ -30,12 +30,10 @@ def getHangoutId ():
     
 
 def yellowLight():
-    # os.system("sudo python3 /home/pi/scripts/neopixel-yellow.py")
-    print("yellow light");
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
 
 def blueLight():
-    # os.system("sudo python3 /home/pi/scripts/neopixel.py")
-    print("blue light");
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
@@ -345,8 +343,7 @@ class ThankYouScreen(QDialog):
 app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
-# mainwindow=SplashScreen()
-mainwindow=ChooseNumberOfGuests()
+mainwindow=WelcomeScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
