@@ -9,6 +9,8 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience
+import threading
+
 
 isWaiterCalled = False
 hangoutId=None
@@ -31,9 +33,13 @@ def getHangoutId ():
 
 def yellowLight():
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
+    # time.sleep(2)
+    # print("Yellow Light");
 
 def blueLight():
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
+    # time.sleep(2)
+    # print("Blue Light");
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
@@ -134,7 +140,8 @@ class TapForServiceScreen(QDialog):
     def __init__(self):
         super(TapForServiceScreen, self).__init__()
         loadUi("ui/10TapForServiceScreen.ui", self)
-        yellowLight()
+        thr = threading.Thread(target=yellowLight)
+        thr.start()
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         slider = self.experienceSlider
@@ -142,6 +149,7 @@ class TapForServiceScreen(QDialog):
         slider.setMaximum(10)
         slider.valueChanged.connect(self.onExperienceChanged)
         slider.sliderReleased.connect(self.experienceMarked)
+        # thr.join()
 
     def onExperienceChanged(self, value):
         print(value)
@@ -170,9 +178,11 @@ class CloseServiceScreen(QDialog):
         loadUi("ui/11CloseServiceScreen.ui", self)
         global isWaiterCalled
         isWaiterCalled = True
-        blueLight()
+        thr = threading.Thread(target=blueLight)
+        thr.start()
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
+        # thr.join()
     
     def navigateToTapForServiceScreen(self):
         global isWaiterCalled,callNumber
