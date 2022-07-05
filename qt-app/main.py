@@ -37,13 +37,13 @@ def getHangoutId ():
 
 def yellowLight():
     # os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
-    Popen(["sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py"])
+    Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py", shell=True)
     # time.sleep(2)
     # print("Yellow Light");
 
 def blueLight():
     # os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
-    Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py")
+    Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py", shell=True)
     # time.sleep(2)
     # print("Blue Light");
 
