@@ -16,6 +16,7 @@ isWaiterCalled = False
 hangoutId=None
 callNumber = 1
 serviceCallStartTime=None
+thr=None
 
 # get current time in seconds
 def getCurrentTime():
@@ -140,6 +141,7 @@ class TapForServiceScreen(QDialog):
     def __init__(self):
         super(TapForServiceScreen, self).__init__()
         loadUi("ui/10TapForServiceScreen.ui", self)
+        global thr
         thr = threading.Thread(target=yellowLight)
         thr.start()
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
@@ -149,7 +151,7 @@ class TapForServiceScreen(QDialog):
         slider.setMaximum(10)
         slider.valueChanged.connect(self.onExperienceChanged)
         slider.sliderReleased.connect(self.experienceMarked)
-        # thr.join()
+        thr.join()
 
     def onExperienceChanged(self, value):
         print(value)
@@ -182,7 +184,7 @@ class CloseServiceScreen(QDialog):
         thr.start()
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
-        # thr.join()
+        thr.join()
     
     def navigateToTapForServiceScreen(self):
         global isWaiterCalled,callNumber
