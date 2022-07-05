@@ -37,13 +37,13 @@ def getHangoutId ():
 
 def yellowLight():
     # os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
-    Popen(["sudo", "/usr/bin/python3" "/home/pi/waiterlite-raspberry/neopixel-yellow.py"])
+    Popen(["sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py"])
     # time.sleep(2)
     # print("Yellow Light");
 
 def blueLight():
     # os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
-    Popen(["sudo", "/usr/bin/python3" "/home/pi/waiterlite-raspberry/neopixel.py"])
+    Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py")
     # time.sleep(2)
     # print("Blue Light");
 
@@ -147,8 +147,9 @@ class TapForServiceScreen(QDialog):
         super(TapForServiceScreen, self).__init__()
         loadUi("ui/10TapForServiceScreen.ui", self)
         global thr
-        thr = threading.Thread(target=yellowLight)
-        thr.start()
+        yellowLight()
+        # thr = threading.Thread(target=yellowLight)
+        # thr.start()
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         slider = self.experienceSlider
@@ -156,7 +157,7 @@ class TapForServiceScreen(QDialog):
         slider.setMaximum(10)
         slider.valueChanged.connect(self.onExperienceChanged)
         slider.sliderReleased.connect(self.experienceMarked)
-        thr.join()
+        # thr.join()
 
     def onExperienceChanged(self, value):
         print(value)
@@ -185,11 +186,12 @@ class CloseServiceScreen(QDialog):
         loadUi("ui/11CloseServiceScreen.ui", self)
         global isWaiterCalled
         isWaiterCalled = True
-        thr = threading.Thread(target=blueLight)
-        thr.start()
+        blueLight()
+        # thr = threading.Thread(target=blueLight)
+        # thr.start()
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
-        thr.join()
+        # thr.join()
     
     def navigateToTapForServiceScreen(self):
         global isWaiterCalled,callNumber
