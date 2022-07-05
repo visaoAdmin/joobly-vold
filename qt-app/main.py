@@ -10,8 +10,7 @@ import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience
 import threading
-from subprocess import Popen
-
+import subprocess
 
 
 
@@ -37,13 +36,13 @@ def getHangoutId ():
 
 def yellowLight():
     # os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
-    Popen(["sudo", "python3" "/home/pi/waiterlite-raspberry/neopixel-yellow.py"])
+    subprocess.run("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
     # time.sleep(2)
     # print("Yellow Light");
 
 def blueLight():
     # os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
-    Popen(["sudo", "python3" "/home/pi/waiterlite-raspberry/neopixel.py"])
+    subprocess.run("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
     # time.sleep(2)
     # print("Blue Light");
 
