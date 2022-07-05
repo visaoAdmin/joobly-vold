@@ -347,7 +347,7 @@ mainwindow=WelcomeScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
-mainStackedWidget.show()
+# mainStackedWidget.show()
 mainStackedWidget.showFullScreen()
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
