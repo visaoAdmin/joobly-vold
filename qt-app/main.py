@@ -348,7 +348,7 @@ mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
 mainStackedWidget.show()
-# mainStackedWidget.showFullScreen()
+mainStackedWidget.showFullScreen()
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
