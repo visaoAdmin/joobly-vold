@@ -229,7 +229,6 @@ class CloseServiceScreen(QDialog):
         isWaiterCalled = False
         waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
         callNumber = callNumber+1
-        navigateToScreen(CloseServiceScreen)
         navigateToScreen(TapForServiceScreen)
     
     def navigateToDinerActionMenu(self):
