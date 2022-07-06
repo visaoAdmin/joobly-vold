@@ -54,6 +54,16 @@ def rate(table, hangoutId, ratingType, rating):
     })
     return response
 
+
+def addMultipleRatings(table, hangoutId, ratings):
+    response = requests.post(BASE_URL + "/pod-events", json={
+        "table": table,
+        "hangout": hangoutId,
+        "type": "RATINGS_SUBMITTED",
+        "ratings": ratings
+    })
+    return response
+
 def notifyExperience(table, hangoutId, experience, previosExperience):
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
@@ -63,3 +73,7 @@ def notifyExperience(table, hangoutId, experience, previosExperience):
         "type": "EXPERIENCE_CHANGED"
     })
     return response
+
+def fetchTableId():
+    response = requests.get(BASE_URL + "/pod/table")
+    return response.json().get("referenceId")

@@ -54,6 +54,22 @@
     <string/>
    </property>
   </widget>
+  <widget class="QPushButton" name="clearTableButton">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>770</y>
+     <width>131</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent;color: rgba(100,100,100);</string>
+   </property>
+   <property name="text">
+    <string>Clear Selection</string>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>

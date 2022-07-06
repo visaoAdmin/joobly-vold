@@ -2,24 +2,59 @@ from re import S
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider
 import os 
 import signal
 import urllib.request
 import requests
-from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId
 import threading
 from subprocess import Popen
+import json
 
 
-
-
+storage = {}
 isWaiterCalled = False
 hangoutId=None
 callNumber = 1
 serviceCallStartTime=None
 thr=None
+table="TBCCH-01"
+
+def getTableId ():
+    global table
+    tableId = table
+    print(storage)
+    if "table" in storage:
+        tableId = storage["table"]
+    else:
+        try:
+            tableId = fetchTableId()
+        except:
+            tableId = table
+        storage["table"] = tableId
+        saveStorage()
+    table = tableId
+    return tableId
+
+def saveStorage():
+    with open("storage.json", "w") as f:
+        json.dump(storage, f)
+
+def loadStorage():
+    try:
+        with open("storage.json", "r") as f:
+            return json.load(f)
+    except:
+        with open("storage.json", "w") as f:
+            json.dump({}, f)
+            return {}
+
+def clearStorage():
+    global storage
+    storage = {}
+    saveStorage()
 
 # get current time in seconds
 def getCurrentTime():
@@ -39,13 +74,13 @@ def yellowLight():
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py", shell=True)
     # time.sleep(2)
-    # print("Yellow Light");
+    print("Yellow Light");
 
 def blueLight():
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py", shell=True)
     # time.sleep(2)
-    # print("Blue Light");
+    print("Blue Light");
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
@@ -113,6 +148,7 @@ class ConfirmTable(QDialog):
         super(ConfirmTable, self).__init__()
         loadUi("ui/07ConfirmTable.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
+        self.clearTableButton.clicked.connect(clearStorage)
     
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
@@ -124,9 +160,10 @@ class ChooseNumberOfGuests(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
     
     def navigateToCheckedInScreen(self):
+        getTableId()
         global hangoutId
-        hangoutId = "TBCCH-01-2022-06-29-"+getHangoutId()
-        startHangout("TBCCH-01", 2, "1111", hangoutId)
+        hangoutId = table+"-2022-06-29-"+getHangoutId()
+        startHangout(table, 2, "1111", hangoutId)
         navigateToScreen(CheckedInScreen)
 
 class CheckedInScreen(QDialog):
@@ -164,13 +201,13 @@ class TapForServiceScreen(QDialog):
 
     def experienceMarked(self):
         if(self.previousExperience != self.experience):
-            notifyExperience("TBCCH-01", hangoutId, self.experience, self.previousExperience)
+            notifyExperience(table, hangoutId, self.experience, self.previousExperience)
             self.previousExperience = self.experience
     
     def navigateToCloseServiceScreen(self):
         global hangoutId, serviceCallStartTime
         serviceCallStartTime=getCurrentTime()
-        callWaiter("TBCCH-01", hangoutId, callNumber)
+        callWaiter(table, hangoutId, callNumber)
         navigateToScreen(CloseServiceScreen)
     
     def navigateToDinerActionMenu(self):
@@ -190,7 +227,7 @@ class CloseServiceScreen(QDialog):
     def navigateToTapForServiceScreen(self):
         global isWaiterCalled,callNumber
         isWaiterCalled = False
-        waiterArrived("TBCCH-01", hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+        waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
         callNumber = callNumber+1
         navigateToScreen(CloseServiceScreen)
         navigateToScreen(TapForServiceScreen)
@@ -204,6 +241,7 @@ class DinerActionMenuScreen(QDialog):
         loadUi("ui/12DinerActionMenuScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
         self.backButton.clicked.connect(self.navigateBack)
+        self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
         data = urllib.request.urlopen(url).read()
         image = QImage()
@@ -215,7 +253,9 @@ class DinerActionMenuScreen(QDialog):
         # title = response.json()['title']
         # self.remoteApiLabel.setText(title);
 
-    
+    def navigateToCheckoutScreen(self):
+        navigateToScreen(BillScreen)
+
     def navigateToQuickMenuScreen(self):
         navigateToScreen(QuickMenuScreen)
     
@@ -327,16 +367,56 @@ class PayQRScreen(QDialog):
         navigateToScreen(FeedbackScreen)
 
 class FeedbackScreen(QDialog):
+    buttonStyle = "border-style: outset;border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
+    normalStyle = buttonStyle+"background-color: rgb(32, 37, 41);border-color: black;"
+    selectedStyle = buttonStyle+"background-color: rgb(33, 236, 210);border-color: rgb(33, 236, 210);"
+    ratings = {}
+
     def __init__(self):
         super(FeedbackScreen, self).__init__()
         loadUi("ui/19FeedbackScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
+        
+        self.food1.clicked.connect(lambda: self.markRating("food", 1))
+        self.food2.clicked.connect(lambda: self.markRating("food", 2))
+        self.food3.clicked.connect(lambda: self.markRating("food", 3))
+        self.food4.clicked.connect(lambda: self.markRating("food", 4))
+        self.food5.clicked.connect(lambda: self.markRating("food", 5))
+        
+        self.service1.clicked.connect(lambda: self.markRating("service", 1))
+        self.service2.clicked.connect(lambda: self.markRating("service", 2))
+        self.service3.clicked.connect(lambda: self.markRating("service", 3))
+        self.service4.clicked.connect(lambda: self.markRating("service", 4))
+        self.service5.clicked.connect(lambda: self.markRating("service", 5))
+
+        self.ambience1.clicked.connect(lambda: self.markRating("ambience", 1))
+        self.ambience2.clicked.connect(lambda: self.markRating("ambience", 2))
+        self.ambience3.clicked.connect(lambda: self.markRating("ambience", 3))
+        self.ambience4.clicked.connect(lambda: self.markRating("ambience", 4))
+        self.ambience5.clicked.connect(lambda: self.markRating("ambience", 5))
+
+        self.music1.clicked.connect(lambda: self.markRating("music", 1))
+        self.music2.clicked.connect(lambda: self.markRating("music", 2))
+        self.music3.clicked.connect(lambda: self.markRating("music", 3))
+        self.music4.clicked.connect(lambda: self.markRating("music", 4))
+        self.music5.clicked.connect(lambda: self.markRating("music", 5))
     
     def navigateBack(self):
         navigateToScreen(PayQRScreen)
+
+    def markRating(self, type,rating):
+        print(rating)
+        self.ratings[type] = rating
+        for a in range(5):
+            i = a+1
+            style = self.selectedStyle if i <= rating else self.normalStyle
+            self.__dict__[type+str(i)].setStyleSheet(style)
     
     def navigateToThankYouScreen(self):
+        ratingKeys = self.ratings.keys()
+        ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
+        addMultipleRatings(getTableId(), hangoutId, list(ratings));
         navigateToScreen(ThankYouScreen)
 
 class ThankYouScreen(QDialog):
@@ -353,6 +433,10 @@ class ThankYouScreen(QDialog):
 
 
 #Main
+
+storage = loadStorage()
+print(storage)
+
 app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
@@ -362,6 +446,8 @@ mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
 # mainStackedWidget.show()
 mainStackedWidget.showFullScreen()
+
+
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
