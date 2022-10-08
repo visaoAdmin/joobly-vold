@@ -13,6 +13,10 @@ import threading
 from subprocess import Popen
 import json
 
+ENV=os.environ.get('ENV')
+
+print(ENV)
+
 
 storage = {}
 isWaiterCalled = False
@@ -443,8 +447,11 @@ mainwindow=WelcomeScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
-# mainStackedWidget.show()
-mainStackedWidget.showFullScreen()
+
+if ENV=='dev':
+    mainStackedWidget.show()
+else:
+    mainStackedWidget.showFullScreen()
 
 
 
