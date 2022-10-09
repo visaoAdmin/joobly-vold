@@ -32,7 +32,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../assets/WaiterLITE-UI-02-1.png</pixmap>
+    <pixmap>../assets/WaiterLITE-UI-02.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>

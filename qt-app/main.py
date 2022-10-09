@@ -110,6 +110,15 @@ class WelcomeScreen(QDialog):
     def navigateToWelcome(self):
         navigateToScreen(WifiListScreen)
 
+class ReserveScreen(QDialog):
+    def __init__(self):
+        super(ReserveScreen, self).__init__()
+        loadUi("ui/21ReserveScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWelcome)
+
+    def navigateToWelcome(self):
+        navigateToScreen(WaiterPinScreen)
+
 class WifiListScreen(QDialog):
     def __init__(self):
         super(WifiListScreen, self).__init__()
@@ -139,13 +148,48 @@ class IdleLockScreen(QDialog):
         navigateToScreen(WaiterPinScreen)
 
 class WaiterPinScreen(QDialog):
+    pin=[]
+
     def __init__(self):
         super(WaiterPinScreen, self).__init__()
         loadUi("ui/06WaiterPinScreen.ui", self)
-        self.goToNextButton.clicked.connect(self.navigateToConfirmTable)
+        self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.setupKeyboard()
+
+    def setupKeyboard(self):
+        self.key1.clicked.connect(lambda: self.onKey("1"))
+        self.key2.clicked.connect(lambda: self.onKey("2"))
+        self.key3.clicked.connect(lambda: self.onKey("3"))
+        self.key4.clicked.connect(lambda: self.onKey("4"))
+        self.key5.clicked.connect(lambda: self.onKey("5"))
+        self.key6.clicked.connect(lambda: self.onKey("6"))
+        self.key7.clicked.connect(lambda: self.onKey("7"))
+        self.key8.clicked.connect(lambda: self.onKey("8"))
+        self.key9.clicked.connect(lambda: self.onKey("9"))
+        self.key0.clicked.connect(lambda: self.onKey("0"))
+        self.key_del.clicked.connect(lambda: self.onKey("x"))
+
+    def onKey(self, key):
+        length=len(self.pin)
+        if key != "x" :
+            self.pin.append(key)
+            length+=1
+        else:
+            if length>0:
+                self.pin.pop()
+                length-=1
+        for index in range(4):    
+            val=""
+            if index < length:
+                val=self.pin[index]
+            self.__dict__["input_pin_"+str(index)].setText(val)
+        
     
     def navigateToConfirmTable(self):
         navigateToScreen(ConfirmTable)
+    
+    def navigateToWaiterMenuScreen(self):
+        navigateToScreen(WaiterMenuScreen)
 
 class ConfirmTable(QDialog):
     def __init__(self):
@@ -156,6 +200,20 @@ class ConfirmTable(QDialog):
     
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
+
+class WaiterMenuScreen(QDialog):
+    def __init__(self):
+        super(WaiterMenuScreen, self).__init__()
+        loadUi("ui/071WaiterMenuScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
+        self.reserveButton.clicked.connect(self.navigateToReserveScreen)
+        self.clearTableButton.clicked.connect(clearStorage)
+    
+    def navigateToChooseNumberOfGuests(self):
+        navigateToScreen(ChooseNumberOfGuests)
+
+    def navigateToReserveScreen(self):
+        navigateToScreen(ReserveScreen)
 
 class ChooseNumberOfGuests(QDialog):
     def __init__(self):
@@ -443,7 +501,8 @@ print(storage)
 app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
-mainwindow=WelcomeScreen()
+# mainwindow=WelcomeScreen()
+mainwindow=IdleLockScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
