@@ -38,7 +38,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="backButton">
+  <widget class="QPushButton" name="goBackButton">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -87,9 +87,9 @@
    </property>
   </widget>
   <zorder>qrimage</zorder>
-  <zorder>backButton</zorder>
   <zorder>checkoutButton</zorder>
   <zorder>label_2</zorder>
+  <zorder>goBackButton</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>
