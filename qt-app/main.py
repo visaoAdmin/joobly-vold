@@ -26,11 +26,24 @@ serviceCallStartTime=None
 thr=None
 table="TBCCH-01"
 
+def setupKeyboard(self):
+    self.key1.clicked.connect(lambda: self.onKey("1"))
+    self.key2.clicked.connect(lambda: self.onKey("2"))
+    self.key3.clicked.connect(lambda: self.onKey("3"))
+    self.key4.clicked.connect(lambda: self.onKey("4"))
+    self.key5.clicked.connect(lambda: self.onKey("5"))
+    self.key6.clicked.connect(lambda: self.onKey("6"))
+    self.key7.clicked.connect(lambda: self.onKey("7"))
+    self.key8.clicked.connect(lambda: self.onKey("8"))
+    self.key9.clicked.connect(lambda: self.onKey("9"))
+    self.key0.clicked.connect(lambda: self.onKey("0"))
+    self.key_del.clicked.connect(lambda: self.onKey("x"))
+
 def getTableId ():
     global table
     tableId = table
     print(storage)
-    if "table" in storage:
+    if "table" in storage and storage["table"] != None:
         tableId = storage["table"]
     else:
         try:
@@ -157,17 +170,7 @@ class WaiterPinScreen(QDialog):
         self.setupKeyboard()
 
     def setupKeyboard(self):
-        self.key1.clicked.connect(lambda: self.onKey("1"))
-        self.key2.clicked.connect(lambda: self.onKey("2"))
-        self.key3.clicked.connect(lambda: self.onKey("3"))
-        self.key4.clicked.connect(lambda: self.onKey("4"))
-        self.key5.clicked.connect(lambda: self.onKey("5"))
-        self.key6.clicked.connect(lambda: self.onKey("6"))
-        self.key7.clicked.connect(lambda: self.onKey("7"))
-        self.key8.clicked.connect(lambda: self.onKey("8"))
-        self.key9.clicked.connect(lambda: self.onKey("9"))
-        self.key0.clicked.connect(lambda: self.onKey("0"))
-        self.key_del.clicked.connect(lambda: self.onKey("x"))
+        setupKeyboard(self)
 
     def onKey(self, key):
         length=len(self.pin)
@@ -216,13 +219,30 @@ class WaiterMenuScreen(QDialog):
         navigateToScreen(ReserveScreen)
 
 class ChooseNumberOfGuests(QDialog):
+    guestCount=""
+
     def __init__(self):
         super(ChooseNumberOfGuests, self).__init__()
         loadUi("ui/08ChooseNumberOfGuests.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
+        self.setupKeyboard()
+        
+    def setupKeyboard(self):
+        setupKeyboard(self)
     
+    def onKey(self, key):
+        if key == "x":
+            self.guestCount=""
+        elif key == "0":
+            self.guestCount = "10+"
+        else:
+            self.guestCount = key
+
+        self.__dict__["inputCount"].setText(self.guestCount)
+
     def navigateToCheckedInScreen(self):
-        getTableId()
+        _tableId = getTableId()
+        print(_tableId)
         global hangoutId
         hangoutId = table+"-2022-06-29-"+getHangoutId()
         startHangout(table, 2, "1111", hangoutId)
@@ -247,11 +267,11 @@ class TapForServiceScreen(QDialog):
         loadUi("ui/10TapForServiceScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
-        slider = self.experienceSlider
-        slider.setMinimum(0)
-        slider.setMaximum(10)
-        slider.valueChanged.connect(self.onExperienceChanged)
-        slider.sliderReleased.connect(self.experienceMarked)
+        # slider = self.experienceSlider
+        # slider.setMinimum(0)
+        # slider.setMaximum(10)
+        # slider.valueChanged.connect(self.onExperienceChanged)
+        # slider.sliderReleased.connect(self.experienceMarked)
         yellowLight()
 
     def onExperienceChanged(self, value):
@@ -300,9 +320,9 @@ class DinerActionMenuScreen(QDialog):
     def __init__(self):
         super(DinerActionMenuScreen, self).__init__()
         loadUi("ui/12DinerActionMenuScreen.ui", self)
-        self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
+        # self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
         self.backButton.clicked.connect(self.navigateBack)
-        self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
+        # self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
         data = urllib.request.urlopen(url).read()
         image = QImage()

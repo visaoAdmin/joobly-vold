@@ -76,4 +76,6 @@ def notifyExperience(table, hangoutId, experience, previosExperience):
 
 def fetchTableId():
     response = requests.get(BASE_URL + "/pod/table")
-    return response.json().get("referenceId")
+    tableId = response.json().get("id")
+    print("TableId in fetchTableId", tableId)
+    return tableId
