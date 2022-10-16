@@ -1,5 +1,6 @@
 python3 main.py &
 PID=$!
+export ENV=dev
 while fswatch -r -1 ~/Sites/raspberry-pi-playground/*; do
     # exit the existing process
     echo $PID
