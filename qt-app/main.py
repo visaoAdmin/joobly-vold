@@ -12,6 +12,7 @@ from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyEx
 import threading
 from subprocess import Popen
 import json
+from datetime import datetime
 
 ENV=os.environ.get('ENV')
 
@@ -25,6 +26,7 @@ callNumber = 1
 serviceCallStartTime=None
 thr=None
 table="TBCCH-01"
+waiterId=None
 
 def setupKeyboard(self):
     self.key1.clicked.connect(lambda: self.onKey("1"))
@@ -179,6 +181,7 @@ class WaiterPinScreen(QDialog):
         setupKeyboard(self)
 
     def onKey(self, key):
+        global waiterId
         length=len(self.pin)
         if key != "x" :
             self.pin.append(key)
@@ -187,10 +190,13 @@ class WaiterPinScreen(QDialog):
             if length>0:
                 self.pin.pop()
                 length-=1
+        
+        waiterId=""
         for index in range(4):    
             val=""
             if index < length:
                 val=self.pin[index]
+                waiterId+=val
             self.__dict__["input_pin_"+str(index)].setText(val)
         
     
@@ -241,18 +247,19 @@ class ChooseNumberOfGuests(QDialog):
         if key == "x":
             self.guestCount=""
         elif key == "0":
-            self.guestCount = "10+"
+            self.guestCount = "10"
         else:
             self.guestCount = key
-
-        self.__dict__["inputCount"].setText(self.guestCount)
+        
+        countLabel = "10+" if self.guestCount == "10" else self.guestCount
+        self.__dict__["inputCount"].setText(countLabel)
 
     def navigateToCheckedInScreen(self):
         _tableId = getTableId()
         print(_tableId)
         global hangoutId
-        hangoutId = table+"-2022-06-29-"+getHangoutId()
-        startHangout(table, 2, "1111", hangoutId)
+        hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+        startHangout(table, self.guestCount, waiterId, hangoutId)
         navigateToScreen(CheckedInScreen)
 
 class CheckedInScreen(QDialog):

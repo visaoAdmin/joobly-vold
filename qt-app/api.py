@@ -4,6 +4,7 @@ BASE_URL = "https://api.mywoobly.com"
 
 
 def startHangout(table, guestCount, waiterId, hangoutId):
+    print("startHangout",table, guestCount, waiterId, hangoutId)
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "guestCount": guestCount,
@@ -76,6 +77,6 @@ def notifyExperience(table, hangoutId, experience, previosExperience):
 
 def fetchTableId():
     response = requests.get(BASE_URL + "/pod/table")
-    tableId = response.json().get("id")
-    print("TableId in fetchTableId", tableId)
+    tableId = response.json().get("referenceId")
+    print("TableId in fetchTableId", response.json())
     return tableId
