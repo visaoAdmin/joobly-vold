@@ -12,6 +12,11 @@ from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyEx
 import threading
 from subprocess import Popen
 import json
+from datetime import datetime
+
+ENV=os.environ.get('ENV')
+
+print(ENV)
 
 
 storage = {}
@@ -21,12 +26,26 @@ callNumber = 1
 serviceCallStartTime=None
 thr=None
 table="TBCCH-01"
+waiterId=None
+
+def setupKeyboard(self):
+    self.key1.clicked.connect(lambda: self.onKey("1"))
+    self.key2.clicked.connect(lambda: self.onKey("2"))
+    self.key3.clicked.connect(lambda: self.onKey("3"))
+    self.key4.clicked.connect(lambda: self.onKey("4"))
+    self.key5.clicked.connect(lambda: self.onKey("5"))
+    self.key6.clicked.connect(lambda: self.onKey("6"))
+    self.key7.clicked.connect(lambda: self.onKey("7"))
+    self.key8.clicked.connect(lambda: self.onKey("8"))
+    self.key9.clicked.connect(lambda: self.onKey("9"))
+    self.key0.clicked.connect(lambda: self.onKey("0"))
+    self.key_del.clicked.connect(lambda: self.onKey("x"))
 
 def getTableId ():
     global table
     tableId = table
     print(storage)
-    if "table" in storage:
+    if "table" in storage and storage["table"] != None:
         tableId = storage["table"]
     else:
         try:
@@ -87,6 +106,12 @@ def navigateToScreen(Screen):
         mainStackedWidget.addWidget(nextScreen)
         mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
 
+def navigateGoBack():
+        mainStackedWidget.removeWidget(mainStackedWidget.currentWidget())
+
+def navigateToRestart():
+        mainStackedWidget.setCurrentIndex(0)
+
 class SplashScreen(QDialog):
     def __init__(self):
         super(SplashScreen, self).__init__()
@@ -105,6 +130,15 @@ class WelcomeScreen(QDialog):
 
     def navigateToWelcome(self):
         navigateToScreen(WifiListScreen)
+
+class ReserveScreen(QDialog):
+    def __init__(self):
+        super(ReserveScreen, self).__init__()
+        loadUi("ui/21ReserveScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWelcome)
+
+    def navigateToWelcome(self):
+        navigateToScreen(WaiterPinScreen)
 
 class WifiListScreen(QDialog):
     def __init__(self):
@@ -135,13 +169,42 @@ class IdleLockScreen(QDialog):
         navigateToScreen(WaiterPinScreen)
 
 class WaiterPinScreen(QDialog):
+    pin=[]
+
     def __init__(self):
         super(WaiterPinScreen, self).__init__()
         loadUi("ui/06WaiterPinScreen.ui", self)
-        self.goToNextButton.clicked.connect(self.navigateToConfirmTable)
+        self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.setupKeyboard()
+
+    def setupKeyboard(self):
+        setupKeyboard(self)
+
+    def onKey(self, key):
+        global waiterId
+        length=len(self.pin)
+        if key != "x" :
+            self.pin.append(key)
+            length+=1
+        else:
+            if length>0:
+                self.pin.pop()
+                length-=1
+        
+        waiterId=""
+        for index in range(4):    
+            val=""
+            if index < length:
+                val=self.pin[index]
+                waiterId+=val
+            self.__dict__["input_pin_"+str(index)].setText(val)
+        
     
     def navigateToConfirmTable(self):
         navigateToScreen(ConfirmTable)
+    
+    def navigateToWaiterMenuScreen(self):
+        navigateToScreen(WaiterMenuScreen)
 
 class ConfirmTable(QDialog):
     def __init__(self):
@@ -153,17 +216,50 @@ class ConfirmTable(QDialog):
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
 
+class WaiterMenuScreen(QDialog):
+    def __init__(self):
+        super(WaiterMenuScreen, self).__init__()
+        loadUi("ui/071WaiterMenuScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
+        self.reserveButton.clicked.connect(self.navigateToReserveScreen)
+        self.clearTableButton.clicked.connect(clearStorage)
+    
+    def navigateToChooseNumberOfGuests(self):
+        navigateToScreen(ChooseNumberOfGuests)
+
+    def navigateToReserveScreen(self):
+        navigateToScreen(ReserveScreen)
+
 class ChooseNumberOfGuests(QDialog):
+    guestCount=""
+
     def __init__(self):
         super(ChooseNumberOfGuests, self).__init__()
         loadUi("ui/08ChooseNumberOfGuests.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
+        self.goBackButton.clicked.connect(navigateGoBack)
+        self.setupKeyboard()
+        
+    def setupKeyboard(self):
+        setupKeyboard(self)
     
+    def onKey(self, key):
+        if key == "x":
+            self.guestCount=""
+        elif key == "0":
+            self.guestCount = "10"
+        else:
+            self.guestCount = key
+        
+        countLabel = "10+" if self.guestCount == "10" else self.guestCount
+        self.__dict__["inputCount"].setText(countLabel)
+
     def navigateToCheckedInScreen(self):
-        getTableId()
+        _tableId = getTableId()
+        print(_tableId)
         global hangoutId
-        hangoutId = table+"-2022-06-29-"+getHangoutId()
-        startHangout(table, 2, "1111", hangoutId)
+        hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+        startHangout(table, self.guestCount, waiterId, hangoutId)
         navigateToScreen(CheckedInScreen)
 
 class CheckedInScreen(QDialog):
@@ -185,11 +281,12 @@ class TapForServiceScreen(QDialog):
         loadUi("ui/10TapForServiceScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
-        slider = self.experienceSlider
-        slider.setMinimum(0)
-        slider.setMaximum(10)
-        slider.valueChanged.connect(self.onExperienceChanged)
-        slider.sliderReleased.connect(self.experienceMarked)
+        self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
+        # slider = self.experienceSlider
+        # slider.setMinimum(0)
+        # slider.setMaximum(10)
+        # slider.valueChanged.connect(self.onExperienceChanged)
+        # slider.sliderReleased.connect(self.experienceMarked)
         yellowLight()
 
     def onExperienceChanged(self, value):
@@ -212,6 +309,9 @@ class TapForServiceScreen(QDialog):
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
+    
+    def navigateToCheckoutScreen(self):
+        navigateToScreen(BillScreen)
 
 class CloseServiceScreen(QDialog):
     def __init__(self):
@@ -221,6 +321,7 @@ class CloseServiceScreen(QDialog):
         isWaiterCalled = True
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
+        self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         # thr.join()
         blueLight()
     
@@ -233,14 +334,17 @@ class CloseServiceScreen(QDialog):
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
+    
+    def navigateToCheckoutScreen(self):
+        navigateToScreen(BillScreen)
 
 class DinerActionMenuScreen(QDialog):
     def __init__(self):
         super(DinerActionMenuScreen, self).__init__()
         loadUi("ui/12DinerActionMenuScreen.ui", self)
-        self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
-        self.backButton.clicked.connect(self.navigateBack)
-        self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
+        # self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
+        self.goBackButton.clicked.connect(navigateGoBack)
+        # self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
         data = urllib.request.urlopen(url).read()
         image = QImage()
@@ -257,13 +361,6 @@ class DinerActionMenuScreen(QDialog):
 
     def navigateToQuickMenuScreen(self):
         navigateToScreen(QuickMenuScreen)
-    
-    def navigateBack(self):
-        global isWaiterCalled
-        if isWaiterCalled:
-            navigateToScreen(CloseServiceScreen)
-        else:
-            navigateToScreen(TapForServiceScreen)
 
 class QuickMenuScreen(QDialog):
     def __init__(self):
@@ -344,7 +441,8 @@ class BillScreen(QDialog):
         self.feedbackButton.clicked.connect(self.navigateToFeedbackScreen)
     
     def navigateBack(self):
-        navigateToScreen(DinerActionMenuScreen)
+        # navigateToScreen(DinerActionMenuScreen)
+        navigateGoBack()
 
     def navigateToPayScreen(self):
         navigateToScreen(PayQRScreen)
@@ -352,35 +450,64 @@ class BillScreen(QDialog):
     def navigateToFeedbackScreen(self):
         navigateToScreen(FeedbackScreen)
 
+class PaymentOptionsScreen(QDialog):
+    def __init__(self):
+        super(PaymentOptionsScreen, self).__init__()
+        loadUi("ui/23PaymentOptionsScreen.ui", self)
+        self.backButton.clicked.connect(navigateGoBack)
+        self.cardButton.clicked.connect(self.navigateToServerWillAssistScreen)
+        self.cashButton.clicked.connect(self.navigateToServerWillAssistScreen)
+        self.scanButton.clicked.connect(self.navigateToUpiScreen)
+
+
+    
+    def navigateToServerWillAssistScreen(self):
+        navigateToScreen(ServerWillAssistScreen)
+    
+    def navigateToUpiScreen(self):
+        navigateToScreen(PayQRScreen)
+
+class ServerWillAssistScreen(QDialog):
+    def __init__(self):
+        super(ServerWillAssistScreen, self).__init__()
+        loadUi("ui/22ServerWillAssist.ui", self)
+        self.backButton.clicked.connect(navigateGoBack)
+        self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
+        
+
+    
+    def navigateToThankYouScreen(self):
+        navigateToScreen(ThankYouScreen)
+
 class PayQRScreen(QDialog):
     def __init__(self):
         super(PayQRScreen, self).__init__()
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
-        self.goToNextButton.clicked.connect(self.navigateToFeedbackScreen)
+        self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
     
     def navigateBack(self):
-        navigateToScreen(DinerActionMenuScreen)
+        navigateGoBack()
     
-    def navigateToFeedbackScreen(self):
-        navigateToScreen(FeedbackScreen)
+    def navigateToThankYouScreen(self):
+        navigateToScreen(ThankYouScreen)
 
 class FeedbackScreen(QDialog):
     buttonStyle = "border-style: outset;border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
-    normalStyle = buttonStyle+"background-color: rgb(32, 37, 41);border-color: black;"
-    selectedStyle = buttonStyle+"background-color: rgb(33, 236, 210);border-color: rgb(33, 236, 210);"
+    normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
+    selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60;"
     ratings = {}
 
     def __init__(self):
         super(FeedbackScreen, self).__init__()
         loadUi("ui/19FeedbackScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
-        self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
+        self.goToNextButton.clicked.connect(self.navigateToPaymentOptionScreen)
         
         self.food1.clicked.connect(lambda: self.markRating("food", 1))
         self.food2.clicked.connect(lambda: self.markRating("food", 2))
         self.food3.clicked.connect(lambda: self.markRating("food", 3))
-        self.food4.clicked.connect(lambda: self.markRating("food", 4))
+        self.food4.clicked.connect(lambda: self.markRating("food", 4))  
         self.food5.clicked.connect(lambda: self.markRating("food", 5))
         
         self.service1.clicked.connect(lambda: self.markRating("service", 1))
@@ -402,7 +529,7 @@ class FeedbackScreen(QDialog):
         self.music5.clicked.connect(lambda: self.markRating("music", 5))
     
     def navigateBack(self):
-        navigateToScreen(PayQRScreen)
+        navigateGoBack()
 
     def markRating(self, type,rating):
         print(rating)
@@ -412,11 +539,11 @@ class FeedbackScreen(QDialog):
             style = self.selectedStyle if i <= rating else self.normalStyle
             self.__dict__[type+str(i)].setStyleSheet(style)
     
-    def navigateToThankYouScreen(self):
+    def navigateToPaymentOptionScreen(self):
         ratingKeys = self.ratings.keys()
         ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
         addMultipleRatings(getTableId(), hangoutId, list(ratings));
-        navigateToScreen(ThankYouScreen)
+        navigateToScreen(PaymentOptionsScreen)
 
 class ThankYouScreen(QDialog):
     def __init__(self):
@@ -439,12 +566,16 @@ print(storage)
 app=QApplication(sys.argv)
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
-mainwindow=WelcomeScreen()
+# mainwindow=WelcomeScreen()
+mainwindow=IdleLockScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
-# mainStackedWidget.show()
-mainStackedWidget.showFullScreen()
+
+if ENV=='dev':
+    mainStackedWidget.show()
+else:
+    mainStackedWidget.showFullScreen()
 
 
 

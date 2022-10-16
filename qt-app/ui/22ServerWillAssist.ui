@@ -32,7 +32,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../assets/WaiterLITE-UI-01.png</pixmap>
+    <pixmap>../assets/WaiterLITE-UI-22.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -41,10 +41,26 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>330</y>
-     <width>421</width>
-     <height>131</height>
+     <x>120</x>
+     <y>660</y>
+     <width>231</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="backButton">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>61</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="styleSheet">
