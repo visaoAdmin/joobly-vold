@@ -173,6 +173,7 @@ class WaiterPinScreen(QDialog):
 
     def __init__(self):
         super(WaiterPinScreen, self).__init__()
+        self.pin=[]
         loadUi("ui/06WaiterPinScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.setupKeyboard()
@@ -198,7 +199,17 @@ class WaiterPinScreen(QDialog):
                 val=self.pin[index]
                 waiterId+=val
             self.__dict__["input_pin_"+str(index)].setText(val)
+
+
+    def renderPin(self):
+        length=len(self.pin)
         
+        for index in range(4):    
+            val=""
+            if index < length:
+                val=self.pin[index]
+            self.__dict__["input_pin_"+str(index)].setText(val)
+
     
     def navigateToConfirmTable(self):
         navigateToScreen(ConfirmTable)
@@ -260,7 +271,7 @@ class ChooseNumberOfGuests(QDialog):
         global hangoutId
         hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
         startHangout(table, self.guestCount, waiterId, hangoutId)
-        navigateToScreen(CheckedInScreen)
+        navigateToScreen(TapForServiceScreen)
 
 class CheckedInScreen(QDialog):
     def __init__(self):
