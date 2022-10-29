@@ -12,7 +12,9 @@ from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyEx
 import threading
 from subprocess import Popen
 import json
+import time
 from datetime import datetime
+from multiThread import runInNewThread
 
 ENV=os.environ.get('ENV')
 
@@ -298,7 +300,7 @@ class TapForServiceScreen(QDialog):
         # slider.setMaximum(10)
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
-        yellowLight()
+        runInNewThread(self, yellowLight)
 
     def onExperienceChanged(self, value):
         print(value)
@@ -334,7 +336,7 @@ class CloseServiceScreen(QDialog):
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         # thr.join()
-        blueLight()
+        runInNewThread(self, blueLight)
     
     def navigateToTapForServiceScreen(self):
         global isWaiterCalled,callNumber
@@ -355,17 +357,20 @@ class DinerActionMenuScreen(QDialog):
         loadUi("ui/12DinerActionMenuScreen.ui", self)
         # self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
         self.goBackButton.clicked.connect(navigateGoBack)
+        runInNewThread(self, self.loadQRCode)
         # self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
+        # response = requests.get('http://jsonplaceholder.typicode.com/todos/1')
+        # title = response.json()['title']
+        # self.remoteApiLabel.setText(title);
+    
+    def loadQRCode(self):
         url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
         data = urllib.request.urlopen(url).read()
         image = QImage()
         image.loadFromData(data)
         pixmap = QPixmap(image)
-        
         self.qrimage.setPixmap(pixmap.scaled(200, 200))
-        # response = requests.get('http://jsonplaceholder.typicode.com/todos/1')
-        # title = response.json()['title']
-        # self.remoteApiLabel.setText(title);
+
 
     def navigateToCheckoutScreen(self):
         navigateToScreen(BillScreen)
