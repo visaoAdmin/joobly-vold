@@ -103,16 +103,23 @@ def getHangoutId ():
     
 
 def yellowLight():
-    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py")
+    brightness=255
+    if "podBrightness" in storage:
+        brightness = storage["podBrightness"]
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py", shell=True)
     # time.sleep(2)
-    print("Yellow Light");
+    print("Yellow Light")
 
 def blueLight():
-    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py")
+    brightness=255
+    if "podBrightness" in storage:
+        brightness = storage["podBrightness"]
+
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + str(brightness))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py", shell=True)
     # time.sleep(2)
-    print("Blue Light");
+    print("Blue Light")
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
