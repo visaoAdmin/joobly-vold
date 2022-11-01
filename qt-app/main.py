@@ -129,20 +129,23 @@ def loadLogoPixmap():
     global pixmap
     if pixmap != None:
         return pixmap
-    url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
-    if "restaurantLogo" in storage:
-        url = storage["restaurantLogo"] 
-    
-    data = urllib.request.urlopen(url).read()
-    image = QImage()
-    image.loadFromData(data)
-    pixmap = QPixmap(image)
+    try:
+        url = 'https://i.ibb.co/W3vscn6/images-1-1.png'
+        if "restaurantLogo" in storage and len(storage["restaurantLogo"] ) > 0:
+            url = storage["restaurantLogo"] 
+        
+        data = urllib.request.urlopen(url).read()
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+    except: 
+        pixmap=None
     return pixmap
 
 def renderLogo(self, key="logo", width=220, height=220):
     pixmap = loadLogoPixmap()
-    self.__dict__[key].setPixmap(pixmap)
-
+    if pixmap != None:
+        self.__dict__[key].setPixmap(pixmap)
 
 
 class SplashScreen(QDialog):
