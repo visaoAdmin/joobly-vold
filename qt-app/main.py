@@ -8,13 +8,14 @@ import os
 import signal
 import urllib.request
 import requests
-from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig
 import threading
 from subprocess import Popen
 import json
 import time
 from datetime import datetime
 from multiThread import runInNewThread
+from serial import getserial
 
 ENV=os.environ.get('ENV')
 
@@ -27,8 +28,21 @@ hangoutId=None
 callNumber = 1
 serviceCallStartTime=None
 thr=None
-table="TBCCH-01"
+table=None
 waiterId=None
+serialNumber=getserial()
+pixmap=None
+
+def loadConfig():
+    global storage, table
+    try:
+        config = getConfig(serialNumber)
+        print("Config Loaded", config)
+        storage = config
+        table = storage["tableId"]
+        saveStorage()
+    except:
+        print("Failed to load config")
 
 def setupKeyboard(self):
     self.key1.clicked.connect(lambda: self.onKey("1"))
@@ -46,16 +60,13 @@ def setupKeyboard(self):
 def getTableId ():
     global table
     tableId = table
+    print("getTableId")
     print(storage)
-    if "table" in storage and storage["table"] != None:
-        tableId = storage["table"]
+    if "tableId" in storage and storage["tableId"] != None:
+        tableId = storage["tableId"]
     else:
-        try:
-            tableId = fetchTableId()
-        except:
-            tableId = table
-        storage["table"] = tableId
-        saveStorage()
+        loadConfig()
+        tableId = storage["tableId"]
     table = tableId
     return tableId
 
@@ -114,6 +125,26 @@ def navigateGoBack():
 def navigateToRestart():
         mainStackedWidget.setCurrentIndex(0)
 
+def loadLogoPixmap():
+    global pixmap
+    if pixmap != None:
+        return pixmap
+    url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+    if "restaurantLogo" in storage:
+        url = storage["restaurantLogo"] 
+    
+    data = urllib.request.urlopen(url).read()
+    image = QImage()
+    image.loadFromData(data)
+    pixmap = QPixmap(image)
+    return pixmap
+
+def renderLogo(self, key="logo", width=220, height=220):
+    pixmap = loadLogoPixmap()
+    self.__dict__[key].setPixmap(pixmap)
+
+
+
 class SplashScreen(QDialog):
     def __init__(self):
         super(SplashScreen, self).__init__()
@@ -138,6 +169,10 @@ class ReserveScreen(QDialog):
         super(ReserveScreen, self).__init__()
         loadUi("ui/21ReserveScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWelcome)
+        runInNewThread(self, self.loadLogo)
+    
+    def loadLogo(self):
+        renderLogo(self)
 
     def navigateToWelcome(self):
         navigateToScreen(WaiterPinScreen)
@@ -166,7 +201,14 @@ class IdleLockScreen(QDialog):
         loadUi("ui/05IdleLockScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterPinScreen)
         self.appCloseButton.clicked.connect(mainStackedWidget.close)
-    
+        runInNewThread(self, self.loadConfigAndLogo)
+
+    def loadConfigAndLogo(self):
+        loadConfig()
+        # pixmap = loadLogoPixmap()
+        renderLogo(self, width=220, height=220)
+        # self.logo.setPixmap(pixmap.scaled(220, 220))
+
     def navigateToWaiterPinScreen(self):
         navigateToScreen(WaiterPinScreen)
 
@@ -219,6 +261,31 @@ class WaiterPinScreen(QDialog):
     def navigateToWaiterMenuScreen(self):
         navigateToScreen(WaiterMenuScreen)
 
+class AboutScreen(QDialog):
+    def __init__(self):
+        super(AboutScreen, self).__init__()
+        loadUi("ui/24AboutScreen.ui", self)
+        self.refreshButton.clicked.connect(self.refresh)
+        self.backButton.clicked.connect(navigateGoBack)
+        self.renderLabels()
+    
+    def renderLabels(self):
+        if "restauranName" in storage:
+            self.restaurantLabel.setText(storage["restauranName"])
+        else:
+            self.restaurantLabel.setText("Assign restaurant and table")
+        self.tableLabel.setText(table)
+        self.serialLabel.setText(serialNumber)
+        self.brightnessLabel.setText(str(storage["podBrightness"]))
+        
+    
+    def refresh(self):
+        # TODO: run in new thread
+        loadConfig()
+        self.renderLabels()
+
+        
+
 class ConfirmTable(QDialog):
     def __init__(self):
         super(ConfirmTable, self).__init__()
@@ -235,13 +302,16 @@ class WaiterMenuScreen(QDialog):
         loadUi("ui/071WaiterMenuScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
         self.reserveButton.clicked.connect(self.navigateToReserveScreen)
-        self.clearTableButton.clicked.connect(clearStorage)
+        self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
     
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
 
     def navigateToReserveScreen(self):
         navigateToScreen(ReserveScreen)
+    
+    def navigateToAboutScreen(self):
+        navigateToScreen(AboutScreen)
 
 class ChooseNumberOfGuests(QDialog):
     guestCount=""
@@ -365,11 +435,14 @@ class DinerActionMenuScreen(QDialog):
     
     def loadQRCode(self):
         url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+        if "menuQr" in storage:
+           url = storage["menuQr"] 
+        
         data = urllib.request.urlopen(url).read()
         image = QImage()
         image.loadFromData(data)
         pixmap = QPixmap(image)
-        self.qrimage.setPixmap(pixmap.scaled(200, 200))
+        self.qrimage.setPixmap(pixmap.scaled(250, 250))
 
 
     def navigateToCheckoutScreen(self):
@@ -501,12 +574,24 @@ class PayQRScreen(QDialog):
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
+        runInNewThread(self, self.loadQRCode)
     
     def navigateBack(self):
         navigateGoBack()
     
     def navigateToThankYouScreen(self):
         navigateToScreen(ThankYouScreen)
+
+    def loadQRCode(self):
+        url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+        if "upiQr" in storage:
+           url = storage["upiQr"] 
+        
+        data = urllib.request.urlopen(url).read()
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+        self.qrimage.setPixmap(pixmap.scaled(230, 230))
 
 class FeedbackScreen(QDialog):
     buttonStyle = "border-style: outset;border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
@@ -566,7 +651,10 @@ class ThankYouScreen(QDialog):
         super(ThankYouScreen, self).__init__()
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
-
+        runInNewThread(self, self.loadLogo)
+    
+    def loadLogo(self):
+        renderLogo(self)
     
     def navigateToIdleLockScreen(self):
         navigateToScreen(IdleLockScreen)

@@ -2,6 +2,13 @@ import requests
 
 BASE_URL = "https://api.mywoobly.com"
 
+def getConfig(serialNumber):
+    print("getting config...")
+    response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config")
+    print(response)
+    config = response.json().get("data")
+    return config
+
 
 def startHangout(table, guestCount, waiterId, hangoutId):
     print("startHangout",table, guestCount, waiterId, hangoutId)

@@ -70,6 +70,22 @@
     <string/>
    </property>
   </widget>
+  <widget class="QLabel" name="qrimage">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>230</y>
+     <width>220</width>
+     <height>220</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 2px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>

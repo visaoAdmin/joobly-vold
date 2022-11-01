@@ -86,10 +86,10 @@
     <string/>
    </property>
   </widget>
-  <zorder>qrimage</zorder>
   <zorder>checkoutButton</zorder>
   <zorder>label_2</zorder>
   <zorder>goBackButton</zorder>
+  <zorder>qrimage</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>
