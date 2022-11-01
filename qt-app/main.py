@@ -290,8 +290,10 @@ class AboutScreen(QDialog):
             self.restaurantLabel.setText("Assign restaurant and table")
         self.tableLabel.setText(table)
         self.serialLabel.setText(serialNumber)
-        self.brightnessLabel.setText(str(storage["podBrightness"]))
-        
+        if "podBrightness" in storage:
+            self.brightnessLabel.setText(str(storage["podBrightness"]))
+        else: 
+            self.brightnessLabel.setText("255")
     
     def refresh(self):
         # TODO: run in new thread
