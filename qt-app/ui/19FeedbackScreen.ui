@@ -81,7 +81,6 @@
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -103,7 +102,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -125,7 +123,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -147,7 +144,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -169,7 +165,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -191,7 +186,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -213,7 +207,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -235,7 +228,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -257,7 +249,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -279,7 +270,6 @@ font-size: 24px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #223757;border-color: #4A5C75;
-border-style: outset;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
@@ -301,7 +291,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -324,7 +314,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -347,7 +337,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -370,7 +360,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -393,7 +383,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -416,7 +406,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
  padding: 4px;
@@ -438,7 +428,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
  padding: 4px;
@@ -460,7 +450,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -483,7 +473,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 
@@ -506,7 +496,7 @@ font-size: 24px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #223757;border-color: #4A5C75;
- border-style: outset;
+
  border-width: 2px;
  border-radius: 35px;
 

@@ -296,7 +296,6 @@ class AboutScreen(QDialog):
             self.brightnessLabel.setText("255")
     
     def refresh(self):
-        # TODO: run in new thread
         loadConfig()
         self.renderLabels()
 
@@ -401,10 +400,13 @@ class TapForServiceScreen(QDialog):
             self.previousExperience = self.experience
     
     def navigateToCloseServiceScreen(self):
+        runInNewThread(self, self.callWaiter)
+        navigateToScreen(CloseServiceScreen)
+    
+    def callWaiter(self):
         global hangoutId, serviceCallStartTime
         serviceCallStartTime=getCurrentTime()
         callWaiter(table, hangoutId, callNumber)
-        navigateToScreen(CloseServiceScreen)
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
@@ -425,11 +427,14 @@ class CloseServiceScreen(QDialog):
         runInNewThread(self, blueLight)
     
     def navigateToTapForServiceScreen(self):
+        runInNewThread(self, self.waiterArrived)
+        navigateToScreen(TapForServiceScreen)
+    
+    def waiterArrived(self):
         global isWaiterCalled,callNumber
         isWaiterCalled = False
         waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
         callNumber = callNumber+1
-        navigateToScreen(TapForServiceScreen)
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
@@ -543,7 +548,7 @@ class BillScreen(QDialog):
         loadUi("ui/17BillScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.payButton.clicked.connect(self.navigateToPayScreen)
-        self.feedbackButton.clicked.connect(self.navigateToFeedbackScreen)
+        self.cancelButton.clicked.connect(self.navigateBack)
     
     def navigateBack(self):
         # navigateToScreen(DinerActionMenuScreen)
@@ -596,7 +601,7 @@ class PayQRScreen(QDialog):
         navigateGoBack()
     
     def navigateToThankYouScreen(self):
-        navigateToScreen(ThankYouScreen)
+        navigateToScreen(FeedbackScreen)
 
     def loadQRCode(self):
         url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
@@ -610,7 +615,7 @@ class PayQRScreen(QDialog):
         self.qrimage.setPixmap(pixmap.scaled(230, 230))
 
 class FeedbackScreen(QDialog):
-    buttonStyle = "border-style: outset;border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
+    buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
     normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
     selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60;"
     ratings = {}
@@ -659,8 +664,8 @@ class FeedbackScreen(QDialog):
     def navigateToPaymentOptionScreen(self):
         ratingKeys = self.ratings.keys()
         ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
-        addMultipleRatings(getTableId(), hangoutId, list(ratings));
-        navigateToScreen(PaymentOptionsScreen)
+        addMultipleRatings(getTableId(), hangoutId, list(ratings))
+        navigateToScreen(ThankYouScreen)
 
 class ThankYouScreen(QDialog):
     def __init__(self):
