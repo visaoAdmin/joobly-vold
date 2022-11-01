@@ -38,6 +38,8 @@ def loadConfig():
     try:
         config = getConfig(serialNumber)
         print("Config Loaded", config)
+        if(config == None):
+            raise Exception("Failed to load")
         storage = config
         table = storage["tableId"]
         saveStorage()
