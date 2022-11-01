@@ -44,6 +44,8 @@ def loadConfig():
         table = storage["tableId"]
         saveStorage()
     except:
+        storage={}
+        saveStorage()
         print("Failed to load config")
 
 def setupKeyboard(self):
