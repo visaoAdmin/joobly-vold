@@ -25,7 +25,6 @@ LED_CHANNEL    = 1       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 if __name__ == '__main__':
     LED_BRIGHTNESS=255
     if len(sys.argv) >= 2:
-        print(sys.argv[1])
         LED_BRIGHTNESS=int(sys.argv[1])
 
     # Create NeoPixel object with appropriate configuration.

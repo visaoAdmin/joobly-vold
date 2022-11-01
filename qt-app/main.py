@@ -110,7 +110,7 @@ def yellowLight():
     brightness=255
     if "podBrightness" in storage:
         brightness = storage["podBrightness"]
-    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness))
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness*2))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py", shell=True)
     # time.sleep(2)
     print("Yellow Light")
@@ -120,7 +120,7 @@ def blueLight():
     if "podBrightness" in storage:
         brightness = storage["podBrightness"]
 
-    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + str(brightness))
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + str(brightness*2))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py", shell=True)
     # time.sleep(2)
     print("Blue Light")
