@@ -57,17 +57,18 @@
   <widget class="QPushButton" name="clearTableButton">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>770</y>
-     <width>131</width>
-     <height>21</height>
+     <x>30</x>
+     <y>640</y>
+     <width>411</width>
+     <height>121</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: transparent;color: rgba(100,100,100);</string>
+    <string notr="true">background-color: transparent; border: 0px;
+color: white;</string>
    </property>
    <property name="text">
-    <string>Clear Selection</string>
+    <string/>
    </property>
   </widget>
   <widget class="QPushButton" name="reserveButton">

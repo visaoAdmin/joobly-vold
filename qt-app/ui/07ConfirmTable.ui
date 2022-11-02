@@ -67,7 +67,7 @@
     <string notr="true">background-color: transparent;color: rgba(100,100,100);</string>
    </property>
    <property name="text">
-    <string>Clear Selection</string>
+    <string>About</string>
    </property>
   </widget>
  </widget>

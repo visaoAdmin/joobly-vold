@@ -41,9 +41,9 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>650</y>
-     <width>231</width>
+     <x>50</x>
+     <y>590</y>
+     <width>381</width>
      <height>71</height>
     </rect>
    </property>
@@ -65,6 +65,22 @@
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qrimage">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>230</y>
+     <width>220</width>
+     <height>220</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 2px;</string>
    </property>
    <property name="text">
     <string/>
