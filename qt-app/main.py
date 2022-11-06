@@ -688,6 +688,7 @@ class ThankYouScreen(QDialog):
 MainStyle = """
 
 QPushButton:focus {
+    border: 0px;
     outline: none;
 }
 """
