@@ -685,22 +685,27 @@ class ThankYouScreen(QDialog):
 
 #Main
 
+MainStyle = """
+QPushButton:hover {
+    border: none;
+}
+QPushButton:focus {
+    border: none;
+}
+QPushButton:pressed {
+    border: none;
+}
+QPushButton:selected {
+    border: none;
+}
+"""
+
 storage = loadStorage()
 print(storage)
 
 app=QApplication(sys.argv)
-app.setStyleSheet("background-color: blue;")
-# app.setStyleSheet("QPushButton#pushButton:hover { border: 2px; border-color: red;}")
-# app.setStyleSheet("QPushButton#pushButton:selected { border: 2px; border-color: red;}")
-# app.setStyleSheet("QPushButton#pushButton:pressed { border: 2px; border-color: red;}")
-# app.setStyleSheet("QPushButton#pushButton:focus { border: 2px; border-color: red;}")
-
-# app.setStyleSheet("QPushButton:hover { border: 2px; border-color: red;}")
-# app.setStyleSheet("QPushButton:selected { border: 2px; border-color: red;}")
-# app.setStyleSheet("QPushButton:pressed { border: 2px; border-color: red;}")
-# app.setStyleSheet("QPushButton:focus { border: 2px; border-color: red;}")
+app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
-# mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
 # mainwindow=WelcomeScreen()
 mainwindow=IdleLockScreen()
 mainStackedWidget.addWidget(mainwindow)
