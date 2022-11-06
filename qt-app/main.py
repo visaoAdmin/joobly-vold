@@ -687,16 +687,16 @@ class ThankYouScreen(QDialog):
 
 MainStyle = """
 QPushButton:hover {
-    border: none;
+    border: 3px solid red;
 }
 QPushButton:focus {
-    border: none;
+    border: 3px solid yellow;
 }
 QPushButton:pressed {
-    border: none;
+    border: 3px solid blue;
 }
 QPushButton:selected {
-    border: none;
+    border: 3px solid orange;
 }
 """
 
