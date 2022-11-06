@@ -685,12 +685,19 @@ class ThankYouScreen(QDialog):
 
 #Main
 
+MainStyle = """
+
+QPushButton:focus {
+    outline: none;
+}
+"""
+
 storage = loadStorage()
 print(storage)
 
 app=QApplication(sys.argv)
+app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
-mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
 # mainwindow=WelcomeScreen()
 mainwindow=IdleLockScreen()
 mainStackedWidget.addWidget(mainwindow)
