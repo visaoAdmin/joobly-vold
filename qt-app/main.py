@@ -689,6 +689,7 @@ storage = loadStorage()
 print(storage)
 
 app=QApplication(sys.argv)
+app.setStyleSheet("QPushButton#pushButton:hover { border: 1px; border-color: red} \n QPushButton#pushButton:selected { border: 1px; border-color: white} \n QPushButton#pushButton:pressed { border: 1px; border-color: blue} \n QPushButton#pushButton:focus { border: 1px; border-color: yellow}")
 mainStackedWidget=QtWidgets.QStackedWidget()
 mainStackedWidget.setStyleSheet("background-color:rgb(255, 255, 255);")
 # mainwindow=WelcomeScreen()
