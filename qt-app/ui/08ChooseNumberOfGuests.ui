@@ -252,10 +252,10 @@
   <widget class="QPushButton" name="goBackButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>40</y>
-     <width>41</width>
-     <height>41</height>
+     <x>10</x>
+     <y>20</y>
+     <width>101</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
