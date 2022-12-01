@@ -120,10 +120,24 @@ def blueLight():
     if "podBrightness" in storage:
         brightness = storage["podBrightness"]
 
-    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + str(brightness*2))
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-blue.py " + str(brightness*2))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py", shell=True)
     # time.sleep(2)
     print("Blue Light")
+
+def turnOffLight():
+    brightness=0
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness*2))
+    print("TurnedOff Light")
+
+def neoxPixel(red, green, blue):
+    brightness=255
+    if "podBrightness" in storage:
+        brightness = storage["podBrightness"]
+    rgba= str(red)+" "+str(green)+" "+str(blue)+" "+str(brightness*2)
+    os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + rgba)
+    print("Light: RGB", red, green, blue)
+
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
@@ -617,6 +631,7 @@ class PayQRScreen(QDialog):
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
         runInNewThread(self, self.loadQRCode)
+        runInNewThread(self, self.billLight)
     
     def navigateBack(self):
         navigateGoBack()
@@ -636,6 +651,14 @@ class PayQRScreen(QDialog):
                 self.qrimage.setPixmap(pixmap.scaled(230, 230))
         except:
             print("Failed to load upi QR")
+    
+    def billLight(self):
+        try:
+            neoxPixel(255, 0, 255)
+        except:
+            print("Failed to turn bill light")
+
+
 
 class FeedbackScreen(QDialog):
     buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
@@ -691,6 +714,7 @@ class FeedbackScreen(QDialog):
             addMultipleRatings(getTableId(), hangoutId, list(ratings))
         except:
             print("Rating Failed", list(ratings))
+        runInNewThread(self, turnOffLight)
         navigateToScreen(ThankYouScreen)
 
 class ThankYouScreen(QDialog):

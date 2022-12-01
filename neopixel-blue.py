@@ -23,17 +23,9 @@ LED_CHANNEL    = 1       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 # Main program logic follows:
 if __name__ == '__main__':
-    RED=0
-    GREEN=0
-    BLUE=0
     LED_BRIGHTNESS=255
-    if len(sys.argv) >= 4:
-        RED=int(sys.argv[1])
-        GREEN=int(sys.argv[2])
-        BLUE=int(sys.argv[3])
-
-    if len(sys.argv) >= 5:
-        LED_BRIGHTNESS=int(sys.argv[4])
+    if len(sys.argv) >= 2:
+        LED_BRIGHTNESS=int(sys.argv[1])
 
     # Create NeoPixel object with appropriate configuration.
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
@@ -42,5 +34,5 @@ if __name__ == '__main__':
 
     for i in range(strip.numPixels()):
         # strip.setPixelColor(i, Color(255, 255, 255) )
-        strip.setPixelColor(i, Color(RED, GREEN, BLUE) )
+        strip.setPixelColor(i, Color(0, 255, 255) )
         strip.show()
