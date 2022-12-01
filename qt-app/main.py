@@ -68,9 +68,9 @@ def getTableId ():
     print(storage)
     if "tableId" in storage and storage["tableId"] != None:
         tableId = storage["tableId"]
-    else:
-        loadConfig()
-        tableId = storage["tableId"]
+    # else:
+        # loadConfig()
+        # tableId = storage["tableId"]
     table = tableId
     return tableId
 
@@ -127,14 +127,20 @@ def blueLight():
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
-        mainStackedWidget.addWidget(nextScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
+        index = mainStackedWidget.indexOf(nextScreen)
+        if(index != -1):
+            mainStackedWidget.setCurrentIndex(index)
+        else:
+            mainStackedWidget.addWidget(nextScreen)
+            mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
+        
 
 def navigateGoBack():
         mainStackedWidget.removeWidget(mainStackedWidget.currentWidget())
 
 def navigateToRestart():
-        mainStackedWidget.setCurrentIndex(0)
+        # mainStackedWidget.setCurrentIndex(0)
+        navigateToScreen(IdleLockScreen)
 
 def loadLogoPixmap():
     global pixmap
@@ -317,6 +323,7 @@ class WaiterMenuScreen(QDialog):
         loadUi("ui/071WaiterMenuScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
         self.reserveButton.clicked.connect(self.navigateToReserveScreen)
+        self.screenSaverButton.clicked.connect(self.navigateToIdleLockScreen)
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
     
     def navigateToChooseNumberOfGuests(self):
@@ -327,6 +334,9 @@ class WaiterMenuScreen(QDialog):
     
     def navigateToAboutScreen(self):
         navigateToScreen(AboutScreen)
+    
+    def navigateToIdleLockScreen(self):
+        navigateToRestart()
 
 class ChooseNumberOfGuests(QDialog):
     guestCount=""
@@ -353,11 +363,14 @@ class ChooseNumberOfGuests(QDialog):
         self.__dict__["inputCount"].setText(countLabel)
 
     def navigateToCheckedInScreen(self):
-        _tableId = getTableId()
-        print(_tableId)
-        global hangoutId
-        hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
-        startHangout(table, self.guestCount, waiterId, hangoutId)
+        try: 
+            global hangoutId
+            _tableId = getTableId()
+            print(_tableId)
+            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            startHangout(table, self.guestCount, waiterId, hangoutId)
+        except:
+            print("Failed to startHangout")
         navigateToScreen(TapForServiceScreen)
 
 class CheckedInScreen(QDialog):
@@ -404,9 +417,12 @@ class TapForServiceScreen(QDialog):
         navigateToScreen(CloseServiceScreen)
     
     def callWaiter(self):
-        global hangoutId, serviceCallStartTime
-        serviceCallStartTime=getCurrentTime()
-        callWaiter(table, hangoutId, callNumber)
+        try:
+            global hangoutId, serviceCallStartTime
+            serviceCallStartTime=getCurrentTime()
+            callWaiter(table, hangoutId, callNumber)
+        except:
+            print("Call Waiter Failed", table, hangoutId, callNumber)
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
@@ -432,9 +448,12 @@ class CloseServiceScreen(QDialog):
     
     def waiterArrived(self):
         global isWaiterCalled,callNumber
-        isWaiterCalled = False
-        waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
-        callNumber = callNumber+1
+        try:
+            isWaiterCalled = False
+            waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+            callNumber = callNumber+1
+        except:
+            print("Waiter Arrived Failed", table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
@@ -455,16 +474,18 @@ class DinerActionMenuScreen(QDialog):
         # self.remoteApiLabel.setText(title);
     
     def loadQRCode(self):
-        url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
-        if "menuQr" in storage:
-           url = storage["menuQr"] 
+        try:
+            url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+            if "menuQr" in storage:
+                url = storage["menuQr"] 
+                data = urllib.request.urlopen(url).read()
+                image = QImage()
+                image.loadFromData(data)
+                pixmap = QPixmap(image)
+                self.qrimage.setPixmap(pixmap.scaled(250, 250))
+        except:
+            print("Failed to load Menu QR")
         
-        data = urllib.request.urlopen(url).read()
-        image = QImage()
-        image.loadFromData(data)
-        pixmap = QPixmap(image)
-        self.qrimage.setPixmap(pixmap.scaled(250, 250))
-
 
     def navigateToCheckoutScreen(self):
         navigateToScreen(BillScreen)
@@ -604,15 +625,17 @@ class PayQRScreen(QDialog):
         navigateToScreen(FeedbackScreen)
 
     def loadQRCode(self):
-        url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
-        if "upiQr" in storage:
-           url = storage["upiQr"] 
-        
-        data = urllib.request.urlopen(url).read()
-        image = QImage()
-        image.loadFromData(data)
-        pixmap = QPixmap(image)
-        self.qrimage.setPixmap(pixmap.scaled(230, 230))
+        try:
+            url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+            if "upiQr" in storage:
+                url = storage["upiQr"] 
+                data = urllib.request.urlopen(url).read()
+                image = QImage()
+                image.loadFromData(data)
+                pixmap = QPixmap(image)
+                self.qrimage.setPixmap(pixmap.scaled(230, 230))
+        except:
+            print("Failed to load upi QR")
 
 class FeedbackScreen(QDialog):
     buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
@@ -664,7 +687,10 @@ class FeedbackScreen(QDialog):
     def navigateToPaymentOptionScreen(self):
         ratingKeys = self.ratings.keys()
         ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
-        addMultipleRatings(getTableId(), hangoutId, list(ratings))
+        try:
+            addMultipleRatings(getTableId(), hangoutId, list(ratings))
+        except:
+            print("Rating Failed", list(ratings))
         navigateToScreen(ThankYouScreen)
 
 class ThankYouScreen(QDialog):
@@ -678,7 +704,7 @@ class ThankYouScreen(QDialog):
         renderLogo(self)
     
     def navigateToIdleLockScreen(self):
-        navigateToScreen(IdleLockScreen)
+        navigateToRestart()
 
 
 

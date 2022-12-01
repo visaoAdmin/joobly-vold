@@ -41,10 +41,10 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>190</y>
-     <width>331</width>
-     <height>361</height>
+     <x>40</x>
+     <y>180</y>
+     <width>401</width>
+     <height>401</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -57,10 +57,10 @@
   <widget class="QPushButton" name="menuButton">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>101</width>
-     <height>81</height>
+     <x>10</x>
+     <y>0</y>
+     <width>121</width>
+     <height>111</height>
     </rect>
    </property>
    <property name="styleSheet">
