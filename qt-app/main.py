@@ -654,7 +654,7 @@ class PayQRScreen(QDialog):
     
     def billLight(self):
         try:
-            neoxPixel(255, 0, 255)
+            neoxPixel(255, 45, 208)
         except:
             print("Failed to turn bill light")
 
@@ -714,7 +714,7 @@ class FeedbackScreen(QDialog):
             addMultipleRatings(getTableId(), hangoutId, list(ratings))
         except:
             print("Rating Failed", list(ratings))
-        runInNewThread(self, turnOffLight)
+        runInNewThread(self, yellowLight)
         navigateToScreen(ThankYouScreen)
 
 class ThankYouScreen(QDialog):
