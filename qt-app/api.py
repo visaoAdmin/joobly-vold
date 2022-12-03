@@ -2,9 +2,11 @@ import requests
 
 BASE_URL = "https://api.mywoobly.com"
 
+TIMEOUT = 15
+
 def getConfig(serialNumber):
     print("getting config...")
-    response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config")
+    response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config", timeout = TIMEOUT)
     print(response)
     config = response.json().get("data")
     return config
@@ -18,7 +20,7 @@ def startHangout(table, guestCount, waiterId, hangoutId):
         "waiter": waiterId,
         "hangout": hangoutId,
         "type": "CHECKIN"
-    })
+    }, timeout=TIMEOUT)
     return response
 
 
@@ -28,7 +30,7 @@ def callWaiter(table, hangoutId, callNumber):
         "hangout": hangoutId,
         "callNumber": callNumber,
         "type": "WAITER_CALLED"
-    })
+    }, timeout = TIMEOUT)
     return response
 
 
@@ -39,7 +41,7 @@ def waiterArrived(table, hangoutId, callNumber, responseTime):
         "callNumber": callNumber,
         "responseTime": responseTime,
         "type": "WAITER_ARRIVED"
-    })
+    }, timeout = TIMEOUT)
     return response
 
 
@@ -49,7 +51,7 @@ def serviceDelayed(table, hangoutId, callNumber):
         "hangout": hangoutId,
         "callNumber": callNumber,
         "type": "SERVICE_DELAYED"
-    })
+    }, timeout = TIMEOUT)
     return response
 
 def rate(table, hangoutId, ratingType, rating):
@@ -59,7 +61,7 @@ def rate(table, hangoutId, ratingType, rating):
         "ratingType": ratingType,
         "rating": rating,
         "type": "RATING_SUBMITTED"
-    })
+    }, timeout = TIMEOUT)
     return response
 
 
@@ -69,7 +71,7 @@ def addMultipleRatings(table, hangoutId, ratings):
         "hangout": hangoutId,
         "type": "RATINGS_SUBMITTED",
         "ratings": ratings
-    })
+    }, timeout = TIMEOUT)
     return response
 
 def notifyExperience(table, hangoutId, experience, previosExperience):
@@ -79,11 +81,11 @@ def notifyExperience(table, hangoutId, experience, previosExperience):
         "experience": experience,
         "previousExperience": previosExperience,
         "type": "EXPERIENCE_CHANGED"
-    })
+    }, timeout = TIMEOUT)
     return response
 
 def fetchTableId():
-    response = requests.get(BASE_URL + "/pod/table")
+    response = requests.get(BASE_URL + "/pod/table", timeout = TIMEOUT)
     tableId = response.json().get("referenceId")
     print("TableId in fetchTableId", response.json())
     return tableId

@@ -1,7 +1,7 @@
 from re import S
 import sys
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider
 import os 
@@ -155,6 +155,22 @@ def navigateGoBack():
 def navigateToRestart():
         # mainStackedWidget.setCurrentIndex(0)
         navigateToScreen(IdleLockScreen)
+
+
+menuScreenTime = None
+isOnMenuScreen = False
+
+def goBackAutomatically():
+    if isOnMenuScreen:
+        navigateGoBack()
+    mainStackedWidget.menuScreenTime.stop()
+
+def goBackToDinerHomeAfter(seconds):
+    mainStackedWidget.menuScreenTime = QtCore.QTimer(mainStackedWidget)
+    mainStackedWidget.menuScreenTime.setInterval(seconds*1000)
+    mainStackedWidget.menuScreenTime.timeout.connect(goBackAutomatically)
+    mainStackedWidget.menuScreenTime.start()
+
 
 def loadLogoPixmap():
     global pixmap
@@ -480,13 +496,22 @@ class DinerActionMenuScreen(QDialog):
         super(DinerActionMenuScreen, self).__init__()
         loadUi("ui/12DinerActionMenuScreen.ui", self)
         # self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
-        self.goBackButton.clicked.connect(navigateGoBack)
+        self.goBackButton.clicked.connect(self.navigateGoBack)
         runInNewThread(self, self.loadQRCode)
+        global isOnMenuScreen
+        isOnMenuScreen=True
+        goBackToDinerHomeAfter(45)
+
         # self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         # response = requests.get('http://jsonplaceholder.typicode.com/todos/1')
         # title = response.json()['title']
         # self.remoteApiLabel.setText(title);
     
+    def navigateGoBack(self):
+        global isOnMenuScreen
+        isOnMenuScreen=False
+        navigateGoBack()
+
     def loadQRCode(self):
         try:
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
@@ -707,13 +732,17 @@ class FeedbackScreen(QDialog):
             style = self.selectedStyle if i <= rating else self.normalStyle
             self.__dict__[type+str(i)].setStyleSheet(style)
     
-    def navigateToPaymentOptionScreen(self):
-        ratingKeys = self.ratings.keys()
-        ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
+    def sendRatings(self):
         try:
+            ratingKeys = self.ratings.keys()
+            ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
             addMultipleRatings(getTableId(), hangoutId, list(ratings))
         except:
             print("Rating Failed", list(ratings))
+
+
+    def navigateToPaymentOptionScreen(self):
+        runInNewThread(self, self.sendRatings)
         runInNewThread(self, yellowLight)
         navigateToScreen(ThankYouScreen)
 
