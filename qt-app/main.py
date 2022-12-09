@@ -107,7 +107,7 @@ def getHangoutId ():
     
 
 def yellowLight():
-    brightness=255
+    brightness=127
     if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness*2))
@@ -116,7 +116,7 @@ def yellowLight():
     print("Yellow Light", brightness)
 
 def blueLight():
-    brightness=255
+    brightness=127
     if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
 
@@ -131,7 +131,7 @@ def turnOffLight():
     print("TurnedOff Light", brightness)
 
 def neoxPixel(red, green, blue):
-    brightness=255
+    brightness=127
     if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
     rgba= str(red)+" "+str(green)+" "+str(blue)+" "+str(brightness*2)
