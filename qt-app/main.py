@@ -355,6 +355,7 @@ class WaiterMenuScreen(QDialog):
         self.reserveButton.clicked.connect(self.navigateToReserveScreen)
         self.screenSaverButton.clicked.connect(self.navigateToIdleLockScreen)
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
+        runInNewThread(self, yellowLight)
     
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
