@@ -44,8 +44,8 @@ def loadConfig():
         table = storage["tableId"]
         saveStorage()
     except:
-        storage={}
-        saveStorage()
+        # storage={}
+        # saveStorage()
         print("Failed to load config")
 
 def setupKeyboard(self):
@@ -108,31 +108,31 @@ def getHangoutId ():
 
 def yellowLight():
     brightness=255
-    if "podBrightness" in storage:
+    if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness*2))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py", shell=True)
     # time.sleep(2)
-    print("Yellow Light")
+    print("Yellow Light", brightness)
 
 def blueLight():
     brightness=255
-    if "podBrightness" in storage:
+    if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
 
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-blue.py " + str(brightness*2))
     # Popen("sudo /usr/bin/python3 /home/pi/waiterlite-raspberry/neopixel.py", shell=True)
     # time.sleep(2)
-    print("Blue Light")
+    print("Blue Light", brightness)
 
 def turnOffLight():
     brightness=0
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness*2))
-    print("TurnedOff Light")
+    print("TurnedOff Light", brightness)
 
 def neoxPixel(red, green, blue):
     brightness=255
-    if "podBrightness" in storage:
+    if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
     rgba= str(red)+" "+str(green)+" "+str(blue)+" "+str(brightness*2)
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + rgba)
