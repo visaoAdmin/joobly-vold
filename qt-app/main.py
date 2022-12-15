@@ -3,12 +3,13 @@ import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap, QImage, QColor
-from PyQt5.QtWidgets import QApplication, QDialog, QSlider
+from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
+from PyQt5.QtCore import QSize
 import os 
 import signal
 import urllib.request
 import requests
-from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables
 import threading
 from subprocess import Popen
 import json
@@ -68,10 +69,10 @@ def getTableId ():
     print(storage)
     if "tableId" in storage and storage["tableId"] != None:
         tableId = storage["tableId"]
-    # else:
+    else:
+        tableId = ""
         # loadConfig()
         # tableId = storage["tableId"]
-    table = tableId
     return tableId
 
 def saveStorage():
@@ -324,7 +325,11 @@ class AboutScreen(QDialog):
             self.restaurantLabel.setText(storage["restauranName"])
         else:
             self.restaurantLabel.setText("Assign restaurant and table")
-        self.tableLabel.setText(table)
+        if "restauranName" in storage:
+            self.tableLabel.setText(storage["tableId"])
+        else:
+            self.tableLabel.setText("Table Not assigned or no internet")
+        
         self.serialLabel.setText(serialNumber)
         if "podBrightness" in storage:
             self.brightnessLabel.setText(str(storage["podBrightness"]))
@@ -355,6 +360,9 @@ class WaiterMenuScreen(QDialog):
         self.reserveButton.clicked.connect(self.navigateToReserveScreen)
         self.screenSaverButton.clicked.connect(self.navigateToIdleLockScreen)
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
+        tableId = getTableId()
+        self.tableNumber.setText(tableId)
+        self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
         runInNewThread(self, yellowLight)
     
     def navigateToChooseNumberOfGuests(self):
@@ -365,6 +373,42 @@ class WaiterMenuScreen(QDialog):
     
     def navigateToAboutScreen(self):
         navigateToScreen(AboutScreen)
+    
+    def navigateToTableSelectionScreen(self):
+        navigateToScreen(TableSelectionScreen)
+    
+    def navigateToIdleLockScreen(self):
+        navigateToRestart()
+
+class TableSelectionScreen(QDialog):
+    def __init__(self):
+        super(TableSelectionScreen, self).__init__()
+        loadUi("ui/25TableSelectionScreen.ui", self)
+        # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.listWidget.itemClicked.connect(self.tableSelected)
+        runInNewThread(self, self.loadTables)
+    
+    def loadTables(self):
+        try:
+            tables = getAllTables("TBCCH")
+            for t in tables:
+                print(t)
+                item = QListWidgetItem(t.get("referenceId"))
+                item.setSizeHint(QSize(400, 60))
+                self.listWidget.addItem(item)
+        except:
+            print("Failed to load tables")
+
+    def tableSelected(self,item):
+        storage["tableId"] = item.text()
+        #  TODO: ADD send table number to server
+        print(storage)
+        saveStorage()
+        self.navigateToWaiterMenuScreen()
+        
+
+    def navigateToWaiterMenuScreen(self):
+        navigateToScreen(WaiterMenuScreen)
     
     def navigateToIdleLockScreen(self):
         navigateToRestart()
@@ -779,8 +823,10 @@ print(storage)
 app=QApplication(sys.argv)
 app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
-# mainwindow=WelcomeScreen()
-mainwindow=IdleLockScreen()
+if ENV == "dev":
+    mainwindow=IdleLockScreen()
+else:
+    mainwindow=IdleLockScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)

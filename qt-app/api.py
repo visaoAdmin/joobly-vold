@@ -89,3 +89,8 @@ def fetchTableId():
     tableId = response.json().get("referenceId")
     print("TableId in fetchTableId", response.json())
     return tableId
+
+def getAllTables(restaurantId):
+    response = requests.get(BASE_URL + "/restaurants/"+restaurantId+"/tables", timeout = TIMEOUT)
+    tables = response.json()
+    return tables.get("data").get("tables")
