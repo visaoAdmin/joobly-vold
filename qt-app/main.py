@@ -75,6 +75,11 @@ def getTableId ():
         # tableId = storage["tableId"]
     return tableId
 
+def getRestaurantId ():
+    if "restaurantId" in storage and storage["restaurantId"] != None:
+        return storage["restaurantId"]
+    return "TBCCH"
+
 def saveStorage():
     with open("storage.json", "w") as f:
         json.dump(storage, f)
@@ -361,6 +366,7 @@ class WaiterMenuScreen(QDialog):
         self.screenSaverButton.clicked.connect(self.navigateToIdleLockScreen)
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
         tableId = getTableId()
+        print("Table ID:", tableId)
         self.tableNumber.setText(tableId)
         self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
         runInNewThread(self, yellowLight)
@@ -386,11 +392,13 @@ class TableSelectionScreen(QDialog):
         loadUi("ui/25TableSelectionScreen.ui", self)
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
+        self.backButton.clicked.connect(navigateGoBack)
         runInNewThread(self, self.loadTables)
+
     
     def loadTables(self):
         try:
-            tables = getAllTables("TBCCH")
+            tables = getAllTables(getRestaurantId())
             for t in tables:
                 print(t)
                 item = QListWidgetItem(t.get("referenceId"))
