@@ -1,7 +1,7 @@
 import requests
 
-BASE_URL = "https://api.mywoobly.com"
-
+# BASE_URL = "https://api.mywoobly.com"
+BASE_URL = "http://localhost:3000"
 TIMEOUT = 15
 
 def getConfig(serialNumber):
@@ -64,6 +64,10 @@ def rate(table, hangoutId, ratingType, rating):
     }, timeout = TIMEOUT)
     return response
 
+def waiterExists(waiterId):
+    response = requests.get(BASE_URL + "/waiters/"+str(waiterId)+"/exists",timeout=TIMEOUT)
+    # print(response.json())
+    return response.json()['data']['waiterExists']
 
 def addMultipleRatings(table, hangoutId, ratings):
     response = requests.post(BASE_URL + "/pod-events", json={
@@ -91,6 +95,8 @@ def fetchTableId():
     return tableId
 
 def getAllTables(restaurantId):
-    response = requests.get(BASE_URL + "/restaurants/"+restaurantId+"/tables", timeout = TIMEOUT)
+    url = BASE_URL + "/restaurants/"+restaurantId+"/tables"
+    response = requests.get(url, timeout = TIMEOUT)
+    
     tables = response.json()
     return tables.get("data").get("tables")

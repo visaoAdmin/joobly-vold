@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal, QThreadPool, QRunnable
 import time
 
 thread_group=[]
-
+globalPool = QThreadPool.globalInstance()
 def initThreadGroup():
     for i in range(5):
         thread_group.append(QThread())
@@ -63,3 +63,22 @@ class Runnable(QRunnable):
         """Long-running task."""
         self.task()
         # self.finished.emit()
+    
+class Thread (QThread):
+    def __init__(self,task):
+        super().__init__()
+        self.task=task
+    def run(self):
+        self.task()
+class ReUsableThreadRunner(object):
+    def __init__(self):
+        self.currentThread = Thread(lambda:())
+        
+    def recycle(self):
+        self
+        self.currentThread.exit()
+    def launch(self,taskFunction):
+        self.recycle()
+        self.run = taskFunction
+        self.currentThread.start()
+        self.worker = Worker(taskFunction)

@@ -9,20 +9,20 @@ import os
 import signal
 import urllib.request
 import requests
-from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables
+from api import startHangout,callWaiter, waiterArrived, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
 import threading
 from subprocess import Popen
 import json
 import time
 from datetime import datetime
-from multiThread import runInNewThread
+from multiThread import runInNewThread,ReUsableThreadRunner
 from serial import getserial
 
 ENV=os.environ.get('ENV')
 
 print(ENV)
 
-
+lightThreadRunner = ReUsableThreadRunner()
 storage = {}
 isWaiterCalled = False
 hangoutId=None
@@ -285,8 +285,9 @@ class WaiterPinScreen(QDialog):
         global waiterId
         length=len(self.pin)
         if key != "x" :
-            self.pin.append(key)
-            length+=1
+            if(length<4):
+                self.pin.append(key)
+                length+=1
         else:
             if length>0:
                 self.pin.pop()
@@ -315,7 +316,8 @@ class WaiterPinScreen(QDialog):
         navigateToScreen(ConfirmTable)
     
     def navigateToWaiterMenuScreen(self):
-        navigateToScreen(WaiterMenuScreen)
+        if(waiterExists("".join(self.pin))):
+            navigateToScreen(WaiterMenuScreen)
 
 class AboutScreen(QDialog):
     def __init__(self):
@@ -369,7 +371,7 @@ class WaiterMenuScreen(QDialog):
         print("Table ID:", tableId)
         self.tableNumber.setText(tableId)
         self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
-        runInNewThread(self, yellowLight)
+        lightThreadRunner.launch(yellowLight)
     
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
@@ -481,7 +483,7 @@ class TapForServiceScreen(QDialog):
         # slider.setMaximum(10)
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
-        runInNewThread(self, yellowLight)
+        lightThreadRunner.launch(yellowLight)
 
     def onExperienceChanged(self, value):
         print(value)
@@ -523,7 +525,7 @@ class CloseServiceScreen(QDialog):
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         # thr.join()
-        runInNewThread(self, blueLight)
+        lightThreadRunner.launch(blueLight)
     
     def navigateToTapForServiceScreen(self):
         runInNewThread(self, self.waiterArrived)
@@ -709,7 +711,7 @@ class PayQRScreen(QDialog):
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
         runInNewThread(self, self.loadQRCode)
-        runInNewThread(self, self.billLight)
+        lightThreadRunner.launch(self.billLight)
     
     def navigateBack(self):
         navigateGoBack()
@@ -796,7 +798,7 @@ class FeedbackScreen(QDialog):
 
     def navigateToPaymentOptionScreen(self):
         runInNewThread(self, self.sendRatings)
-        runInNewThread(self, yellowLight)
+        lightThreadRunner.launch(yellowLight)
         navigateToScreen(ThankYouScreen)
 
 class ThankYouScreen(QDialog):
@@ -832,6 +834,7 @@ app=QApplication(sys.argv)
 app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
 if ENV == "dev":
+    #if start any other screen change this.
     mainwindow=IdleLockScreen()
 else:
     mainwindow=IdleLockScreen()
