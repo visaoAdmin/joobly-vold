@@ -64,8 +64,8 @@ def rate(table, hangoutId, ratingType, rating):
     }, timeout = TIMEOUT)
     return response
 
-def waiterExists(waiterId):
-    response = requests.get(BASE_URL + "/waiters/"+str(waiterId)+"/exists",timeout=TIMEOUT)
+def waiterExists(waiterId,restaurantId):
+    response = requests.get(BASE_URL + "/waiters/"+str(waiterId)+"/restaurants/"+str(restaurantId)+"/exists",timeout=TIMEOUT)
     # print(response.json())
     return response.json()['data']['waiterExists']
 

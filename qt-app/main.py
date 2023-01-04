@@ -39,10 +39,14 @@ def loadConfig():
     try:
         config = getConfig(serialNumber)
         print("Config Loaded", config)
-        if(config == None):
-            raise Exception("Failed to load")
+        # if(config == None):
+        #     raise Exception("Failed to load")
         storage = config
-        table = storage["tableId"]
+        storage['tableId'] = table = getAllTables(getRestaurantId())[0]['referenceId']
+        
+        # table = storage["tableId"]
+        
+        # print("Tables",table)
         saveStorage()
     except:
         # storage={}
@@ -73,6 +77,7 @@ def getTableId ():
         tableId = ""
         # loadConfig()
         # tableId = storage["tableId"]
+
     return tableId
 
 def getRestaurantId ():
@@ -316,7 +321,7 @@ class WaiterPinScreen(QDialog):
         navigateToScreen(ConfirmTable)
     
     def navigateToWaiterMenuScreen(self):
-        if(waiterExists("".join(self.pin))):
+        if(waiterExists("".join(self.pin),getRestaurantId())):
             navigateToScreen(WaiterMenuScreen)
 
 class AboutScreen(QDialog):
@@ -450,8 +455,8 @@ class ChooseNumberOfGuests(QDialog):
     def navigateToCheckedInScreen(self):
         try: 
             global hangoutId
-            _tableId = getTableId()
-            print(_tableId)
+            table = getTableId()
+            print(table)
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             startHangout(table, self.guestCount, waiterId, hangoutId)
         except:
@@ -503,7 +508,7 @@ class TapForServiceScreen(QDialog):
     
     def callWaiter(self):
         try:
-            global hangoutId, serviceCallStartTime
+            global hangoutId, serviceCallStartTime,table
             serviceCallStartTime=getCurrentTime()
             callWaiter(table, hangoutId, callNumber)
         except:
