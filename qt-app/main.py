@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
+import copy 
 import signal
 import urllib.request
 import requests
@@ -792,19 +793,31 @@ class FeedbackScreen(QDialog):
             style = self.selectedStyle if i <= rating else self.normalStyle
             self.__dict__[type+str(i)].setStyleSheet(style)
     
-    def sendRatings(self):
+    def sendRatings(self,ratings):
         try:
-            ratingKeys = self.ratings.keys()
-            ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": self.ratings[x]}, ratingKeys)
-            addMultipleRatings(getTableId(), hangoutId, list(ratings))
+            print("Ratings Data", ratings)
+            ratingKeys = ratings.keys()
+            _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": ratings[x]}, ratingKeys)
+            addMultipleRatings(getTableId(), hangoutId, list(_ratings))
+            # self.ratings={}
+            # print("New Ratings Data"ratings)
         except:
             print("Rating Failed", list(ratings))
 
 
     def navigateToPaymentOptionScreen(self):
-        runInNewThread(self, self.sendRatings)
-        lightThreadRunner.launch(yellowLight)
-        navigateToScreen(ThankYouScreen)
+        print("prev self.ratings", self.ratings)
+        
+        if(len(self.ratings)==4):
+            print("self.ratings", self.ratings)
+            hangoutRatings = copy.deepcopy(self.ratings)
+            print("hangoutRatings", hangoutRatings)
+            self.ratings.clear()
+            print("new self.ratings", self.ratings, hangoutRatings)
+            runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
+            lightThreadRunner.launch(yellowLight)
+            navigateToScreen(ThankYouScreen)
+
 
 class ThankYouScreen(QDialog):
     def __init__(self):
