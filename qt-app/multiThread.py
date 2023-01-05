@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, QThreadPool, QRunnable
 import time
-
+import requests
+from api import syncHangOut,startHangout,finishHangout
 thread_group=[]
 globalPool = QThreadPool.globalInstance()
 def initThreadGroup():
@@ -82,3 +83,64 @@ class ReUsableThreadRunner(object):
         self.run = taskFunction
         self.currentThread.start()
         self.worker = Worker(taskFunction)
+
+class ServiceCallsSyncer(object):
+    def __init__(self):
+        self.currentThread = Thread(lambda:())
+        print("Creatad New Thread")
+        self.queue = []
+        
+    def addServiceCall(self,hangOut):
+        print("Added New Thread")
+        self.queue.append(hangOut)
+        # print(self.queue)
+        self.currentThread.run = self.syncServiceCalls
+        self.currentThread.start()
+    
+    def syncServiceCalls(self):
+        print("Syncing ")
+        print(self.queue)
+        while((len(self.queue)!=0)):
+            hangOut = self.queue.pop(0)
+            
+            tableId = hangOut['tableId']
+            del hangOut['tableId']
+            waiterId = hangOut['waiterId']
+            del hangOut['waiterId']
+            guestCount = hangOut['guestCount']
+            del hangOut['guestCount']
+            hangoutId = hangOut['hangoutId']
+            hangOut[len(hangOut)-1]['total'] = time.time() - hangOut[len(hangOut)-1]['open']
+            print(hangOut)
+            while(True):
+                try:
+                    startHangout(tableId,guestCount,waiterId,hangoutId)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("Connection error")
+                    time.sleep(1)
+                except Exception as e:
+                    break
+            while(True):
+                try:
+                    syncHangOut(hangoutId,hangOut)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("Connection error")
+                    time.sleep(1)
+                except Exception as e:
+                    break
+            while(True):
+                try:
+                    finishHangout(hangoutId)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("Connection error")
+                    time.sleep(1)
+                
+                except Exception as e:
+                    break
+
+            
+
+

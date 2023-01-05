@@ -23,6 +23,13 @@ def startHangout(table, guestCount, waiterId, hangoutId):
     }, timeout=TIMEOUT)
     return response
 
+def finishHangout(hangoutId):
+    # print("startHangout",hangoutId)
+    response = requests.patch(BASE_URL + "/hangouts/"+hangoutId,json={
+        "status":"COMPLETED"
+    })
+    return response
+
 
 def callWaiter(table, hangoutId, callNumber):
     response = requests.post(BASE_URL + "/pod-events", json={
@@ -100,3 +107,7 @@ def getAllTables(restaurantId):
     
     tables = response.json()
     return tables.get("data").get("tables")
+
+def syncHangOut(hangoutId,hangout):
+    url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
+    response = requests.post(url,json=hangout)

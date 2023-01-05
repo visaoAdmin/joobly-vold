@@ -16,7 +16,7 @@ from subprocess import Popen
 import json
 import time
 from datetime import datetime
-from multiThread import runInNewThread,ReUsableThreadRunner
+from multiThread import runInNewThread,ReUsableThreadRunner,ServiceCallsSyncer
 from serial import getserial
 
 ENV=os.environ.get('ENV')
@@ -30,11 +30,13 @@ hangoutId=None
 callNumber = 1
 serviceCallStartTime=None
 thr=None
+guestCount = None
 table=None
 waiterId=None
 serialNumber=getserial()
 pixmap=None
-
+serviceCalls = {}
+serviceCallsSyncer = ServiceCallsSyncer()
 def loadConfig():
     global storage, table
     try:
@@ -430,6 +432,7 @@ class TableSelectionScreen(QDialog):
         navigateToRestart()
 
 class ChooseNumberOfGuests(QDialog):
+    global guestCount
     guestCount=""
 
     def __init__(self):
@@ -443,23 +446,25 @@ class ChooseNumberOfGuests(QDialog):
         setupKeyboard(self)
     
     def onKey(self, key):
+        global guestCount
         if key == "x":
-            self.guestCount=""
+            guestCount=""
         elif key == "0":
-            self.guestCount = "10"
+            guestCount = "10"
         else:
-            self.guestCount = key
-        
-        countLabel = "10+" if self.guestCount == "10" else self.guestCount
+            guestCount = key
+        print("================================",guestCount)
+        countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
 
     def navigateToCheckedInScreen(self):
         try: 
-            global hangoutId
+            global hangoutId,guestCount
             table = getTableId()
             print(table)
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
-            startHangout(table, self.guestCount, waiterId, hangoutId)
+            serviceCalls['hangoutId'] = hangoutId
+            startHangout(table, guestCount, waiterId, hangoutId)
         except:
             print("Failed to startHangout")
         navigateToScreen(TapForServiceScreen)
@@ -509,7 +514,10 @@ class TapForServiceScreen(QDialog):
     
     def callWaiter(self):
         try:
-            global hangoutId, serviceCallStartTime,table
+            global hangoutId, serviceCallStartTime,table,serviceCalls
+            top = len(serviceCalls)
+            serviceCalls[top]={}
+            serviceCalls[top]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
             callWaiter(table, hangoutId, callNumber)
         except:
@@ -519,6 +527,7 @@ class TapForServiceScreen(QDialog):
         navigateToScreen(DinerActionMenuScreen)
     
     def navigateToCheckoutScreen(self):
+        
         navigateToScreen(BillScreen)
 
 class CloseServiceScreen(QDialog):
@@ -540,6 +549,11 @@ class CloseServiceScreen(QDialog):
     def waiterArrived(self):
         global isWaiterCalled,callNumber
         try:
+            global serviceCalls
+            top = len(serviceCalls) - 1
+            serviceCalls[top]['close']=time.time()
+            serviceCalls[top]['total'] = serviceCalls[top]['close']-serviceCalls[top]['open']
+            serviceCallStartTime=getCurrentTime()
             isWaiterCalled = False
             waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
             callNumber = callNumber+1
@@ -676,9 +690,18 @@ class BillScreen(QDialog):
         navigateGoBack()
 
     def navigateToPayScreen(self):
+        global table,waiterId,guestCount
+        serviceCalls['tableId'] = table
+        serviceCalls['waiterId'] = waiterId
+        serviceCalls['guestCount'] = guestCount
+        print(serviceCalls)
+        serviceCallsSyncer.addServiceCall(copy.deepcopy(serviceCalls))
+       
+        serviceCalls.clear()
         navigateToScreen(PayQRScreen)
     
     def navigateToFeedbackScreen(self):
+        
         navigateToScreen(FeedbackScreen)
 
 class PaymentOptionsScreen(QDialog):
@@ -786,7 +809,7 @@ class FeedbackScreen(QDialog):
         navigateGoBack()
 
     def markRating(self, type,rating):
-        print(rating)
+        # print(rating)
         self.ratings[type] = rating
         for a in range(5):
             i = a+1
@@ -795,7 +818,7 @@ class FeedbackScreen(QDialog):
     
     def sendRatings(self,ratings):
         try:
-            print("Ratings Data", ratings)
+            # print("Ratings Data", ratings)
             ratingKeys = ratings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": ratings[x]}, ratingKeys)
             addMultipleRatings(getTableId(), hangoutId, list(_ratings))
@@ -806,14 +829,14 @@ class FeedbackScreen(QDialog):
 
 
     def navigateToPaymentOptionScreen(self):
-        print("prev self.ratings", self.ratings)
+        # print("prev self.ratings", self.ratings)
         
         if(len(self.ratings)==4):
-            print("self.ratings", self.ratings)
+            # print("self.ratings", self.ratings)
             hangoutRatings = copy.deepcopy(self.ratings)
-            print("hangoutRatings", hangoutRatings)
+            # print("hangoutRatings", hangoutRatings)
             self.ratings.clear()
-            print("new self.ratings", self.ratings, hangoutRatings)
+            # print("new self.ratings", self.ratings, hangoutRatings)
             runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
