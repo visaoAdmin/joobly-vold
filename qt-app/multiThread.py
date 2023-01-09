@@ -74,15 +74,22 @@ class Thread (QThread):
 class ReUsableThreadRunner(object):
     def __init__(self):
         self.currentThread = Thread(lambda:())
-        
-    def recycle(self):
-        self
-        self.currentThread.exit()
-    def launch(self,taskFunction):
-        self.recycle()
-        self.run = taskFunction
+        self.currentThread.run = self.launcher
+        self.functions = []
         self.currentThread.start()
-        self.worker = Worker(taskFunction)
+    def launch(self,taskFunction):
+        self.functions.append(taskFunction)
+   
+    def launcher(self):
+        while(True):
+            try:
+                self.functions.pop(0)()
+            except:
+                pass
+            # while( len(self.functions)!=0):
+                # self.funct`ions[0]()
+
+        # self.worker = Worker(taskFunction)
 
 class ServiceCallsSyncer(object):
     def __init__(self):
@@ -141,6 +148,33 @@ class ServiceCallsSyncer(object):
                 except Exception as e:
                     break
 
+class MultiApiThreadRunner(object):
+    def __init__(self):
+        self.currentThread = Thread(lambda:())
+        print("Creatad New Thread")
+        self.functions = []
+        self.function_args = []
+
+    def addAPICall(self,func,args):
+        self.functions.append(func)
+        self.function_args.append(args)
+        self.currentThread.run = self.syncAPICalls
+        self.currentThread.start()
+    def syncAPICalls(self):
+        while(len(self.functions)!=0):
+            toRun = self.functions[0]
+            args = self.function_args[0]
+            while(True):
+                try:
+                    toRun(*args)
+                    self.functions.pop(0)
+                    self.function_args.pop(0)
+                    break
+                except requests.exceptions.ConnectionError:
+                    print("Connection Error")
+                    time.sleep(0.2)
+                except:
+                    break
+
             
-
-
+        

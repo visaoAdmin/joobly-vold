@@ -16,12 +16,12 @@ from subprocess import Popen
 import json
 import time
 from datetime import datetime
-from multiThread import runInNewThread,ReUsableThreadRunner,ServiceCallsSyncer
+from multiThread import runInNewThread,ReUsableThreadRunner,ServiceCallsSyncer,MultiApiThreadRunner
 from serial import getserial
 
 ENV=os.environ.get('ENV')
 
-print(ENV)
+# print(ENV)
 
 lightThreadRunner = ReUsableThreadRunner()
 storage = {}
@@ -37,11 +37,12 @@ serialNumber=getserial()
 pixmap=None
 serviceCalls = {}
 serviceCallsSyncer = ServiceCallsSyncer()
+multiApiThreadRunner = MultiApiThreadRunner()
 def loadConfig():
     global storage, table
     try:
         config = getConfig(serialNumber)
-        print("Config Loaded", config)
+        # print("Config Loaded", config)
         # if(config == None):
         #     raise Exception("Failed to load")
         storage = config
@@ -72,8 +73,8 @@ def setupKeyboard(self):
 def getTableId ():
     global table
     tableId = table
-    print("getTableId")
-    print(storage)
+    # print("getTableId")
+    # print(storage)
     if "tableId" in storage and storage["tableId"] != None:
         tableId = storage["tableId"]
     else:
@@ -122,6 +123,7 @@ def getHangoutId ():
 
 def yellowLight():
     brightness=127
+    print("YELLO")
     if "podBrightness" in storage and storage["podBrightness"] > 0:
         brightness = storage["podBrightness"]
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel-yellow.py " + str(brightness*2))
@@ -414,7 +416,7 @@ class TableSelectionScreen(QDialog):
         try:
             tables = getAllTables(getRestaurantId())
             for t in tables:
-                print(t)
+                # print(t)
                 item = QListWidgetItem(t.get("referenceId"))
                 item.setSizeHint(QSize(400, 60))
                 self.listWidget.addItem(item)
@@ -457,7 +459,7 @@ class ChooseNumberOfGuests(QDialog):
             guestCount = "10"
         else:
             guestCount = key
-        print("================================",guestCount)
+        # print("================================",guestCount)
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
 
@@ -465,11 +467,13 @@ class ChooseNumberOfGuests(QDialog):
         try: 
             global hangoutId,guestCount
             table = getTableId()
-            print(table)
+            # print(table)
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             serviceCalls['hangoutId'] = hangoutId
-            startHangout(table, guestCount, waiterId, hangoutId)
-        except:
+            multiApiThreadRunner.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
+            # startHangout(table, guestCount, waiterId, hangoutId)
+        except Exception as e:
+            print(e)
             print("Failed to startHangout")
         navigateToScreen(TapForServiceScreen)
 
@@ -523,7 +527,8 @@ class TapForServiceScreen(QDialog):
             serviceCalls[top]={}
             serviceCalls[top]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
-            callWaiter(table, hangoutId, callNumber)
+            # callWaiter(table, hangoutId, callNumber)
+            multiApiThreadRunner.addAPICall(callWaiter,[table, hangoutId, callNumber])
         except:
             print("Call Waiter Failed", table, hangoutId, callNumber)
     
@@ -559,7 +564,8 @@ class CloseServiceScreen(QDialog):
             serviceCalls[top]['total'] = serviceCalls[top]['close']-serviceCalls[top]['open']
             serviceCallStartTime=getCurrentTime()
             isWaiterCalled = False
-            waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+            # waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+            multiApiThreadRunner.addAPICall(waiterArrived,[table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime])
             callNumber = callNumber+1
         except:
             print("Waiter Arrived Failed", table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
@@ -699,9 +705,10 @@ class BillScreen(QDialog):
         serviceCalls['waiterId'] = waiterId
         serviceCalls['guestCount'] = guestCount
         print(serviceCalls)
-        serviceCallsSyncer.addServiceCall(copy.deepcopy(serviceCalls))
+        # serviceCallsSyncer.addServiceCall(copy.deepcopy(serviceCalls))
        
         serviceCalls.clear()
+        callNumber=0
         navigateToScreen(PayQRScreen)
     
     def navigateToFeedbackScreen(self):
