@@ -329,10 +329,67 @@ class WaiterPinScreen(QDialog):
         try:
             if(waiterExists("".join(self.pin),getRestaurantId())):
                 navigateToScreen(WaiterMenuScreen)
+            else:
+                navigateToScreen(WaiterNotExist)
         except:
-            pass
+            navigateToScreen(WaiterNotExist)
          
+class WaiterNotExist(QDialog):
+    pin=[]
+
+    def __init__(self):
+        super(WaiterNotExist, self).__init__()
+        self.pin=[]
+        loadUi("ui/CorrectWaiterPinUIScreen.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.setupKeyboard()
+
+    def setupKeyboard(self):
+        setupKeyboard(self)
+
+    def onKey(self, key):
+        global waiterId
+        length=len(self.pin)
+        if key != "x" :
+            if(length<4):
+                self.pin.append(key)
+                length+=1
+        else:
+            if length>0:
+                self.pin.pop()
+                length-=1
         
+        waiterId=""
+        for index in range(4):    
+            val=""
+            if index < length:
+                val=self.pin[index]
+                waiterId+=val
+            self.__dict__["input_pin_"+str(index)].setText(val)
+
+
+    def renderPin(self):
+        length=len(self.pin)
+        
+        for index in range(4):    
+            val=""
+            if index < length:
+                val=self.pin[index]
+            self.__dict__["input_pin_"+str(index)].setText(val)
+
+    
+    def navigateToConfirmTable(self):
+        navigateToScreen(ConfirmTable)
+    
+    def navigateToWaiterMenuScreen(self):
+        try:
+            if(waiterExists("".join(self.pin),getRestaurantId())):
+                navigateToScreen(WaiterMenuScreen)
+            else:
+                navigateToScreen(WaiterNotExist)
+        except:
+            navigateToScreen(WaiterNotExist)
+              
 class AboutScreen(QDialog):
     def __init__(self):
         super(AboutScreen, self).__init__()
