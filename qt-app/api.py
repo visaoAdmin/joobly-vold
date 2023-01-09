@@ -1,7 +1,7 @@
 import requests
 
 # BASE_URL = "https://api.mywoobly.com"
-BASE_URL = "http://localhost:3000"
+BASE_URL = "https://api.woobly.squareboat.info"
 TIMEOUT = 15
 
 def getConfig(serialNumber):
