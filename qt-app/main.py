@@ -324,9 +324,13 @@ class WaiterPinScreen(QDialog):
         navigateToScreen(ConfirmTable)
     
     def navigateToWaiterMenuScreen(self):
-        if(waiterExists("".join(self.pin),getRestaurantId())):
-            navigateToScreen(WaiterMenuScreen)
-
+        try:
+            if(waiterExists("".join(self.pin),getRestaurantId())):
+                navigateToScreen(WaiterMenuScreen)
+        except:
+            pass
+         
+        
 class AboutScreen(QDialog):
     def __init__(self):
         super(AboutScreen, self).__init__()
