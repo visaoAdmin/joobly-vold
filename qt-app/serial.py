@@ -8,6 +8,6 @@ def getserial():
         cpuserial = line[10:26]
     f.close()
   except:
-    cpuserial = "ERROR000000003"
+    cpuserial = "DEVLOCAL"
 
   return cpuserial

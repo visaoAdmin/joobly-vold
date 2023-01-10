@@ -151,30 +151,37 @@ class ServiceCallsSyncer(object):
 class MultiApiThreadRunner(object):
     def __init__(self):
         self.currentThread = Thread(lambda:())
-        print("Creatad New Thread")
         self.functions = []
         self.function_args = []
+        self.currentThread.run = self.syncAPICalls
+        self.currentThread.start()
 
     def addAPICall(self,func,args):
         self.functions.append(func)
         self.function_args.append(args)
-        self.currentThread.run = self.syncAPICalls
-        self.currentThread.start()
     def syncAPICalls(self):
-        while(len(self.functions)!=0):
-            toRun = self.functions[0]
-            args = self.function_args[0]
-            while(True):
-                try:
-                    toRun(*args)
-                    self.functions.pop(0)
-                    self.function_args.pop(0)
-                    break
-                except requests.exceptions.ConnectionError:
-                    print("Connection Error")
-                    time.sleep(0.2)
-                except:
-                    break
+        while(True):
+            try:
+                toRun = self.functions[0]
+                args = self.function_args[0]
+                # print(toRun,args)
+                while(True):
+                    try:
+                        toRun(*args)
+                        print("Calling",toRun)
+                        self.functions.pop(0)
+                        self.function_args.pop(0)
+                        time.sleep(0.2)
+                        break
+                    except requests.exceptions.ConnectionError:
+                        time.sleep(0.5)
+                        pass
+                    except Exception as e:
+                        self.function_args.pop(0)
+                        self.functions.pop(0)
+                        break
+            except :
+                pass    
 
             
         

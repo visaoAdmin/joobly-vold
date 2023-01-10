@@ -154,6 +154,10 @@ def neoxPixel(red, green, blue):
     os.system("sudo python3 /home/pi/waiterlite-raspberry/neopixel.py " + rgba)
     print("Light: RGB", red, green, blue)
 
+def whiteLight():
+    neoxPixel(255,255,255)
+    print("White Light")
+    
 
 def navigateToScreen(Screen):
         nextScreen = Screen()
@@ -622,7 +626,7 @@ class CloseServiceScreen(QDialog):
             serviceCallStartTime=getCurrentTime()
             isWaiterCalled = False
             # waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
-            multiApiThreadRunner.addAPICall(waiterArrived,[table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime])
+            multiApiThreadRunner.addAPICall(waiterArrived,[table, hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
         except:
             print("Waiter Arrived Failed", table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
@@ -765,7 +769,7 @@ class BillScreen(QDialog):
         # serviceCallsSyncer.addServiceCall(copy.deepcopy(serviceCalls))
        
         serviceCalls.clear()
-        callNumber=0
+    
         navigateToScreen(PayQRScreen)
     
     def navigateToFeedbackScreen(self):
@@ -887,6 +891,8 @@ class FeedbackScreen(QDialog):
     def sendRatings(self,ratings):
         try:
             # print("Ratings Data", ratings)
+            global callNumber
+            callNumber = 0
             ratingKeys = ratings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": ratings[x]}, ratingKeys)
             addMultipleRatings(getTableId(), hangoutId, list(_ratings))
@@ -905,7 +911,8 @@ class FeedbackScreen(QDialog):
             # print("hangoutRatings", hangoutRatings)
             self.ratings.clear()
             # print("new self.ratings", self.ratings, hangoutRatings)
-            runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
+            multiApiThreadRunner.addAPICall(self.sendRatings,[hangoutRatings])
+            # runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
 
