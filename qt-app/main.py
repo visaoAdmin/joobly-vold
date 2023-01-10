@@ -38,6 +38,11 @@ pixmap=None
 serviceCalls = {}
 serviceCallsSyncer = ServiceCallsSyncer()
 multiApiThreadRunner = MultiApiThreadRunner()
+logoData =None
+
+
+
+
 def loadConfig():
     global storage, table
     try:
@@ -46,7 +51,7 @@ def loadConfig():
         # if(config == None):
         #     raise Exception("Failed to load")
         storage = config
-        storage['tableId'] = table = getAllTables(getRestaurantId())[0]['referenceId']
+        storage['tableId'] = table = storage["tables"][0]
         
         # table = storage["tableId"]
         
@@ -56,6 +61,16 @@ def loadConfig():
         # storage={}
         # saveStorage()
         print("Failed to load config")
+
+def loadPicture(filepath,url):
+        
+    try:
+        data = urllib.request.urlopen(url).read()
+        with open(filepath,"wb") as logo:
+            logo.write(data)
+    finally:
+        with open(filepath,"rb") as logo:
+            return logo.read()
 
 def setupKeyboard(self):
     self.key1.clicked.connect(lambda: self.onKey("1"))
@@ -193,15 +208,13 @@ def goBackToDinerHomeAfter(seconds):
 
 
 def loadLogoPixmap():
-    global pixmap
+    global pixmap,logoData
     if pixmap != None:
         return pixmap
     try:
-        url = 'https://i.ibb.co/W3vscn6/images-1-1.png'
-        if "restaurantLogo" in storage and len(storage["restaurantLogo"] ) > 0:
-            url = storage["restaurantLogo"] 
         
-        data = urllib.request.urlopen(url).read()
+        data = "Asdas"
+        data = loadPicture("assets/logo",storage["restaurantLogo"])
         image = QImage()
         image.loadFromData(data)
         pixmap = QPixmap(image)
@@ -331,7 +344,8 @@ class WaiterPinScreen(QDialog):
     
     def navigateToWaiterMenuScreen(self):
         try:
-            if(waiterExists("".join(self.pin),getRestaurantId())):
+            thePin = "".join(self.pin)
+            if  ("waiters" in storage and thePin in storage["waiters"]) or waiterExists(thePin,getRestaurantId()):
                 navigateToScreen(WaiterMenuScreen)
             else:
                 navigateToScreen(WaiterNotExist)
@@ -387,7 +401,8 @@ class WaiterNotExist(QDialog):
     
     def navigateToWaiterMenuScreen(self):
         try:
-            if(waiterExists("".join(self.pin),getRestaurantId())):
+            thePin = "".join(self.pin)
+            if  ("waiters" in storage and thePin in storage["waiters"]) or waiterExists(thePin,getRestaurantId()):
                 navigateToScreen(WaiterMenuScreen)
             else:
                 navigateToScreen(WaiterNotExist)
@@ -475,10 +490,11 @@ class TableSelectionScreen(QDialog):
     
     def loadTables(self):
         try:
-            tables = getAllTables(getRestaurantId())
+            tables = storage["tables"]
+            print(tables)
             for t in tables:
                 # print(t)
-                item = QListWidgetItem(t.get("referenceId"))
+                item = QListWidgetItem(t)
                 item.setSizeHint(QSize(400, 60))
                 self.listWidget.addItem(item)
         except:
@@ -663,7 +679,8 @@ class DinerActionMenuScreen(QDialog):
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
             if "menuQr" in storage:
                 url = storage["menuQr"] 
-                data = urllib.request.urlopen(url).read()
+                data = loadPicture("assets/menuQr",url)
+
                 image = QImage()
                 image.loadFromData(data)
                 pixmap = QPixmap(image)
@@ -765,7 +782,7 @@ class BillScreen(QDialog):
         serviceCalls['tableId'] = table
         serviceCalls['waiterId'] = waiterId
         serviceCalls['guestCount'] = guestCount
-        print(serviceCalls)
+        # print(serviceCalls)
         # serviceCallsSyncer.addServiceCall(copy.deepcopy(serviceCalls))
        
         serviceCalls.clear()
@@ -825,7 +842,7 @@ class PayQRScreen(QDialog):
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
             if "upiQr" in storage:
                 url = storage["upiQr"] 
-                data = urllib.request.urlopen(url).read()
+                data = loadPicture("assets/upiQr",url)
                 image = QImage()
                 image.loadFromData(data)
                 pixmap = QPixmap(image)
@@ -911,7 +928,9 @@ class FeedbackScreen(QDialog):
             # print("hangoutRatings", hangoutRatings)
             self.ratings.clear()
             # print("new self.ratings", self.ratings, hangoutRatings)
-            multiApiThreadRunner.addAPICall(self.sendRatings,[hangoutRatings])
+            ratingKeys = hangoutRatings.keys()
+            _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": hangoutRatings[x]}, ratingKeys)
+            multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             # runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)

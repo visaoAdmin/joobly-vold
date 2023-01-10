@@ -1,7 +1,8 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, QThreadPool, QRunnable
 import time
 import requests
-from api import syncHangOut,startHangout,finishHangout
+import pickle
+from api import syncHangOut,startHangout,finishHangout,apiDict
 thread_group=[]
 globalPool = QThreadPool.globalInstance()
 def initThreadGroup():
@@ -148,6 +149,59 @@ class ServiceCallsSyncer(object):
                 except Exception as e:
                     break
 
+
+class QueueFile():
+    def __init__(self):
+        self.functions_file_path = "queue_functions"
+        
+    def peek(self):
+        functions = []
+        try:
+            with open(self.functions_file_path,"rb") as fp:
+                functions = pickle.load(fp)
+            return functions[0]
+        except:
+            pass
+        # print(functions)
+        # return [apiDict[functions[0]],functions[1]]
+    def pop(self):
+        functions = []
+        try:
+            with open(self.functions_file_path,"rb") as fp:
+                functions = pickle.load(fp)
+            f = functions.pop(0)
+        
+        
+            with open(self.functions_file_path,"wb") as fp:
+                pickle.dump(functions,fp)
+        except:
+            pass
+        
+        
+        
+        
+        
+        return [apiDict[f[0]],f[1]]
+    
+    def push(self,functionName,arg):
+        functions = []
+        
+        print(functionName,arg)
+        try:
+            with open(self.functions_file_path,"rb") as fp:
+                functions = pickle.load(fp)
+            
+            
+        except:
+            pass
+        functions.append([functionName,arg])
+    
+    
+        with open(self.functions_file_path,"wb") as fp:
+            pickle.dump(functions,fp)
+        
+        
+        # print(functions)
 class MultiApiThreadRunner(object):
     def __init__(self):
         self.currentThread = Thread(lambda:())
@@ -155,33 +209,52 @@ class MultiApiThreadRunner(object):
         self.function_args = []
         self.currentThread.run = self.syncAPICalls
         self.currentThread.start()
+        self.queue = QueueFile()
 
     def addAPICall(self,func,args):
-        self.functions.append(func)
-        self.function_args.append(args)
+        # self.functions.append(func)
+        # self.function_args.append(args)
+        
+        self.queue.push(func,args)
     def syncAPICalls(self):
         while(True):
             try:
-                toRun = self.functions[0]
-                args = self.function_args[0]
-                # print(toRun,args)
+
+                temp = self.queue.peek()
+                if temp:
+                    print(temp)
+                    toRun = temp[0]
+                    args = temp[1]
+                else:
+                    continue
+                # toRun = self.functions[0]
+                # args = self.function_args[0]
+                # print(type(toRun),args)
+                
                 while(True):
+                    
                     try:
+                        # print("Calling",type(toRun))
                         toRun(*args)
-                        print("Calling",toRun)
-                        self.functions.pop(0)
-                        self.function_args.pop(0)
+                        print("Calling",type(toRun))
+                        self.queue.pop()
+                        # self.functions.pop(0)
+                        # self.function_args.pop(0)
                         time.sleep(0.2)
                         break
                     except requests.exceptions.ConnectionError:
                         time.sleep(0.5)
                         pass
                     except Exception as e:
-                        self.function_args.pop(0)
-                        self.functions.pop(0)
+                        print(e)
+                        self.queue.pop()
+                        time.sleep(4)
                         break
-            except :
+            except Exception as e:
+                print(e)
+                # time.sleep(10)
                 pass    
 
             
+
         

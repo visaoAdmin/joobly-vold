@@ -1,7 +1,7 @@
 import requests
 
 # BASE_URL = "https://api.mywoobly.com"
-BASE_URL = "https://api.woobly.squareboat.info"
+BASE_URL = "http://localhost:3000"
 TIMEOUT = 15
 
 def getConfig(serialNumber):
@@ -111,3 +111,14 @@ def getAllTables(restaurantId):
 def syncHangOut(hangoutId,hangout):
     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
     response = requests.post(url,json=hangout)
+
+
+apiDict ={
+    "getConfig":getConfig,
+    "startHangout":startHangout,
+    "waiterArrived":waiterArrived,
+    "callWaiter":callWaiter,
+    "finishHangout":finishHangout,
+    "addMultipleRatings":addMultipleRatings
+    
+}
