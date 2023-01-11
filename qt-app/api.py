@@ -1,9 +1,11 @@
 import requests
+from config.config import API_URL
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-BASE_URL = os.getenv('API_URL')
+
+BASE_URL = API_URL
 print("BASE_URL",BASE_URL)
 TIMEOUT = 15
 
