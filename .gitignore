@@ -1,3 +1,6 @@
 lib
 methodCallDumps
 qt-app/function_queue
+qt-app/restaurantData/logo
+qt-app/restaurantData/menuQr
+qt-app/restaurantData/upiQr

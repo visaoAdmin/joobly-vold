@@ -214,7 +214,7 @@ def loadLogoPixmap():
     try:
         
         data = "Asdas"
-        data = loadPicture("assets/logo",storage["restaurantLogo"])
+        data = loadPicture("restaurantData/logo",storage["restaurantLogo"])
         image = QImage()
         image.loadFromData(data)
         pixmap = QPixmap(image)
@@ -679,7 +679,7 @@ class DinerActionMenuScreen(QDialog):
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
             if "menuQr" in storage:
                 url = storage["menuQr"] 
-                data = loadPicture("assets/menuQr",url)
+                data = loadPicture("restaurantData/menuQr",url)
 
                 image = QImage()
                 image.loadFromData(data)
@@ -842,7 +842,7 @@ class PayQRScreen(QDialog):
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
             if "upiQr" in storage:
                 url = storage["upiQr"] 
-                data = loadPicture("assets/upiQr",url)
+                data = loadPicture("restaurantData/upiQr",url)
                 image = QImage()
                 image.loadFromData(data)
                 pixmap = QPixmap(image)
