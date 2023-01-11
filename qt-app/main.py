@@ -605,7 +605,7 @@ class TapForServiceScreen(QDialog):
             serviceCalls[top]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
             # callWaiter(table, hangoutId, callNumber)
-            multiApiThreadRunner.addAPICall(callWaiter,[table, hangoutId, callNumber])
+            multiApiThreadRunner.addAPICall(callWaiter,[getTableId(), hangoutId, callNumber])
         except:
             print("Call Waiter Failed", table, hangoutId, callNumber)
     
@@ -642,7 +642,7 @@ class CloseServiceScreen(QDialog):
             serviceCallStartTime=getCurrentTime()
             isWaiterCalled = False
             # waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
-            multiApiThreadRunner.addAPICall(waiterArrived,[table, hangoutId, callNumber, serviceCalls[top]['total']])
+            multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
         except:
             print("Waiter Arrived Failed", table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
@@ -908,8 +908,8 @@ class FeedbackScreen(QDialog):
     def sendRatings(self,ratings):
         try:
             # print("Ratings Data", ratings)
-            global callNumber
-            callNumber = 0
+            
+            
             ratingKeys = ratings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": ratings[x]}, ratingKeys)
             addMultipleRatings(getTableId(), hangoutId, list(_ratings))
@@ -921,7 +921,7 @@ class FeedbackScreen(QDialog):
 
     def navigateToPaymentOptionScreen(self):
         # print("prev self.ratings", self.ratings)
-        
+        global callNumber
         if(len(self.ratings)==4):
             # print("self.ratings", self.ratings)
             hangoutRatings = copy.deepcopy(self.ratings)
@@ -930,6 +930,7 @@ class FeedbackScreen(QDialog):
             # print("new self.ratings", self.ratings, hangoutRatings)
             ratingKeys = hangoutRatings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": hangoutRatings[x]}, ratingKeys)
+            callNumber = 1
             multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             # runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
             lightThreadRunner.launch(yellowLight)

@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, QThreadPool, QRunnable
 import time
 import requests
+import os
 import pickle
 from api import syncHangOut,startHangout,finishHangout,apiDict
 thread_group=[]
@@ -126,7 +127,7 @@ class ServiceCallsSyncer(object):
                     break
                 except requests.exceptions.ConnectionError:
                     print("Connection error")
-                    time.sleep(1)
+                    time.sleep(0.2)
                 except Exception as e:
                     break
             while(True):
@@ -135,7 +136,7 @@ class ServiceCallsSyncer(object):
                     break
                 except requests.exceptions.ConnectionError:
                     print("Connection error")
-                    time.sleep(1)
+                    time.sleep(0.2)
                 except Exception as e:
                     break
             while(True):
@@ -144,62 +145,34 @@ class ServiceCallsSyncer(object):
                     break
                 except requests.exceptions.ConnectionError:
                     print("Connection error")
-                    time.sleep(1)
+                    time.sleep(0.2)
                 
                 except Exception as e:
                     break
 
 
-class QueueFile():
-    def __init__(self):
-        self.functions_file_path = "queue_functions"
-        
-    def peek(self):
-        functions = []
+class StorageQueue():
+    def __init__ (self):
+        self.currentThread = Thread(lambda:())
+        self.queue = []
         try:
-            with open(self.functions_file_path,"rb") as fp:
-                functions = pickle.load(fp)
-            return functions[0]
+            with open("function_queue","rb") as f:
+                self.queue = pickle.load(f)
         except:
             pass
-        # print(functions)
-        # return [apiDict[functions[0]],functions[1]]
-    def pop(self):
-        functions = []
-        try:
-            with open(self.functions_file_path,"rb") as fp:
-                functions = pickle.load(fp)
-            f = functions.pop(0)
-        
-        
-            with open(self.functions_file_path,"wb") as fp:
-                pickle.dump(functions,fp)
-        except:
-            pass
-        
-        
-        
-        
-        
-        return [apiDict[f[0]],f[1]]
-    
+        # print("Queueu",self.queue)
+        self.currentThread.run = self.syncer
+        self.currentThread.start()
+    def syncer(self):
+        while(True):
+            with open("function_queue" , "wb") as f:
+                pickle.dump(self.queue,f)
     def push(self,functionName,arg):
-        functions = []
-        
-        print(functionName,arg)
-        try:
-            with open(self.functions_file_path,"rb") as fp:
-                functions = pickle.load(fp)
-            
-            
-        except:
-            pass
-        functions.append([functionName,arg])
-    
-    
-        with open(self.functions_file_path,"wb") as fp:
-            pickle.dump(functions,fp)
-        
+        self.queue.append([functionName,arg])
+    def peek(self):
+        return self.queue[0]
+    def pop(self):
+        return self.queue.pop(0)
         
         # print(functions)
 class MultiApiThreadRunner(object):
@@ -209,11 +182,10 @@ class MultiApiThreadRunner(object):
         self.function_args = []
         self.currentThread.run = self.syncAPICalls
         self.currentThread.start()
-        self.queue = QueueFile()
+        self.queue = StorageQueue()
 
     def addAPICall(self,func,args):
-        # self.functions.append(func)
-        # self.function_args.append(args)
+        
         
         self.queue.push(func,args)
     def syncAPICalls(self):
@@ -222,37 +194,39 @@ class MultiApiThreadRunner(object):
 
                 temp = self.queue.peek()
                 if temp:
-                    print(temp)
+                    # print(temp)
                     toRun = temp[0]
                     args = temp[1]
                 else:
                     continue
                 # toRun = self.functions[0]
                 # args = self.function_args[0]
-                # print(type(toRun),args)
+                # print(toRun,args)
                 
                 while(True):
                     
                     try:
                         # print("Calling",type(toRun))
-                        toRun(*args)
-                        print("Calling",type(toRun))
+                        r = toRun(*args)
+                        if(r.status_code==503):
+                            continue
+                        # print("Calling",toRun)
                         self.queue.pop()
                         # self.functions.pop(0)
                         # self.function_args.pop(0)
-                        time.sleep(0.2)
+                        time.sleep(0.1)
                         break
                     except requests.exceptions.ConnectionError:
-                        time.sleep(0.5)
+                        time.sleep(0.1)
                         pass
                     except Exception as e:
-                        print(e)
+                        # print(e)
                         self.queue.pop()
-                        time.sleep(4)
+                        # time.sleep(8)
                         break
             except Exception as e:
-                print(e)
-                # time.sleep(10)
+                # print(e)
+                time.sleep(1)
                 pass    
 
             
