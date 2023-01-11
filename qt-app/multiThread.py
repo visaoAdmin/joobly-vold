@@ -161,6 +161,7 @@ class StorageQueue():
         except:
             pass
         # print("Queueu",self.queue)
+        print(self.queue)
         self.currentThread.run = self.syncer
         self.currentThread.start()
     def syncer(self):
