@@ -166,6 +166,7 @@ class StorageQueue():
         self.currentThread.start()
     def syncer(self):
         while(True):
+            time.sleep(0.1)
             with open("function_queue" , "wb") as f:
                 pickle.dump(self.queue,f)
     def push(self,functionName,arg):

@@ -1,7 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-# BASE_URL = "https://api.mywoobly.com"
-BASE_URL = "https://api.woobly.squareboat.info"
+BASE_URL = os.getenv('API_URL')
+print("BASE_URL",BASE_URL)
 TIMEOUT = 15
 
 def getConfig(serialNumber):
