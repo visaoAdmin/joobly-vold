@@ -1,8 +1,7 @@
 import requests
 from config.config import API_URL
 import os
-from dotenv import load_dotenv
-load_dotenv()
+
 
 
 BASE_URL = API_URL
