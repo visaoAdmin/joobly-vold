@@ -929,8 +929,9 @@ class FeedbackScreen(QDialog):
 
     def navigateToPaymentOptionScreen(self):
         # print("prev self.ratings", self.ratings)
-        global callNumber
+        
         if(len(self.ratings)==4):
+            global callNumber
             # print("self.ratings", self.ratings)
             hangoutRatings = copy.deepcopy(self.ratings)
             # print("hangoutRatings", hangoutRatings)
