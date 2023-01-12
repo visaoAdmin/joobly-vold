@@ -37,7 +37,7 @@ serialNumber=getserial()
 pixmap=None
 serviceCalls = {}
 serviceCallsSyncer = ServiceCallsSyncer()
-multiApiThreadRunner = MultiApiThreadRunner()
+multiApiThreadRunner = MultiApiThreadRunner("function_queue")
 logoData =None
 
 
@@ -908,10 +908,11 @@ class FeedbackScreen(QDialog):
     def sendRatings(self,ratings):
         try:
             # print("Ratings Data", ratings)
-            
+            global serviceCalls
             
             ratingKeys = ratings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": ratings[x]}, ratingKeys)
+            serviceCalls["ratings"] = list(_ratings)
             addMultipleRatings(getTableId(), hangoutId, list(_ratings))
             # self.ratings={}
             # print("New Ratings Data"ratings)

@@ -3,7 +3,7 @@ import time
 import requests
 import os
 import pickle
-from api import syncHangOut,startHangout,finishHangout,apiDict
+from api import sendHangout,startHangout,finishHangout,apiDict,startServiceCall,endServiceCall,sendRatings
 thread_group=[]
 globalPool = QThreadPool.globalInstance()
 def initThreadGroup():
@@ -127,7 +127,7 @@ class ServiceCallsSyncer(object):
                     break
                 except requests.exceptions.ConnectionError:
                     print("Connection error")
-                    time.sleep(0.2)
+                    time.sleep(0.1)
                 except Exception as e:
                     break
             while(True):
@@ -136,7 +136,7 @@ class ServiceCallsSyncer(object):
                     break
                 except requests.exceptions.ConnectionError:
                     print("Connection error")
-                    time.sleep(0.2)
+                    time.sleep(0.1)
                 except Exception as e:
                     break
             while(True):
@@ -145,18 +145,19 @@ class ServiceCallsSyncer(object):
                     break
                 except requests.exceptions.ConnectionError:
                     print("Connection error")
-                    time.sleep(0.2)
+                    time.sleep(0.1)
                 
                 except Exception as e:
                     break
 
 
 class StorageQueue():
-    def __init__ (self):
+    def __init__ (self,path):
         self.currentThread = Thread(lambda:())
         self.queue = []
+        self.path = path
         try:
-            with open("function_queue","rb") as f:
+            with open(path,"rb") as f:
                 self.queue = pickle.load(f)
         except:
             pass
@@ -167,7 +168,7 @@ class StorageQueue():
     def syncer(self):
         while(True):
             time.sleep(0.1)
-            with open("function_queue" , "wb") as f:
+            with open(self.path , "wb") as f:
                 pickle.dump(self.queue,f)
     def push(self,functionName,arg):
         self.queue.append([functionName,arg])
@@ -175,62 +176,88 @@ class StorageQueue():
         return self.queue[0]
     def pop(self):
         return self.queue.pop(0)
-        
-        # print(functions)
+    def replaceFront(self,item):
+        self.queue[0] = item
+            # print(functions)
+
+
 class MultiApiThreadRunner(object):
-    def __init__(self):
+    def __init__(self,path):
         self.currentThread = Thread(lambda:())
         self.functions = []
         self.function_args = []
         self.currentThread.run = self.syncAPICalls
+        self.hangouts = []
         self.currentThread.start()
-        self.queue = StorageQueue()
-
+        self.queue2 = StorageQueue("background_queue")
+        self.queue = StorageQueue(path)
+    
     def addAPICall(self,func,args):
         
         
         self.queue.push(func,args)
     def syncAPICalls(self):
         while(True):
+            time.sleep(0.1)
+            # try to get fn from first queue
+            foregreoundApi = None
             try:
+                foregreoundApi = self.queue.pop()
+            except:
+                pass
+            if foregreoundApi:
+                try:
+                    runFunction = foregreoundApi[0]
+                    # print("1st",runFunction)
 
-                temp = self.queue.peek()
-                if temp:
-                    # print(temp)
-                    toRun = temp[0]
-                    args = temp[1]
-                else:
-                    continue
-                # toRun = self.functions[0]
-                # args = self.function_args[0]
-                # print(toRun,args)
+                    args = foregreoundApi[1]
+                    runFunction(*args)
+                    
+                except  requests.exceptions.ConnectionError:
+                    if(runFunction.__name__=="startHangout"):
+                        self.queue2.push(sendHangout,args)
+                        
+                           
+                    elif(runFunction.__name__=="addMultipleRatings"):
+                        self.queue2.push(sendRatings,args)
+                    
+                        
+                    elif(runFunction.__name__=="callWaiter"):
+                        self.queue2.push(startServiceCall,args)
+                    
+                        
+                    elif(runFunction.__name__=="waiterArrived"):
+                        self.queue2.push(endServiceCall,args)
+                    
+                    
+                    else:
+                        self.queue2.push(runFunction,args)
+
+                except :
+                    pass
                 
-                while(True):
+            backgroundAPI = None
+            try :
+                backgroundAPI = self.queue2.peek()
+            except:
+                pass
+            if backgroundAPI:
+                try:
+                    
+                    
+                    runFunction = backgroundAPI[0]
+                    args = backgroundAPI[1]
+                    # print("2nd",runFunction)
                     
                     try:
-                        # print("Calling",type(toRun))
-                        r = toRun(*args)
+                        r = runFunction(*args)
+                        self.queue2.pop()
                         if(r.status_code==503):
                             continue
-                        # print("Calling",toRun)
-                        self.queue.pop()
-                        # self.functions.pop(0)
-                        # self.function_args.pop(0)
-                        time.sleep(0.1)
-                        break
-                    except requests.exceptions.ConnectionError:
-                        time.sleep(0.1)
+                    except  requests.exceptions.ConnectionError:
                         pass
-                    except Exception as e:
-                        # print(e)
-                        self.queue.pop()
-                        # time.sleep(8)
-                        break
-            except Exception as e:
-                # print(e)
-                time.sleep(1)
-                pass    
-
+                except:
+                    
+                    pass
             
 
-        

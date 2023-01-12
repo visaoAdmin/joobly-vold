@@ -112,11 +112,63 @@ def getAllTables(restaurantId):
     tables = response.json()
     return tables.get("data").get("tables")
 
-def syncHangOut(hangoutId,hangout):
-    url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
-    response = requests.post(url,json=hangout)
+# def syncHangOut(hangoutId,hangout):
+#     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
+#     response = requests.post(url,json=hangout)
+
+def sendHangout(table, guestCount, waiterId, hangoutId):
+    url = BASE_URL + "/hangouts"
+    response = requests.post(url, json={
+        "table": table,
+        "guestCount": guestCount,
+        "waiter": waiterId,
+        "hangout": hangoutId,
+        "push":"true"
+    }, timeout=TIMEOUT)
+    return response
+def callWaiter(table, hangoutId, callNumber):
+    response = requests.post(BASE_URL + "/pod-events", json={
+        "table": table,
+        "hangout": hangoutId,
+        "callNumber": callNumber,
+        "type": "WAITER_CALLED"
+    }, timeout = TIMEOUT)
+    return response
 
 
+def waiterArrived(table, hangoutId, callNumber, responseTime):
+    response = requests.post(BASE_URL + "/pod-events", json={
+        "table": table,
+        "hangout": hangoutId,
+        "callNumber": callNumber,
+        "responseTime": responseTime,
+        "type": "WAITER_ARRIVED"
+    }, timeout = TIMEOUT)
+    return response
+def startServiceCall(table, hangoutId, callNumber):
+    url = BASE_URL + "/serviceCalls/start"
+    response = requests.post(url,json={
+        "table":table,
+        "hangout":hangoutId,
+        "callNumber":callNumber,
+        "push":"true"
+    },timeout=TIMEOUT)
+def endServiceCall(table, hangoutId, callNumber, responseTime):
+    url = BASE_URL + "/serviceCalls/end"
+    response = requests.post(url,json={
+        "table":table,
+        "hangout":hangoutId,
+        "callNumber":callNumber,
+        "responseTime":responseTime,
+        "push":"true"
+    },timeout=TIMEOUT)
+def sendRatings(table, hangoutId, ratings):
+    response = requests.post(BASE_URL + "/ratings", json={
+        "hangout": hangoutId,
+        "ratings": ratings,
+        "push":"true"
+    }, timeout = TIMEOUT)
+    return response
 apiDict ={
     "getConfig":getConfig,
     "startHangout":startHangout,
