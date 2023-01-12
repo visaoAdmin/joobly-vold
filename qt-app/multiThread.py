@@ -198,7 +198,7 @@ class MultiApiThreadRunner(object):
         self.queue.push(func,args)
     def syncAPICalls(self):
         while(True):
-            time.sleep(0.1)
+            # time.sleep(0.1)
             # try to get fn from first queue
             foregreoundApi = None
             try:
