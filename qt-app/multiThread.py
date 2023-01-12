@@ -153,7 +153,7 @@ class ServiceCallsSyncer(object):
 
 class StorageQueue():
     def __init__ (self,path):
-        self.currentThread = Thread(lambda:())
+        # self.currentThread = Thread(lambda:())
         self.queue = []
         self.path = path
         # try:
