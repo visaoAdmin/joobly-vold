@@ -156,20 +156,20 @@ class StorageQueue():
         self.currentThread = Thread(lambda:())
         self.queue = []
         self.path = path
-        try:
-            with open(path,"rb") as f:
-                self.queue = pickle.load(f)
-        except:
-            pass
+        # try:
+        #     with open(path,"rb") as f:
+        #         self.queue = pickle.load(f)
+        # except:
+        #     pass
         # print("Queueu",self.queue)
-        print(self.queue)
-        self.currentThread.run = self.syncer
-        self.currentThread.start()
-    def syncer(self):
-        while(True):
-            time.sleep(10)
-            with open(self.path , "wb") as f:
-                pickle.dump(self.queue,f)
+        # print(self.queue)
+        # self.currentThread.run = self.syncer
+        # self.currentThread.start()
+    # def syncer(self):
+    #     while(True):
+    #         time.sleep(10)
+    #         with open(self.path , "wb") as f:
+    #             pickle.dump(self.queue,f)
     def push(self,functionName,arg):
         self.queue.append([functionName,arg])
     def peek(self):
