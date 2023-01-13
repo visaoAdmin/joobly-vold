@@ -16,14 +16,17 @@ def longRunningFunction():
             time.sleep(20)
 
 def runInNewThread(self, taskFunction):
-        self.thread = QThread()
-        # Step 3: Create a worker object
-        pool = QThreadPool.globalInstance()
-        runnable = Runnable(taskFunction)
-        pool.start(runnable)
+        try:
+            self.thread = QThread()
+            # Step 3: Create a worker object
+            pool = QThreadPool.globalInstance()
+            runnable = Runnable(taskFunction)
+            pool.start(runnable)
 
-        self.worker = Worker(taskFunction)
-        
+            self.worker = Worker(taskFunction)
+        except Exception as e:
+            print(e)
+            pass
         # Step 4: Move worker to the thread
         
         # self.worker.moveToThread(self.thread)
