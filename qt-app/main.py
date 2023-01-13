@@ -655,7 +655,7 @@ class CloseServiceScreen(QDialog):
             # multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
         except:
-            print("Waiter Arrived Failed", table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+            print("Waiter Arrived Failed", table, hangoutId, callNumber, serviceCalls[top]['total'])
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(DinerActionMenuScreen)
