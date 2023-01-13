@@ -928,10 +928,11 @@ class FeedbackScreen(QDialog):
             # print("New Ratings Data"ratings)
         except:
             print("Rating Failed", list(ratings))
-    def tryToSendRatings(table,hangout,ratings):
+    def tryToSendRatings(self,table,hangout,ratings):
         try:
             addMultipleRatings(table,hangout,ratings)
-        except:
+        except Exception as e:
+            print("Error",e)
             pass
         
     def navigateToPaymentOptionScreen(self):
