@@ -36,6 +36,7 @@ def finishHangout(hangoutId):
 
 
 def callWaiter(table, hangoutId, callNumber):
+    print("CAlling waiter")
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,
@@ -46,6 +47,7 @@ def callWaiter(table, hangoutId, callNumber):
 
 
 def waiterArrived(table, hangoutId, callNumber, responseTime):
+    print("waiter arrived")
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,
@@ -81,6 +83,7 @@ def waiterExists(waiterId,restaurantId):
     return response.json()['data']['waiterExists']
 
 def addMultipleRatings(table, hangoutId, ratings):
+    print("rating sent")
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,
