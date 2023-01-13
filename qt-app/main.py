@@ -945,11 +945,11 @@ class FeedbackScreen(QDialog):
             callNumber = 1
         # try:
         #     print(list(_ratings)) 
-            addMultipleRatings(table,hangoutId,list(_ratings))
+            # addMultipleRatings(table,hangoutId,list(_ratings))
         # except:
             # multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             
-            # runInNewThread(self, lambda:self.sendRatings(hangoutRatings))
+            runInNewThread(self, lambda:addMultipleRatings(table,hangoutId,list(_ratings)))
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
 
