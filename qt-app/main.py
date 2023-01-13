@@ -650,7 +650,7 @@ class CloseServiceScreen(QDialog):
             isWaiterCalled = False
             # try:
             #     print("waiter arrived")
-            waiterArrived(table, hangoutId, callNumber, getCurrentTime()-serviceCallStartTime)
+            waiterArrived(table, hangoutId, callNumber, serviceCalls[top]['total'])
             # except:
             # multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
