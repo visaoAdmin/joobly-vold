@@ -928,8 +928,12 @@ class FeedbackScreen(QDialog):
             # print("New Ratings Data"ratings)
         except:
             print("Rating Failed", list(ratings))
-
-
+    def tryToSendRatings(table,hangout,ratings):
+        try:
+            addMultipleRatings(table,hangout,ratings)
+        except:
+            pass
+        
     def navigateToPaymentOptionScreen(self):
         # print("prev self.ratings", self.ratings)
         
@@ -949,7 +953,8 @@ class FeedbackScreen(QDialog):
         # except:
             # multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             
-            runInNewThread(self, lambda:addMultipleRatings(table,hangoutId,list(_ratings)))
+    
+            runInNewThread(self, lambda:self.tryToSendRatings(table,hangoutId,list(_ratings)))
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
 
