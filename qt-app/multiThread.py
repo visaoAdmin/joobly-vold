@@ -189,7 +189,7 @@ class MultiApiThreadRunner(object):
         self.currentThread.run = self.syncAPICalls
         self.hangouts = []
         self.currentThread.start()
-        # self.queue2 = StorageQueue("background_queue")
+        self.queue2 = StorageQueue("background_queue")
         self.queue = StorageQueue(path)
     
     def addAPICall(self,func,args):
@@ -198,23 +198,56 @@ class MultiApiThreadRunner(object):
         self.queue.push(func,args)
     def syncAPICalls(self):
         while(True):
+            
             time.sleep(0.05)
+            foregroundAPI = None
+            try :
+                foregroundAPI = self.queue.peek()
+            except:
+                pass
+            if foregroundAPI:
+                try:
+                    
+                    print("1--",foregroundAPI)
+                    runFunction = foregroundAPI[0]
+                    args = foregroundAPI[1]
+                    # print("2nd",runFunction)
+                    
+                    try:
+                        r = runFunction(*args)
+                        self.queue.pop()
+                        if(r.status_code==503):
+                            continue
+                    except  requests.exceptions.ConnectionError:
+                        if(runFunction.__name__=="startHangout"):
+                            self.queue2.push(sendHangout,args)
+                        elif(runFunction.__name__=="callWaiter"):
+                            self.queue2.push(startServiceCall,args)
+                        elif(runFunction.__name__=="waiterArrived"):
+                            self.queue2.push(endServiceCall,args)
+                        elif(runFunction.__name__=="addMultipleRatings"):
+                            self.queue2.push(sendRatings,args)
+                        self.queue.pop()
+                        
+                except:
+                    
+                    pass
             backgroundAPI = None
             try :
-                backgroundAPI = self.queue.peek()
+                backgroundAPI = self.queue2.peek()
             except:
                 pass
             if backgroundAPI:
                 try:
                     
-                    print(backgroundAPI)
+                    print("2--",backgroundAPI)
                     runFunction = backgroundAPI[0]
                     args = backgroundAPI[1]
                     # print("2nd",runFunction)
                     
                     try:
                         r = runFunction(*args)
-                        self.queue.pop()
+                        self.queue2.pop()
                         if(r.status_code==503):
                             continue
                     except  requests.exceptions.ConnectionError:
