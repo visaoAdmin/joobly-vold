@@ -176,15 +176,12 @@ def whiteLight():
 
 def navigateToScreen(Screen):
         nextScreen = Screen
-        try:
-            nextScreen.clear()
-            print("Cleared")
-        except Exception as e:
-            # print("%^&*()*&^%&*&^&^&*()*&^*(",e)
-            pass
-        mainStackedWidget.addWidget(nextScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        
+        index = mainStackedWidget.indexOf(nextScreen)
+        if(index != -1):
+            mainStackedWidget.setCurrentIndex(index)
+        else:
+            mainStackedWidget.addWidget(nextScreen)
+            mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)    
 
 def navigateGoBack():
         mainStackedWidget.removeWidget(mainStackedWidget.currentWidget())
@@ -230,6 +227,8 @@ def renderLogo(self, key="logo", width=220, height=220):
         self.__dict__[key].setPixmap(pixmap)
 
 
+
+
 class SplashScreen(QDialog):
     def __init__(self):
         super(SplashScreen, self).__init__()
@@ -237,7 +236,8 @@ class SplashScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToWelcome)
     
     def navigateToWelcome(self):
-        navigateToScreen(WelcomeScreen)
+        navigateToScreen(welcomeScreen)
+
 
 
 class WelcomeScreen(QDialog):
@@ -247,7 +247,7 @@ class WelcomeScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToWelcome)
 
     def navigateToWelcome(self):
-        navigateToScreen(WifiListScreen)
+        navigateToScreen(wifiListScreen)
 
 class ReserveScreen(QDialog):
     def __init__(self):
@@ -262,6 +262,7 @@ class ReserveScreen(QDialog):
     def navigateToWelcome(self):
         navigateToScreen(waiterPinScreen)
 
+
 class WifiListScreen(QDialog):
     def __init__(self):
         super(WifiListScreen, self).__init__()
@@ -269,7 +270,8 @@ class WifiListScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToWifiConnected)
     
     def navigateToWifiConnected(self):
-        navigateToScreen(WifiConnectedScreen)
+        navigateToScreen(wifiConnectedScreen)
+
 
 class WifiConnectedScreen(QDialog):
     def __init__(self):
@@ -278,7 +280,8 @@ class WifiConnectedScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
     
     def navigateToIdleLockScreen(self):
-        navigateToScreen(IdleLockScreen)
+        navigateToScreen(idleLockScreen)
+
 
 class IdleLockScreen(QDialog):
     def __init__(self):
@@ -297,6 +300,7 @@ class IdleLockScreen(QDialog):
     def navigateToWaiterPinScreen(self):
         navigateToScreen(waiterPinScreen)
 
+
 class WaiterPinScreen(QDialog):
     pin=[]
 
@@ -309,10 +313,6 @@ class WaiterPinScreen(QDialog):
 
     def setupKeyboard(self):
         setupKeyboard(self)
-
-    def clear(self):
-        self.pin.clear() 
-        self.renderPin()
 
     def onKey(self, key):
         global waiterId
@@ -357,7 +357,8 @@ class WaiterPinScreen(QDialog):
                 navigateToScreen(waiterNotExist)
         except:
             navigateToScreen(waiterNotExist)
-         
+
+ 
 class WaiterNotExist(QDialog):
     pin=[]
 
@@ -371,9 +372,6 @@ class WaiterNotExist(QDialog):
     def setupKeyboard(self):
         setupKeyboard(self)
 
-    def clear(self):
-        self.pin = []
-        self.renderPin()
     def onKey(self, key):
         global waiterId
         length=len(self.pin)
@@ -418,6 +416,7 @@ class WaiterNotExist(QDialog):
         except:
             navigateToScreen(waiterNotExist)
               
+waiterNotExist = WaiterNotExist()
 class AboutScreen(QDialog):
     def __init__(self):
         super(AboutScreen, self).__init__()
@@ -446,8 +445,8 @@ class AboutScreen(QDialog):
         loadConfig()
         self.renderLabels()
 
-        
 
+      
 class ConfirmTable(QDialog):
     def __init__(self):
         super(ConfirmTable, self).__init__()
@@ -456,8 +455,9 @@ class ConfirmTable(QDialog):
         self.clearTableButton.clicked.connect(clearStorage)
     
     def navigateToChooseNumberOfGuests(self):
-        navigateToScreen(ChooseNumberOfGuests)
+        navigateToScreen(chooseNumberOfGuests)
 
+confirmTable = ConfirmTable()
 class WaiterMenuScreen(QDialog):
     def __init__(self):
         super(WaiterMenuScreen, self).__init__()
@@ -522,7 +522,6 @@ class TableSelectionScreen(QDialog):
     
     def navigateToIdleLockScreen(self):
         navigateToRestart()
-
 class ChooseNumberOfGuests(QDialog):
     global guestCount
     guestCount=""
@@ -536,13 +535,7 @@ class ChooseNumberOfGuests(QDialog):
         
     def setupKeyboard(self):
         setupKeyboard(self)
-
-    def clear(self):
-        global guestCount
-        guestCount=""
-        countLabel = "10+" if guestCount == "10" else guestCount
-        self.__dict__["inputCount"].setText(countLabel)
-
+    
     def onKey(self, key):
         global guestCount
         if key == "x":
@@ -573,6 +566,7 @@ class ChooseNumberOfGuests(QDialog):
             print("Failed to startHangout")
         navigateToScreen(tapForServiceScreen)
 
+chooseNumberOfGuests = ChooseNumberOfGuests()
 class CheckedInScreen(QDialog):
     def __init__(self):
         super(CheckedInScreen, self).__init__()
@@ -748,10 +742,10 @@ class DrinkItemScreen(QDialog):
         self.backButton.clicked.connect(self.navigateBack)
     
     def navigateBack(self):
-        navigateToScreen(DinerActionMenuScreen)
+        navigateToScreen(dinerActionMenuScreen)
     
     def navigateToCartScreen(self):
-        navigateToScreen(CartScreen)
+        navigateToScreen(cartScreen)
 
 # class FoodMenuScreen(QDialog):
 #     def __init__(self):
@@ -882,7 +876,6 @@ class PayQRScreen(QDialog):
             print("Failed to turn bill light")
 
 
-
 class FeedbackScreen(QDialog):
     buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
     normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
@@ -929,11 +922,7 @@ class FeedbackScreen(QDialog):
             i = a+1
             style = self.selectedStyle if i <= rating else self.normalStyle
             self.__dict__[type+str(i)].setStyleSheet(style)
-    def clear(self):
-        
-        for i in ["food","service","ambience","music"]:
-            self.markRating(i,0)
-        self.ratings.clear()
+    
     def sendRatings(self,ratings):
         try:
             # print("Ratings Data", ratings)
@@ -978,7 +967,6 @@ class FeedbackScreen(QDialog):
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(thankYouScreen)
 
-
 class ThankYouScreen(QDialog):
     def __init__(self):
         super(ThankYouScreen, self).__init__()
@@ -991,7 +979,6 @@ class ThankYouScreen(QDialog):
     
     def navigateToIdleLockScreen(self):
         navigateToRestart()
-
 
 
 
@@ -1011,41 +998,14 @@ print(storage)
 app=QApplication(sys.argv)
 app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
-# idleLockScreen = IdleLockScreen()
-cartScreen = CartScreen()
-foodMenuScreen = FoodMenuScreen()
-drinkItemScreen = DrinkItemScreen()
-quickMenuScreen = QuickMenuScreen()
-dinerActionMenuScreen = DinerActionMenuScreen()
-closeServiceScreen = CloseServiceScreen()
-checkedInScreen = CheckedInScreen()
-reserveScreen = ReserveScreen()
-wifiListScreen = WifiListScreen()
-wifiConnectedScreen = WifiConnectedScreen()
-idleLockScreen = IdleLockScreen()
-waiterPinScreen = WaiterPinScreen()
-tapForServiceScreen = TapForServiceScreen()
 
-tableSelectionScreen = TableSelectionScreen()
-waiterMenuScreen  = WaiterMenuScreen()
-aboutScreen = AboutScreen() 
-paymentOptionsScreen = PaymentOptionsScreen()
 
-payQRScreen = PayQRScreen()
-serverWillAssistScreen = ServerWillAssistScreen()
-waiterNotExist = WaiterNotExist()
-confirmTable = ConfirmTable()
-splashScreen = SplashScreen()
-thankYouScreen = ThankYouScreen()
-chooseNumberOfGuests = ChooseNumberOfGuests()
-feedbackScreen = FeedbackScreen()
 
-billScreen = BillScreen()
 if ENV == "dev":
     #if start any other screen change this.
-    mainwindow=idleLockScreen
+    mainwindow=IdleLockScreen()
 else:
-    mainwindow=idleLockScreen
+    mainwindow=IdleLockScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
@@ -1060,6 +1020,35 @@ else:
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 try:
+    cartScreen = CartScreen()
+    foodMenuScreen = FoodMenuScreen()
+    drinkItemScreen = DrinkItemScreen()
+    quickMenuScreen = QuickMenuScreen()
+    dinerActionMenuScreen = DinerActionMenuScreen()
+    closeServiceScreen = CloseServiceScreen()
+    checkedInScreen = CheckedInScreen()
+    reserveScreen = ReserveScreen()
+    wifiListScreen = WifiListScreen()
+    wifiConnectedScreen = WifiConnectedScreen()
+    idleLockScreen = IdleLockScreen()
+    waiterPinScreen = WaiterPinScreen()
+    tapForServiceScreen = TapForServiceScreen()
+
+    tableSelectionScreen = TableSelectionScreen()
+    waiterMenuScreen  = WaiterMenuScreen()
+    aboutScreen = AboutScreen() 
+    paymentOptionsScreen = PaymentOptionsScreen()
+
+    payQRScreen = PayQRScreen()
+    serverWillAssistScreen = ServerWillAssistScreen()
+
+    splashScreen = SplashScreen()
+    thankYouScreen = ThankYouScreen()
+    feedbackScreen = FeedbackScreen()
+
+    billScreen = BillScreen()
     sys.exit(app.exec())
+    
+
 except:
     print("Exiting")
