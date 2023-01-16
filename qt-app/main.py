@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
+from redis_queue import foregroundQueue,handle_failure
 import copy 
 import signal
 import urllib.request
@@ -58,6 +59,7 @@ def loadConfig():
         # print("Tables",table)
         saveStorage()
     except:
+        table = loadStorage()['tableId']
         # storage={}
         # saveStorage()
         print("Failed to load config")
@@ -562,7 +564,9 @@ class ChooseNumberOfGuests(QDialog):
             # print(table)
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             serviceCalls['hangoutId'] = hangoutId
-            startHangout(table, guestCount, waiterId, hangoutId)
+
+            # startHangout(table, guestCount, waiterId, hangoutId)
+            foregroundQueue.enqueue(startHangout,table, guestCount, waiterId, hangoutId,on_failure=handle_failure)
         # try:
             # startHangout(table, guestCount, waiterId, hangoutId)
         # except:
@@ -613,7 +617,8 @@ class TapForServiceScreen(QDialog):
             self.previousExperience = self.experience
     
     def navigateToCloseServiceScreen(self):
-        runInNewThread(self, self.callWaiter)
+        # runInNewThread(self, self.callWaiter)
+        self.callWaiter()
         navigateToScreen(closeServiceScreen)
     
     def callWaiter(self):
@@ -624,8 +629,9 @@ class TapForServiceScreen(QDialog):
             serviceCalls[top]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
             # try:
-
-            callWaiter(table, hangoutId, callNumber)
+            print("Table",table)
+            foregroundQueue.enqueue(callWaiter,table, hangoutId, callNumber) 
+            # callWaiter(table, hangoutId, callNumber)
             # except:
             # multiApiThreadRunner.addAPICall(callWaiter,[getTableId(), hangoutId, callNumber])
         except:
@@ -651,7 +657,8 @@ class CloseServiceScreen(QDialog):
         lightThreadRunner.launch(blueLight)
     
     def navigateToTapForServiceScreen(self):
-        runInNewThread(self, self.waiterArrived)
+        # runInNewThread(self, self.waiterArrived)
+        self.waiterArrived()
         navigateToScreen(tapForServiceScreen)
     
     def waiterArrived(self):
@@ -665,11 +672,13 @@ class CloseServiceScreen(QDialog):
             isWaiterCalled = False
             # try:
             #     print("waiter arrived")
-            waiterArrived(table, hangoutId, callNumber, serviceCalls[top]['total'])
+            # waiterArrived(table, hangoutId, callNumber, serviceCalls[top]['total'])
+            foregroundQueue.enqueue(waiterArrived,table, hangoutId, callNumber, serviceCalls[top]['total'])
             # except:
             # multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
         except:
+            pass
             print("Waiter Arrived Failed", table, hangoutId, callNumber, serviceCalls[top]['total'])
     
     def navigateToDinerActionMenu(self):
@@ -970,11 +979,12 @@ class FeedbackScreen(QDialog):
         # try:
         #     print(list(_ratings)) 
             # addMultipleRatings(table,hangoutId,list(_ratings))
+            foregroundQueue.enqueue(addMultipleRatings,table,hangoutId,list(_ratings))
         # except:
             # multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             
     
-            runInNewThread(self, lambda:self.tryToSendRatings(table,hangoutId,list(_ratings)))
+            # runInNewThread(self, lambda:self.tryToSendRatings(table,hangoutId,list(_ratings)))
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(thankYouScreen)
 

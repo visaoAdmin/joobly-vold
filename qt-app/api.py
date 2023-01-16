@@ -1,8 +1,13 @@
 import requests
 from config.config import API_URL
 import os
+import copy
+from background_api import sendHangout,startServiceCall,endServiceCall,sendRatings
+from redis_queue import backgroundQueue,handle_failure
+from rq import Retry, Queue
 
-
+background_jobs = []
+index = -1
 
 BASE_URL = API_URL
 print("BASE_URL",BASE_URL)
@@ -17,15 +22,24 @@ def getConfig(serialNumber):
 
 
 def startHangout(table, guestCount, waiterId, hangoutId):
-    print("startHangout",table, guestCount, waiterId, hangoutId)
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "guestCount": guestCount,
-        "waiter": waiterId,
-        "hangout": hangoutId,
-        "type": "CHECKIN"
-    }, timeout=TIMEOUT)
-    return response
+    try:
+        print("startHangout",table, guestCount, waiterId, hangoutId)
+        response = requests.post(BASE_URL + "/pod-events", json={
+            "table": table,
+            "guestCount": guestCount,
+            "waiter": waiterId,
+            "hangout": hangoutId,
+            "type": "CHECKIN"
+        }, timeout=TIMEOUT)
+        return response
+    except:
+        global background_jobs,index
+        if(index==-1):
+            job =  backgroundQueue.enqueue(sendHangout,table, guestCount, waiterId, hangoutId,retry=Retry(max=8640, interval=10),on_failure=handle_failure)
+        else:
+            job = backgroundQueue.enqueue(sendHangout,table, guestCount, waiterId, hangoutId,depends_on = background_jobs[index],retry=Retry(max=8640, interval=10))
+        background_jobs.append(job)
+        index+=1
 
 def finishHangout(hangoutId):
     # print("startHangout",hangoutId)
@@ -36,28 +50,42 @@ def finishHangout(hangoutId):
 
 
 def callWaiter(table, hangoutId, callNumber):
-    print("CAlling waiter")
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "hangout": hangoutId,
-        "callNumber": callNumber,
-        "type": "WAITER_CALLED"
-    }, timeout = TIMEOUT)
-    return response
-
-
+    try:
+        print("CAlling waiter")
+        response = requests.post(BASE_URL + "/pod-events", json={
+            "table": table,
+            "hangout": hangoutId,
+            "callNumber": callNumber,
+            "type": "WAITER_CALLED"
+        }, timeout = TIMEOUT)
+        return response
+    except:
+        global background_jobs,index
+        if(index==-1):
+            job = backgroundQueue.enqueue(startServiceCall,table, hangoutId, callNumber,retry=Retry(max=8640, interval=10))
+        else:
+            job = backgroundQueue.enqueue(startServiceCall,table, hangoutId, callNumber,depends_on = background_jobs[index],retry=Retry(max=8640, interval=10))
+        background_jobs.append(job)
+        index+=1
 def waiterArrived(table, hangoutId, callNumber, responseTime):
-    print("waiter arrived")
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "hangout": hangoutId,
-        "callNumber": callNumber,
-        "responseTime": responseTime,
-        "type": "WAITER_ARRIVED"
-    }, timeout = TIMEOUT)
-    return response
-
-
+    try:
+        print("waiter arrived")
+        response = requests.post(BASE_URL + "/pod-events", json={
+            "table": table,
+            "hangout": hangoutId,
+            "callNumber": callNumber,
+            "responseTime": responseTime,
+            "type": "WAITER_ARRIVED"
+        }, timeout = TIMEOUT)
+        return response
+    except:
+        global background_jobs,index
+        if(index==-1):
+            job =  backgroundQueue.enqueue(endServiceCall,table, hangoutId, callNumber, responseTime,retry=Retry(max=8640, interval=10))
+        else:
+            job = backgroundQueue.enqueue(endServiceCall,table, hangoutId, callNumber, responseTime,depends_on = background_jobs[index],retry=Retry(max=8640, interval=10))
+        background_jobs.append(job)
+        index+=1
 def serviceDelayed(table, hangoutId, callNumber):
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
@@ -83,15 +111,23 @@ def waiterExists(waiterId,restaurantId):
     return response.json()['data']['waiterExists']
 
 def addMultipleRatings(table, hangoutId, ratings):
-    print("rating sent")
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "hangout": hangoutId,
-        "type": "RATINGS_SUBMITTED",
-        "ratings": ratings
-    }, timeout = TIMEOUT)
-    return response
-
+    try:
+        print("rating sent")
+        response = requests.post(BASE_URL + "/pod-events", json={
+            "table": table,
+            "hangout": hangoutId,
+            "type": "RATINGS_SUBMITTED",
+            "ratings": ratings
+        }, timeout = TIMEOUT)
+        return response
+    except:
+        global background_jobs,index
+        if(index==-1):
+            job = backgroundQueue.enqueue(sendRatings,table, hangoutId, ratings,retry=Retry(max=8640, interval=10))
+        else:
+            job = backgroundQueue.enqueue(sendRatings,table, hangoutId, ratings,depends_on = background_jobs[index],retry=Retry(max=8640, interval=10))
+        background_jobs.append(job)
+        index+=1
 def notifyExperience(table, hangoutId, experience, previosExperience):
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
@@ -119,59 +155,6 @@ def getAllTables(restaurantId):
 #     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
 #     response = requests.post(url,json=hangout)
 
-def sendHangout(table, guestCount, waiterId, hangoutId):
-    url = BASE_URL + "/hangouts"
-    response = requests.post(url, json={
-        "table": table,
-        "guestCount": guestCount,
-        "waiter": waiterId,
-        "hangout": hangoutId,
-        "push":"true"
-    }, timeout=TIMEOUT)
-    return response
-def callWaiter(table, hangoutId, callNumber):
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "hangout": hangoutId,
-        "callNumber": callNumber,
-        "type": "WAITER_CALLED"
-    }, timeout = TIMEOUT)
-    return response
-
-
-def waiterArrived(table, hangoutId, callNumber, responseTime):
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "hangout": hangoutId,
-        "callNumber": callNumber,
-        "responseTime": responseTime,
-        "type": "WAITER_ARRIVED"
-    }, timeout = TIMEOUT)
-    return response
-def startServiceCall(table, hangoutId, callNumber):
-    url = BASE_URL + "/serviceCalls/start"
-    response = requests.post(url,json={
-        "table":table,
-        "hangout":hangoutId,
-        "callNumber":callNumber,
-        "push":"true"
-    },timeout=TIMEOUT)
-def endServiceCall(table, hangoutId, callNumber, responseTime):
-    url = BASE_URL + "/serviceCalls/end"
-    response = requests.post(url,json={
-        "table":table,
-        "hangout":hangoutId,
-        "callNumber":callNumber,
-        "responseTime":responseTime,
-        "push":"true"
-    },timeout=TIMEOUT)
-def sendRatings(table, hangoutId, ratings):
-    response = requests.post(BASE_URL + "/ratings", json={
-        "hangout": hangoutId,
-        "ratings": ratings,
-        "push":"true"
-    }, timeout = TIMEOUT)
-    return response
 apiDict ={
     "getConfig":getConfig,
     "startHangout":startHangout,
