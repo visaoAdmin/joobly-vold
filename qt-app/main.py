@@ -472,8 +472,11 @@ class WaiterMenuScreen(QDialog):
         print("Table ID:", tableId)
         self.tableNumber.setText(tableId)
         self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
-        lightThreadRunner.launch(yellowLight)
+
     
+    def clear(self):
+        lightThreadRunner.launch(yellowLight)
+
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(chooseNumberOfGuests)
 
@@ -602,7 +605,6 @@ class TapForServiceScreen(QDialog):
         # slider.setMaximum(10)
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
-        lightThreadRunner.launch(yellowLight)
 
     def onExperienceChanged(self, value):
         print(value)
@@ -610,6 +612,8 @@ class TapForServiceScreen(QDialog):
             self.experience = "Good"
         if (value < 6):
             self.experience = "Bad"
+    def clear(self):
+        lightThreadRunner.launch(yellowLight)
 
     def experienceMarked(self):
         if(self.previousExperience != self.experience):
@@ -654,8 +658,10 @@ class CloseServiceScreen(QDialog):
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         # thr.join()
-        lightThreadRunner.launch(blueLight)
     
+    def clear(self):
+        lightThreadRunner.launch(blueLight)
+
     def navigateToTapForServiceScreen(self):
         # runInNewThread(self, self.waiterArrived)
         self.waiterArrived()
@@ -863,8 +869,10 @@ class PayQRScreen(QDialog):
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
         runInNewThread(self, self.loadQRCode)
-        lightThreadRunner.launch(self.billLight)
     
+    def clear(self):
+        lightThreadRunner.launch(self.billLight)
+
     def navigateBack(self):
         navigateGoBack()
     
