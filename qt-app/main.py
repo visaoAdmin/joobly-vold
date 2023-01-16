@@ -511,7 +511,7 @@ class TableSelectionScreen(QDialog):
         try:
             
             tables = storage["tables"]
-            tables = getAllTables(getRestaurantId())
+            # tables = getAllTables(getRestaurantId())
             
             # tables = getAllTables(restaurantId)
             print(tables)
@@ -573,6 +573,8 @@ class ChooseNumberOfGuests(QDialog):
     def navigateToCheckedInScreen(self):
         try: 
             global hangoutId,guestCount
+            if(guestCount==0 or guestCount==""):
+                return
             table = getTableId()
             # print(table)
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
