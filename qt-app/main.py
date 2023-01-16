@@ -509,7 +509,11 @@ class TableSelectionScreen(QDialog):
     
     def loadTables(self):
         try:
+            
             tables = storage["tables"]
+            tables = getAllTables(getRestaurantId())
+            
+            # tables = getAllTables(restaurantId)
             print(tables)
             for t in tables:
                 # print(t)
@@ -517,6 +521,7 @@ class TableSelectionScreen(QDialog):
                 item.setSizeHint(QSize(400, 60))
                 self.listWidget.addItem(item)
         except:
+            
             print("Failed to load tables")
 
     def tableSelected(self,item):
@@ -707,7 +712,7 @@ class DinerActionMenuScreen(QDialog):
         runInNewThread(self, self.loadQRCode)
         global isOnMenuScreen
         isOnMenuScreen=True
-        goBackToDinerHomeAfter(45)
+        # goBackToDinerHomeAfter(45)
 
         # self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
         # response = requests.get('http://jsonplaceholder.typicode.com/todos/1')
