@@ -429,6 +429,11 @@ class AboutScreen(QDialog):
         self.renderLabels()
     
     def renderLabels(self):
+        if(storage==None):
+            self.restaurantLabel.setText("Assign restaurant and table")
+            self.brightnessLabel.setText("255")
+
+            return
         if "restauranName" in storage:
             self.restaurantLabel.setText(storage["restauranName"])
         else:
