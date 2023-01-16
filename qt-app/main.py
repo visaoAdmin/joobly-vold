@@ -60,7 +60,7 @@ def loadConfig():
         saveStorage()
     except:
         table = loadStorage()['tableId']
-        # storage={}
+        storage={}
         # saveStorage()
         print("Failed to load config")
 
