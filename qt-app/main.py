@@ -60,7 +60,7 @@ def loadConfig():
         saveStorage()
     except:
         
-        storage={}
+        storage=loadStorage()
         # saveStorage()
         print("Failed to load config")
 
@@ -352,9 +352,12 @@ class WaiterPinScreen(QDialog):
         navigateToScreen(confirmTable)
     
     def navigateToWaiterMenuScreen(self):
+        print(storage)
+            
         try:
             thePin = "".join(self.pin)
             if  ("waiters" in storage and thePin in storage["waiters"]):
+                print(storage["waiters"])
                 navigateToScreen(waiterMenuScreen)
             else:
                 navigateToScreen(waiterNotExist)
