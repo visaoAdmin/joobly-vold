@@ -354,7 +354,7 @@ class WaiterPinScreen(QDialog):
     def navigateToWaiterMenuScreen(self):
         try:
             thePin = "".join(self.pin)
-            if  ("waiters" in storage and thePin in storage["waiters"]) or waiterExists(thePin,getRestaurantId()):
+            if  ("waiters" in storage and thePin in storage["waiters"]):
                 navigateToScreen(waiterMenuScreen)
             else:
                 navigateToScreen(waiterNotExist)
