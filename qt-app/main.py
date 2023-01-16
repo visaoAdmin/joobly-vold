@@ -256,8 +256,8 @@ class ReserveScreen(QDialog):
         super(ReserveScreen, self).__init__()
         loadUi("ui/21ReserveScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWelcome)
-        runInNewThread(self, self.loadLogo)
-    
+        # runInNewThread(self, self.loadLogo)
+        self.loadLogo()
     def loadLogo(self):
         renderLogo(self)
 
@@ -288,7 +288,8 @@ class IdleLockScreen(QDialog):
         loadUi("ui/05IdleLockScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterPinScreen)
         self.appCloseButton.clicked.connect(mainStackedWidget.close)
-        runInNewThread(self, self.loadConfigAndLogo)
+        self.loadConfigAndLogo()
+        # runInNewThread(self, self.loadConfigAndLogo)
 
     def loadConfigAndLogo(self):
         loadConfig()
@@ -504,7 +505,8 @@ class TableSelectionScreen(QDialog):
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
         self.backButton.clicked.connect(navigateGoBack)
-        runInNewThread(self, self.loadTables)
+        self.loadTables()
+        # runInNewThread(self, self.loadTables)
 
     
     def loadTables(self):
@@ -711,7 +713,8 @@ class DinerActionMenuScreen(QDialog):
         loadUi("ui/12DinerActionMenuScreen.ui", self)
         # self.goToNextButton.clicked.connect(self.navigateToQuickMenuScreen)
         self.goBackButton.clicked.connect(self.navigateGoBack)
-        runInNewThread(self, self.loadQRCode)
+        self.loadQRCode()
+        # runInNewThread(self, self.loadQRCode)
         global isOnMenuScreen
         isOnMenuScreen=True
         # goBackToDinerHomeAfter(45)
@@ -880,7 +883,8 @@ class PayQRScreen(QDialog):
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
-        runInNewThread(self, self.loadQRCode)
+        self.loadQRCode()
+        # runInNewThread(self, self.loadQRCode)
     
     def clear(self):
         lightThreadRunner.launch(self.billLight)
@@ -1014,7 +1018,8 @@ class ThankYouScreen(QDialog):
         super(ThankYouScreen, self).__init__()
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
-        runInNewThread(self, self.loadLogo)
+        self.loadLogo()
+        # runInNewThread(self, self.loadLogo)
     
     def loadLogo(self):
         renderLogo(self)
