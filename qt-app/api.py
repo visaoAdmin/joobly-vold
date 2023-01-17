@@ -31,6 +31,8 @@ def startHangout(table, guestCount, waiterId, hangoutId):
         "hangout": hangoutId,
         "type": "CHECKIN"
     }, timeout=TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
     return response
     
 
@@ -65,6 +67,8 @@ def callWaiter(table, hangoutId, callNumber):
         "callNumber": callNumber,
         "type": "WAITER_CALLED"
     }, timeout = TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
     return response
 def callWaiterFailureHandler(job, connection, type, value, traceback):    
     global background_jobs,index
@@ -88,6 +92,8 @@ def waiterArrived(table, hangoutId, callNumber, responseTime):
         "responseTime": responseTime,
         "type": "WAITER_ARRIVED"
     }, timeout = TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
     return response
     
 
@@ -124,6 +130,8 @@ def rate(table, hangoutId, ratingType, rating):
 def waiterExists(waiterId,restaurantId):
     response = requests.get(BASE_URL + "/waiters/"+str(waiterId)+"/restaurants/"+str(restaurantId)+"/exists",timeout=TIMEOUT)
     # print(response.json())
+    if(response.status_code==503):
+        raise Exception()
     return response.json()['data']['waiterExists']
 
 def addMultipleRatings(table, hangoutId, ratings):
@@ -135,6 +143,8 @@ def addMultipleRatings(table, hangoutId, ratings):
         "type": "RATINGS_SUBMITTED",
         "ratings": ratings
     }, timeout = TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
     return response
     
     

@@ -14,6 +14,8 @@ def sendHangout(table, guestCount, waiterId, hangoutId):
         "hangout": hangoutId,
         "push":"true"
     }, timeout=TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
     return response
 
 def startServiceCall(table, hangoutId, callNumber):
@@ -25,6 +27,8 @@ def startServiceCall(table, hangoutId, callNumber):
         "callNumber":callNumber,
         "push":"true"
     },timeout=TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
 def endServiceCall(table, hangoutId, callNumber, responseTime):
     url = BASE_URL + "/serviceCalls/end"
     response = requests.post(url,json={
@@ -34,6 +38,8 @@ def endServiceCall(table, hangoutId, callNumber, responseTime):
         "responseTime":responseTime,
         "push":"true"
     },timeout=TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
 def sendRatings(table, hangoutId, ratings):
     response = requests.post(BASE_URL + "/ratings", json={
         "table":table,
@@ -41,4 +47,6 @@ def sendRatings(table, hangoutId, ratings):
         "ratings": ratings,
         "push":"true"
     }, timeout = TIMEOUT)
+    if(response.status_code==503):
+        raise Exception()
     return response
