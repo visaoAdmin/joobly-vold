@@ -585,6 +585,7 @@ class ChooseNumberOfGuests(QDialog):
             serviceCalls['hangoutId'] = hangoutId
 
             # startHangout(table, guestCount, waiterId, hangoutId)
+            
             foregroundQueue.enqueue(startHangout,table, guestCount, waiterId, hangoutId,on_failure=startHangoutFailureHandler)
         # try:
             # startHangout(table, guestCount, waiterId, hangoutId)
@@ -650,11 +651,13 @@ class TapForServiceScreen(QDialog):
             serviceCallStartTime=getCurrentTime()
             # try:
             # print(background_jobs)
-            foregroundQueue.enqueue(callWaiter,table, hangoutId, callNumber,on_failure=callWaiterFailureHandler) 
+            foregroundQueue.enqueue(callWaiter,getTableId(), hangoutId, callNumber,on_failure=callWaiterFailureHandler) 
             # callWaiter(table, hangoutId, callNumber)
             # except:
             # multiApiThreadRunner.addAPICall(callWaiter,[getTableId(), hangoutId, callNumber])
         except:
+
+
             print("Call Waiter Failed", table, hangoutId, callNumber)
     
     def navigateToDinerActionMenu(self):
@@ -695,7 +698,7 @@ class CloseServiceScreen(QDialog):
             # try:
             #     print("waiter arrived")
             # waiterArrived(table, hangoutId, callNumber, serviceCalls[top]['total'])
-            foregroundQueue.enqueue(waiterArrived,table, hangoutId, callNumber, serviceCalls[top]['total'],on_failure=waiterArrivedFailureHandler)
+            foregroundQueue.enqueue(waiterArrived,getTableId(), hangoutId, callNumber, serviceCalls[top]['total'],on_failure=waiterArrivedFailureHandler)
             # except:
             # multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
@@ -1005,7 +1008,7 @@ class FeedbackScreen(QDialog):
         # try:
         #     print(list(_ratings)) 
             # addMultipleRatings(table,hangoutId,list(_ratings))
-            foregroundQueue.enqueue(addMultipleRatings,table,hangoutId,list(_ratings),on_failure=addMultipleRatingsFailureHandler)
+            foregroundQueue.enqueue(addMultipleRatings,getTableId(),hangoutId,list(_ratings),on_failure=addMultipleRatingsFailureHandler)
         # except:
             # multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             
