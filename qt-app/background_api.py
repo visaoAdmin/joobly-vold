@@ -36,6 +36,7 @@ def endServiceCall(table, hangoutId, callNumber, responseTime):
     },timeout=TIMEOUT)
 def sendRatings(table, hangoutId, ratings):
     response = requests.post(BASE_URL + "/ratings", json={
+        "table":table,
         "hangout": hangoutId,
         "ratings": ratings,
         "push":"true"
