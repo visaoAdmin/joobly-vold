@@ -12,6 +12,7 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,background_jobs
 import threading
 from subprocess import Popen
 import json
@@ -38,7 +39,7 @@ serialNumber=getserial()
 pixmap=None
 serviceCalls = {}
 serviceCallsSyncer = ServiceCallsSyncer()
-multiApiThreadRunner = MultiApiThreadRunner("function_queue")
+
 logoData =None
 
 
@@ -180,9 +181,7 @@ def navigateToScreen(Screen):
         nextScreen = Screen
         try:
             nextScreen.clear()
-            print("Cleared")
         except Exception as e:
-            # print("%^&*()*&^%&*&^&^&*()*&^*(",e)
             pass
         mainStackedWidget.addWidget(nextScreen)
         mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
@@ -586,7 +585,7 @@ class ChooseNumberOfGuests(QDialog):
             serviceCalls['hangoutId'] = hangoutId
 
             # startHangout(table, guestCount, waiterId, hangoutId)
-            foregroundQueue.enqueue(startHangout,table, guestCount, waiterId, hangoutId,on_failure=handle_failure)
+            foregroundQueue.enqueue(startHangout,table, guestCount, waiterId, hangoutId,on_failure=startHangoutFailureHandler)
         # try:
             # startHangout(table, guestCount, waiterId, hangoutId)
         # except:
@@ -650,8 +649,8 @@ class TapForServiceScreen(QDialog):
             serviceCalls[top]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
             # try:
-            print("Table",table)
-            foregroundQueue.enqueue(callWaiter,table, hangoutId, callNumber) 
+            # print(background_jobs)
+            foregroundQueue.enqueue(callWaiter,table, hangoutId, callNumber,on_failure=callWaiterFailureHandler) 
             # callWaiter(table, hangoutId, callNumber)
             # except:
             # multiApiThreadRunner.addAPICall(callWaiter,[getTableId(), hangoutId, callNumber])
@@ -696,7 +695,7 @@ class CloseServiceScreen(QDialog):
             # try:
             #     print("waiter arrived")
             # waiterArrived(table, hangoutId, callNumber, serviceCalls[top]['total'])
-            foregroundQueue.enqueue(waiterArrived,table, hangoutId, callNumber, serviceCalls[top]['total'])
+            foregroundQueue.enqueue(waiterArrived,table, hangoutId, callNumber, serviceCalls[top]['total'],on_failure=waiterArrivedFailureHandler)
             # except:
             # multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
             callNumber = callNumber+1
@@ -1006,7 +1005,7 @@ class FeedbackScreen(QDialog):
         # try:
         #     print(list(_ratings)) 
             # addMultipleRatings(table,hangoutId,list(_ratings))
-            foregroundQueue.enqueue(addMultipleRatings,table,hangoutId,list(_ratings))
+            foregroundQueue.enqueue(addMultipleRatings,table,hangoutId,list(_ratings),on_failure=addMultipleRatingsFailureHandler)
         # except:
             # multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
             

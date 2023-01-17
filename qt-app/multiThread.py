@@ -3,7 +3,7 @@ import time
 import requests
 import os
 import pickle
-from api import sendHangout,startHangout,finishHangout,apiDict,startServiceCall,endServiceCall,sendRatings
+# from api import sendHangout,startHangout,finishHangout,apiDict,startServiceCall,endServiceCall,sendRatings
 thread_group=[]
 globalPool = QThreadPool.globalInstance()
 def initThreadGroup():
@@ -193,48 +193,48 @@ class MultiApiThreadRunner(object):
         self.hangouts = []
         self.currentThread.start()
         self.queue2 = StorageQueue("background_queue")
-        self.queue = StorageQueue(path)
+        # self.queue = StorageQueue(path)
     
     def addAPICall(self,func,args):
-        
-        
-        self.queue.push(func,args)
+        print(func,args)
+        self.queue2.push(func,args)
     def syncAPICalls(self):
         while(True):
             
-            time.sleep(0.05)
-            foregroundAPI = None
-            try :
-                foregroundAPI = self.queue.peek()
-            except:
-                pass
-            if foregroundAPI:
-                try:
+            time.sleep(2)
+            print(self.queue2.queue)
+            # foregroundAPI = None
+            # try :
+            #     foregroundAPI = self.queue.peek()
+            # except:
+            #     pass
+            # if foregroundAPI:
+            #     try:
                     
-                    print("1--",foregroundAPI)
-                    runFunction = foregroundAPI[0]
-                    args = foregroundAPI[1]
-                    # print("2nd",runFunction)
+            #         print("1--",foregroundAPI)
+            #         runFunction = foregroundAPI[0]
+            #         args = foregroundAPI[1]
+            #         # print("2nd",runFunction)
                     
-                    try:
-                        r = runFunction(*args)
-                        self.queue.pop()
-                        if(r.status_code==503):
-                            continue
-                    except  requests.exceptions.ConnectionError:
-                        if(runFunction.__name__=="startHangout"):
-                            self.queue2.push(sendHangout,args)
-                        elif(runFunction.__name__=="callWaiter"):
-                            self.queue2.push(startServiceCall,args)
-                        elif(runFunction.__name__=="waiterArrived"):
-                            self.queue2.push(endServiceCall,args)
-                        elif(runFunction.__name__=="addMultipleRatings"):
-                            self.queue2.push(sendRatings,args)
-                        self.queue.pop()
+            #         try:
+            #             r = runFunction(*args)
+            #             self.queue.pop()
+            #             if(r.status_code==503):
+            #                 continue
+            #         except  requests.exceptions.ConnectionError:
+            #             if(runFunction.__name__=="startHangout"):
+            #                 self.queue2.push(sendHangout,args)
+            #             elif(runFunction.__name__=="callWaiter"):
+            #                 self.queue2.push(startServiceCall,args)
+            #             elif(runFunction.__name__=="waiterArrived"):
+            #                 self.queue2.push(endServiceCall,args)
+            #             elif(runFunction.__name__=="addMultipleRatings"):
+            #                 self.queue2.push(sendRatings,args)
+            #             self.queue.pop()
                         
-                except:
+            #     except:
                     
-                    pass
+            #         pass
             backgroundAPI = None
             try :
                 backgroundAPI = self.queue2.peek()
