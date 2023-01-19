@@ -478,11 +478,14 @@ class WaiterMenuScreen(QDialog):
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
         tableId = getTableId()
         print("Table ID:", tableId)
-        self.tableNumber.setText(tableId)
+        
         self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
 
     
     def clear(self):
+        tableId = getTableId()
+        print("Table ID:", tableId)
+        self.tableNumber.setText(tableId)
         lightThreadRunner.launch(yellowLight)
 
     def navigateToChooseNumberOfGuests(self):
@@ -529,7 +532,15 @@ class TableSelectionScreen(QDialog):
             print("Failed to load tables")
 
     def tableSelected(self,item):
-        storage["tableId"] = item.text()
+        try:
+
+            storage["tableId"] = item.text()
+        except:
+            try:
+                storage["tableId"] = item
+            except:
+                pass
+        pass
         #  TODO: ADD send table number to server
         print(storage)
         saveStorage()
