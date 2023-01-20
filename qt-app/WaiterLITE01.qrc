@@ -24,4 +24,8 @@
     <file>assets/WaiterLITE-UI-20-2.png</file>
     <file>assets/WaiterLITE-UI-20.png</file>
   </qresource>
+  <qresource prefix="newPrefix"/>
+  <qresource prefix="newPrefix">
+    <file>PngItem_12226.png</file>
+  </qresource>
 </RCC>

@@ -307,6 +307,8 @@ class WaiterPinScreen(QDialog):
         self.pin=[]
         loadUi("ui/06WaiterPinScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.goToConfigButton.clicked.connect(self.navigateToConfigScreen)
+
         self.setupKeyboard()
 
     def setupKeyboard(self):
@@ -349,7 +351,8 @@ class WaiterPinScreen(QDialog):
     
     def navigateToConfirmTable(self):
         navigateToScreen(confirmTable)
-    
+    def navigateToConfigScreen(self):
+        navigateToScreen(aboutScreen)
     def navigateToWaiterMenuScreen(self):
         print(storage)
             
@@ -371,6 +374,7 @@ class WaiterNotExist(QDialog):
         self.pin=[]
         loadUi("ui/CorrectWaiterPinUIScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.goToConfigButton.clicked.connect(self.navigateToConfigScreen)
         self.setupKeyboard()
 
     def setupKeyboard(self):
@@ -412,7 +416,9 @@ class WaiterNotExist(QDialog):
     
     def navigateToConfirmTable(self):
         navigateToScreen(confirmTable)
-    
+
+    def navigateToConfigScreen(self):
+        navigateToScreen(aboutScreen)
     def navigateToWaiterMenuScreen(self):
         try:
             thePin = "".join(self.pin)
@@ -982,7 +988,7 @@ class FeedbackScreen(QDialog):
         
         for i in ["food","service","ambience","music"]:
             self.markRating(i,0)
-        self.ratings.clear()
+        # self.ratings.clear()
     def sendRatings(self,ratings):
         try:
             # print("Ratings Data", ratings)
