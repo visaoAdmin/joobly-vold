@@ -3,9 +3,13 @@ from config.config import API_URL
 import os
 import copy
 from background_api import sendHangout,startServiceCall,endServiceCall,sendRatings
-from redis_queue import backgroundQueue
+# from redis_queue import backgroundQueue
 from rq import Retry, Queue
-from redis_handler import failure_handler
+# from redis_handler import failure_handler
+from multiThread import MultiApiThreadRunner
+
+backgroundRunner = MultiApiThreadRunner("function_queue")
+
 background_jobs = []
 index = -1
 
@@ -16,14 +20,14 @@ TIMEOUT = 15
 def getConfig(serialNumber):
     print("getting config...")
     response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config", timeout = TIMEOUT)
-    print(response)
+    # print(response)
     config = response.json().get("data")
     return config
 
 
 def startHangout(table, guestCount, waiterId, hangoutId):
     
-    print("startHangout",table, guestCount, waiterId, hangoutId)
+    # print("startHangout",table, guestCount, waiterId, hangoutId)
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "guestCount": guestCount,
@@ -41,14 +45,15 @@ def startHangoutFailureHandler(job, connection, type, value, traceback):
     
     args = job.__dict__['_args']
     # print("$$$$$$$$$$$$$$$$$$$$$",args)
-    table,guestCount,waiterId,hangoutId = args 
-    if(index==-1):
-        job1 =  backgroundQueue.enqueue(sendHangout,table, guestCount, waiterId, hangoutId ,on_failure=failure_handler)
-    else:
-        job1 = backgroundQueue.enqueue(sendHangout,table, guestCount, waiterId, hangoutId, on_failure=failure_handler)
-        print(job1.__dict__['_func_name']," depends on ",background_jobs(index).__dict__['_func_name'])
-    background_jobs.append(job1)
-    index+=1
+    table,guestCount,waiterId,hangoutId = args
+    backgroundRunner.addAPICall(sendHangout,[table,guestCount,waiterId,hangoutId]) 
+    # if(index==-1):
+    #     job1 =  backgroundQueue.enqueue(sendHangout,table, guestCount, waiterId, hangoutId ,on_failure=failure_handler)
+    # else:
+    #     job1 = backgroundQueue.enqueue(sendHangout,table, guestCount, waiterId, hangoutId, on_failure=failure_handler)
+    #     print(job1.__dict__['_func_name']," depends on ",background_jobs(index).__dict__['_func_name'])
+    # background_jobs.append(job1)
+    # index+=1
 
 def finishHangout(hangoutId):
     # print("startHangout",hangoutId)
@@ -60,7 +65,7 @@ def finishHangout(hangoutId):
 
 def callWaiter(table, hangoutId, callNumber):
 
-    print("CAlling waiter")
+    # print("CAlling waiter")
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,
@@ -75,12 +80,13 @@ def callWaiterFailureHandler(job, connection, type, value, traceback):
     # print(background_jobs)
     args = job.__dict__['_args']
     table,hangoutId,callNumber=args
-    if(index==-1):
-        job1 = backgroundQueue.enqueue(startServiceCall,table, hangoutId, callNumber,on_failure=failure_handler )
-    else:
-        job1 = backgroundQueue.enqueue(startServiceCall,table, hangoutId, callNumber, on_failure=failure_handler )
-    background_jobs.append(job1)
-    index+=1
+    backgroundRunner.addAPICall(startServiceCall,[table,hangoutId,callNumber])
+    # if(index==-1):
+    #     job1 = backgroundQueue.enqueue(startServiceCall,table, hangoutId, callNumber,on_failure=failure_handler )
+    # else:
+    #     job1 = backgroundQueue.enqueue(startServiceCall,table, hangoutId, callNumber, on_failure=failure_handler )
+    # background_jobs.append(job1)
+    # index+=1
 
 def waiterArrived(table, hangoutId, callNumber, responseTime):
     
@@ -101,12 +107,13 @@ def waiterArrivedFailureHandler(job, connection, type, value, traceback):
     global background_jobs,index
     args = job.__dict__['_args']
     table ,hangoutId,callNumber,responseTime=args
-    if(index==-1):
-        job1 =  backgroundQueue.enqueue(endServiceCall,table, hangoutId, callNumber, responseTime ,on_failure=failure_handler)
-    else:
-        job1 = backgroundQueue.enqueue(endServiceCall,table, hangoutId, callNumber, responseTime, on_failure=failure_handler )
-    background_jobs.append(job1)
-    index+=1
+    backgroundRunner.addAPICall(endServiceCall,[table,hangoutId,callNumber,responseTime])
+    # if(index==-1):
+    #     job1 =  backgroundQueue.enqueue(endServiceCall,table, hangoutId, callNumber, responseTime ,on_failure=failure_handler)
+    # else:
+    #     job1 = backgroundQueue.enqueue(endServiceCall,table, hangoutId, callNumber, responseTime, on_failure=failure_handler )
+    # background_jobs.append(job1)
+    # index+=1
 
 def serviceDelayed(table, hangoutId, callNumber):
     response = requests.post(BASE_URL + "/pod-events", json={
@@ -136,7 +143,7 @@ def waiterExists(waiterId,restaurantId):
 
 def addMultipleRatings(table, hangoutId, ratings):
     
-    print("rating sent")
+    # print("rating sent")
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,
@@ -153,7 +160,8 @@ def addMultipleRatingsFailureHandler(job, connection, type, value, traceback):
     args = job.__dict__['_args']
     table ,hangoutId,ratings=args
     # if(index==-1):
-    job1 = backgroundQueue.enqueue(sendRatings,table, hangoutId, ratings ,on_failure=failure_handler)
+    backgroundRunner.addAPICall(sendRatings,[table,hangoutId,ratings])
+    # job1 = backgroundQueue.enqueue(sendRatings,table, hangoutId, ratings ,on_failure=failure_handler)
     # else:
     #     job1 = backgroundQueue.enqueue(sendRatings,table, hangoutId, ratings,depends_on = background_jobs[index] )
     # background_jobs.append(job1)
@@ -171,7 +179,7 @@ def notifyExperience(table, hangoutId, experience, previosExperience):
 def fetchTableId():
     response = requests.get(BASE_URL + "/pod/table", timeout = TIMEOUT)
     tableId = response.json().get("referenceId")
-    print("TableId in fetchTableId", response.json())
+    # print("TableId in fetchTableId", response.json())
     return tableId
 
 def getAllTables(restaurantId):

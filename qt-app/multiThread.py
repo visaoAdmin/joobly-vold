@@ -155,24 +155,27 @@ class ServiceCallsSyncer(object):
 
 
 class StorageQueue():
+
     def __init__ (self,path):
-        # self.currentThread = Thread(lambda:())
+        self.currentThread = Thread(lambda:())
         self.queue = []
         self.path = path
-        # try:
-        #     with open(path,"rb") as f:
-        #         self.queue = pickle.load(f)
-        # except:
-        #     pass
-        # print("Queueu",self.queue)
-        # print(self.queue)
-        # self.currentThread.run = self.syncer
-        # self.currentThread.start()
-    # def syncer(self):
-    #     while(True):
-    #         time.sleep(10)
-    #         with open(self.path , "wb") as f:
-    #             pickle.dump(self.queue,f)
+        try:
+            with open(path,"rb") as f:
+                self.queue = pickle.load(f)
+        except:
+            pass
+        print("Queueu",self.queue)
+        print(self.queue)
+        self.currentThread.run = self.syncer
+        self.currentThread.start()
+
+    def syncer(self):
+        while(True):
+            time.sleep(1)
+            with open(self.path , "wb") as f:
+                pickle.dump(self.queue,f)
+
     def push(self,functionName,arg):
         self.queue.append([functionName,arg])
     def peek(self):
@@ -181,7 +184,7 @@ class StorageQueue():
         return self.queue.pop(0)
     def replaceFront(self,item):
         self.queue[0] = item
-            # print(functions)
+        
 
 
 class MultiApiThreadRunner(object):
@@ -196,49 +199,20 @@ class MultiApiThreadRunner(object):
         # self.queue = StorageQueue(path)
     
     def addAPICall(self,func,args):
+        print("CAlled")
         print(func,args)
         self.queue2.push(func,args)
     def syncAPICalls(self):
         while(True):
             
             time.sleep(2)
-            print(self.queue2.queue)
-            # foregroundAPI = None
-            # try :
-            #     foregroundAPI = self.queue.peek()
-            # except:
-            #     pass
-            # if foregroundAPI:
-            #     try:
-                    
-            #         print("1--",foregroundAPI)
-            #         runFunction = foregroundAPI[0]
-            #         args = foregroundAPI[1]
-            #         # print("2nd",runFunction)
-                    
-            #         try:
-            #             r = runFunction(*args)
-            #             self.queue.pop()
-            #             if(r.status_code==503):
-            #                 continue
-            #         except  requests.exceptions.ConnectionError:
-            #             if(runFunction.__name__=="startHangout"):
-            #                 self.queue2.push(sendHangout,args)
-            #             elif(runFunction.__name__=="callWaiter"):
-            #                 self.queue2.push(startServiceCall,args)
-            #             elif(runFunction.__name__=="waiterArrived"):
-            #                 self.queue2.push(endServiceCall,args)
-            #             elif(runFunction.__name__=="addMultipleRatings"):
-            #                 self.queue2.push(sendRatings,args)
-            #             self.queue.pop()
-                        
-            #     except:
-                    
-            #         pass
+            
+            
             backgroundAPI = None
             try :
                 backgroundAPI = self.queue2.peek()
-            except:
+            except Exception as e:
+                print(e)
                 pass
             if backgroundAPI:
                 try:
