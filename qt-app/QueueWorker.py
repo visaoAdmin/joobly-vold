@@ -46,7 +46,7 @@ class QueueWorker(object):
                             args = foregroundAPI[1]
                             r = runFunction(*args)
                             self.queue.pop()
-                            
+                            print(r)
                             if(r.status_code==503):
                                 raise  Exception()
                         except Exception as e: 
@@ -91,12 +91,13 @@ class QueueWorker(object):
                     r = runFunction(*args)
                     self.queue2.pop()
                     # print("3--",backgroundAPI)
-                    print(len(self.queue2.queue))
-                    print("peeking")
-                    print(self.queue2.peek())
-                    print("peek end")
-                    # if(r.status_code==503):
-                    #     raise requests.exceptions.ConnectionError()
+                    # print(len(self.queue2.queue))
+                    # print("peeking")
+                    # print(self.queue2.peek())
+                    # print("peek end")
+                    # print(r)
+                    if(r.status_code==503):
+                        raise requests.exceptions.ConnectionError()
                 except  requests.exceptions.ConnectionError:
                     pass
                 except Exception as e:

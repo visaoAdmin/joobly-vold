@@ -4,7 +4,7 @@ import os
 import copy
 from background_api import sendHangout,startServiceCall,endServiceCall,sendRatings
 # from redis_queue import backgroundQueue
-from rq import Retry, Queue
+# from rq import Retry, Queue
 # from redis_handler import failure_handler
 from multiThread import MultiApiThreadRunner
 
