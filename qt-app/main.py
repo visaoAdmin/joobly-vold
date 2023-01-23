@@ -71,7 +71,11 @@ def loadPicture(filepath,url):
         data = urllib.request.urlopen(url).read()
         with open(filepath,"wb") as logo:
             logo.write(data)
+        print("successfully fetched picture")
+    except:
+        print("Error un calling loadPicture")
     finally:
+        print("runiing in finally")
         with open(filepath,"rb") as logo:
             return logo.read()
 
@@ -211,9 +215,10 @@ def goBackToDinerHomeAfter(seconds):
 
 
 def loadLogoPixmap():
+    print("In load logo pixmap")
     global pixmap,logoData
-    if pixmap != None:
-        return pixmap
+    # if pixmap != None:
+    #     return pixmap
     try:
         
         data = "Asdas"
@@ -226,6 +231,7 @@ def loadLogoPixmap():
     return pixmap
 
 def renderLogo(self, key="logo", width=220, height=220):
+    print("In Load logo")
     pixmap = loadLogoPixmap()
     if pixmap != None:
         self.__dict__[key].setPixmap(pixmap)
@@ -259,7 +265,8 @@ class ReserveScreen(QDialog):
         self.loadLogo()
     def loadLogo(self):
         renderLogo(self)
-
+    def clear(self):
+        runInNewThread(self,self.loadLogo)
     def navigateToWelcome(self):
         navigateToScreen(waiterPinScreen)
 
@@ -290,6 +297,9 @@ class IdleLockScreen(QDialog):
         self.loadConfigAndLogo()
         # runInNewThread(self, self.loadConfigAndLogo)
 
+    def clear(self):
+        print("Clearing Idle")
+        runInNewThread(self,self.loadConfigAndLogo)
     def loadConfigAndLogo(self):
         loadConfig()
         # pixmap = loadLogoPixmap()
@@ -520,23 +530,30 @@ class TableSelectionScreen(QDialog):
         self.loadTables()
         # runInNewThread(self, self.loadTables)
 
-    
+    def clear(self): 
+        self.loadTables()   
     def loadTables(self):
         try:
             
-            tables = storage["tables"]
-            # tables = getAllTables(getRestaurantId())
+            
+            self.listWidget.clear()
+            tables = getAllTables(getRestaurantId())
             
             # tables = getAllTables(restaurantId)
             print(tables)
             for t in tables:
                 # print(t)
-                item = QListWidgetItem(t)
+                item = QListWidgetItem(t['referenceId'])
                 item.setSizeHint(QSize(400, 60))
                 self.listWidget.addItem(item)
         except:
-            
-            print("Failed to load tables")
+            tables = storage["tables"]
+            for t in tables:
+                # print(t)
+                item = QListWidgetItem(t)
+                item.setSizeHint(QSize(400, 60))
+                self.listWidget.addItem(item)
+            # print("Failed to load tables")
 
     def tableSelected(self,item):
         try:
@@ -567,6 +584,63 @@ class ChooseNumberOfGuests(QDialog):
     def __init__(self):
         super(ChooseNumberOfGuests, self).__init__()
         loadUi("ui/08ChooseNumberOfGuests.ui", self)
+        self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
+        self.goBackButton.clicked.connect(navigateGoBack)
+        self.setupKeyboard()
+        
+    def setupKeyboard(self):
+        setupKeyboard(self)
+
+    def clear(self):
+        global guestCount
+        guestCount=""
+        countLabel = "10+" if guestCount == "10" else guestCount
+        self.__dict__["inputCount"].setText(countLabel)
+
+    def onKey(self, key):
+        global guestCount
+        if key == "x":
+            guestCount=""
+        elif key == "0":
+            guestCount = "10"
+        else:
+            guestCount = key
+        # print("================================",guestCount)
+        countLabel = "10+" if guestCount == "10" else guestCount
+        self.__dict__["inputCount"].setText(countLabel)
+
+    def navigateToCheckedInScreen(self):
+        try: 
+            global hangoutId,guestCount
+            if(guestCount==0 or guestCount==""):
+                print("Navigating to correctChooseNumberOfGuests")
+                navigateToScreen(correctChooseNumberOfGuests)
+                return
+            table = getTableId()
+            # print(table)
+            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            serviceCalls['hangoutId'] = hangoutId
+
+            # startHangout(table, guestCount, waiterId, hangoutId)
+            qWorker.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
+            # foregroundQueue.enqueue(startHangout,table, guestCount, waiterId, hangoutId,on_failure=startHangoutFailureHandler)
+        # try:
+            # startHangout(table, guestCount, waiterId, hangoutId)
+        # except:
+            # multiApiThreadRunner.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
+
+        except Exception as e:
+            print(e)
+            print("Failed to startHangout")
+        navigateToScreen(tapForServiceScreen)
+
+class CorrectChooseNumberOfGuests(QDialog):
+    global guestCount
+    guestCount=""
+
+    def __init__(self):
+        super(CorrectChooseNumberOfGuests, self).__init__()
+        loadUi("ui/CorrectChooseNumberOfGuests.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
         self.goBackButton.clicked.connect(navigateGoBack)
         self.setupKeyboard()
@@ -750,6 +824,9 @@ class DinerActionMenuScreen(QDialog):
         # title = response.json()['title']
         # self.remoteApiLabel.setText(title);
     
+    def clear(self):
+        runInNewThread(self,self.loadQRCode)
+
     def navigateGoBack(self):
         global isOnMenuScreen
         isOnMenuScreen=False
@@ -913,6 +990,7 @@ class PayQRScreen(QDialog):
         # runInNewThread(self, self.loadQRCode)
     
     def clear(self):
+        runInNewThread(self, self.loadQRCode)
         lightThreadRunner.launch(self.billLight)
 
     def navigateBack(self):
@@ -1048,6 +1126,9 @@ class ThankYouScreen(QDialog):
         self.loadLogo()
         # runInNewThread(self, self.loadLogo)
     
+    def clear(self):
+        runInNewThread(self, self.loadLogo)
+
     def loadLogo(self):
         renderLogo(self)
     
@@ -1101,7 +1182,7 @@ splashScreen = SplashScreen()
 thankYouScreen = ThankYouScreen()
 chooseNumberOfGuests = ChooseNumberOfGuests()
 feedbackScreen = FeedbackScreen()
-
+correctChooseNumberOfGuests= CorrectChooseNumberOfGuests()
 billScreen = BillScreen()
 if ENV == "dev":
     #if start any other screen change this.
