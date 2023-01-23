@@ -38,6 +38,7 @@ def endServiceCall(table, hangoutId, callNumber, responseTime):
         "responseTime":responseTime,
         "push":"true"
     },timeout=TIMEOUT)
+    print("TYPE",type(response))
     if(response.status_code==503):
         raise requests.exceptions.ConnectionError()
 def sendRatings(table, hangoutId, ratings):

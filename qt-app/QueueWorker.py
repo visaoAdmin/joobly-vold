@@ -32,7 +32,7 @@ class QueueWorker(object):
                     
                     foregroundAPI = self.queue.peek()
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     pass
                 if foregroundAPI:
                     try:
@@ -96,12 +96,13 @@ class QueueWorker(object):
                     # print(self.queue2.peek())
                     # print("peek end")
                     # print(r)
-                    if(r.status_code==503):
+                    
+                    if(r==None or r.status_code==503):
                         raise requests.exceptions.ConnectionError()
                 except  requests.exceptions.ConnectionError:
                     pass
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     self.queue2.pop()
                 
                     
