@@ -606,6 +606,7 @@ class ContinueExistingJourneyScreen(QDialog):
             serviceCalls[callNumber]['open'] = time.time()
             navigateToScreen(closeServiceScreen)
         else:
+            callNumber+=1
             navigateToScreen(tapForServiceScreen)
     def navigateToTapChooseNumberOfGuestsScreen(self):
         navigateToScreen(chooseNumberOfGuests)
