@@ -189,6 +189,10 @@ def getAllTables(restaurantId):
     tables = response.json()
     return tables.get("data").get("tables")
 
+def isTableOccupied(table):
+    url = BASE_URL + "/tables/"+ table +"/hangout/open"
+    response = requests.get(url, timeout=TIMEOUT)
+    return response
 # def syncHangOut(hangoutId,hangout):
 #     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
 #     response = requests.post(url,json=hangout)

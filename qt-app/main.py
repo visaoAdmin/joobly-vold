@@ -12,7 +12,7 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,background_jobs
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied
 import threading
 from subprocess import Popen
 import json
@@ -507,8 +507,15 @@ class WaiterMenuScreen(QDialog):
         lightThreadRunner.launch(yellowLight)
 
     def navigateToChooseNumberOfGuests(self):
-        navigateToScreen(chooseNumberOfGuests)
-
+        try:
+            occupied = isTableOccupied(getTableId())
+            print(occupied.status_code)
+            if(occupied.status_code==409):
+                navigateToScreen(continueExistingJourneyScreen)
+            else:
+                navigateToScreen(chooseNumberOfGuests)
+        except:
+            navigateToScreen(chooseNumberOfGuests)
     def navigateToReserveScreen(self):
         navigateToScreen(reserveScreen)
     
@@ -577,7 +584,31 @@ class TableSelectionScreen(QDialog):
     
     def navigateToIdleLockScreen(self):
         navigateToRestart()
-
+class ContinueExistingJourneyScreen(QDialog):
+    def __init__(self):
+        super(ContinueExistingJourneyScreen, self).__init__()
+        loadUi("ui/26ContinueExistingJourney.ui", self)
+        # self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
+        self.goToBackButton.clicked.connect(navigateGoBack)
+        self.goToContinueHangoutButton.clicked.connect(self.continueExistingJourney)
+        self.goToStartHangoutButton.clicked.connect(self.navigateToTapChooseNumberOfGuestsScreen)
+    
+    def continueExistingJourney(self):
+        global hangoutId,callNumber,serviceCalls,guestCount
+        hangoutData = isTableOccupied(getTableId()).json()
+        hangoutId = hangoutData["hangoutId"]
+        callNumber = hangoutData["callNumber"]
+        guestCount = hangoutData["guestCount"]
+        callDuration = hangoutData["callDuration"]
+        print(callDuration)
+        if callDuration ==None:
+            serviceCalls[callNumber] = {}
+            serviceCalls[callNumber]['open'] = time.time()
+            navigateToScreen(closeServiceScreen)
+        else:
+            navigateToScreen(tapForServiceScreen)
+    def navigateToTapChooseNumberOfGuestsScreen(self):
+        navigateToScreen(chooseNumberOfGuests)
 class ChooseNumberOfGuests(QDialog):
     global guestCount
     guestCount=""
@@ -690,6 +721,9 @@ class CorrectChooseNumberOfGuests(QDialog):
             print("Failed to startHangout")
         navigateToScreen(tapForServiceScreen)
 
+
+
+
 class CheckedInScreen(QDialog):
     def __init__(self):
         super(CheckedInScreen, self).__init__()
@@ -739,8 +773,8 @@ class TapForServiceScreen(QDialog):
         try:
             global hangoutId, serviceCallStartTime,table,serviceCalls
             top = len(serviceCalls)
-            serviceCalls[top]={}
-            serviceCalls[top]['open']=time.time()
+            serviceCalls[callNumber]={}
+            serviceCalls[callNumber]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
             # try:
             # print(background_jobs)
@@ -785,22 +819,19 @@ class CloseServiceScreen(QDialog):
         global isWaiterCalled,callNumber
         try:
             global serviceCalls
-            top = len(serviceCalls) - 1
-            serviceCalls[top]['close']=time.time()
-            serviceCalls[top]['total'] = serviceCalls[top]['close']-serviceCalls[top]['open']
-            serviceCallStartTime=getCurrentTime()
+            
+            serviceCalls[callNumber]['close']=time.time()
+            serviceCalls[callNumber]['total'] = serviceCalls[callNumber]['close']-serviceCalls[callNumber]['open']
+            
             isWaiterCalled = False
-            # try:
-            #     print("waiter arrived")
-            # waiterArrived(table, hangoutId, callNumber, serviceCalls[top]['total'])
-            qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[top]['total']])
-            # foregroundQueue.enqueue(waiterArrived,getTableId(), hangoutId, callNumber, serviceCalls[top]['total'],on_failure=waiterArrivedFailureHandler)
-            # except:
-            # multiApiThreadRunner.addAPICall(waiterArrived,[getTableId(), hangoutId, callNumber, serviceCalls[top]['total']])
+            
+            totalTime = serviceCalls[callNumber]['total']
+            print(totalTime)
+            qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
             callNumber = callNumber+1
         except:
             pass
-            print("Waiter Arrived Failed", table, hangoutId, callNumber, serviceCalls[top]['total'])
+            print("Waiter Arrived Failed", table, hangoutId, callNumber, serviceCalls[callNumber]['total'])
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(dinerActionMenuScreen)
@@ -1169,7 +1200,7 @@ wifiConnectedScreen = WifiConnectedScreen()
 idleLockScreen = IdleLockScreen()
 waiterPinScreen = WaiterPinScreen()
 tapForServiceScreen = TapForServiceScreen()
-
+continueExistingJourneyScreen = ContinueExistingJourneyScreen()
 tableSelectionScreen = TableSelectionScreen()
 waiterMenuScreen  = WaiterMenuScreen()
 aboutScreen = AboutScreen() 
