@@ -48,14 +48,15 @@ logoData =None
 def loadConfig():
     global storage, table
     try:
+        
+        table = storage["tableId"]
+        
         config = getConfig(serialNumber)
         # print("Config Loaded", config)
         # if(config == None):
         #     raise Exception("Failed to load")
         storage = config
-        storage['tableId'] = table = storage["tables"][0]
-        
-        # table = storage["tableId"]
+        storage['tableId'] = table
         
         # print("Tables",table)
         saveStorage()
@@ -564,7 +565,7 @@ class TableSelectionScreen(QDialog):
                 storage["tableId"] = item
             except:
                 pass
-        pass
+        
         #  TODO: ADD send table number to server
         print(storage)
         saveStorage()
