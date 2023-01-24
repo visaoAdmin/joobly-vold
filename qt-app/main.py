@@ -48,9 +48,10 @@ logoData =None
 def loadConfig():
     global storage, table
     try:
-        
-        table = storage["tableId"]
-        
+        try:
+            table = storage["tableId"]
+        except:
+            pass
         config = getConfig(serialNumber)
         # print("Config Loaded", config)
         # if(config == None):
