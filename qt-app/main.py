@@ -60,11 +60,11 @@ def loadConfig():
         
         # print("Tables",table)
         saveStorage()
-    except:
+    except Exception as e:
         
         storage=loadStorage()
         # saveStorage()
-        print("Failed to load config")
+        print("Failed to load config",e)
 
 def loadPicture(filepath,url):
         
