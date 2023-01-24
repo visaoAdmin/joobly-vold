@@ -56,8 +56,10 @@ def loadConfig():
         # if(config == None):
         #     raise Exception("Failed to load")
         storage = config
-        storage['tableId'] = table
-        
+        try:
+            storage['tableId'] = table
+        except:
+            pass
         # print("Tables",table)
         saveStorage()
     except Exception as e:
