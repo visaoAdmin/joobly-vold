@@ -48,6 +48,7 @@ logoData =None
 def loadConfig():
     global storage, table
     try:
+        restaurantId = getRestaurantId()
         try:
             table = storage["tableId"]
         except:
@@ -63,6 +64,13 @@ def loadConfig():
             pass
         # print("Tables",table)
         saveStorage()
+        if(storage['tableId']):
+            if(restaurantId!=getRestaurantId() or storage['tableId'] not in storage['tables']):
+                storage['tableId'] = storage['tables'][0]
+        else:
+                storage['tableId'] = storage['tables'][0]
+          
+
     except Exception as e:
         
         storage=loadStorage()
@@ -113,7 +121,7 @@ def getTableId ():
 def getRestaurantId ():
     if "restaurantId" in storage and storage["restaurantId"] != None:
         return storage["restaurantId"]
-    return "TBCCH"
+    return None
 
 def saveStorage():
     with open("storage.json", "w") as f:
@@ -197,6 +205,7 @@ def navigateToScreen(Screen):
 
 def navigateGoBack():
         mainStackedWidget.removeWidget(mainStackedWidget.currentWidget())
+        mainStackedWidget.currentWidget().clear()
 
 def navigateToRestart():
         # mainStackedWidget.setCurrentIndex(0)
@@ -548,7 +557,7 @@ class TableSelectionScreen(QDialog):
             
             
             self.listWidget.clear()
-            tables = getAllTables(getRestaurantId())
+            # tables = getAllTables(getRestaurantId())
             
             # tables = getAllTables(restaurantId)
             print(tables)
