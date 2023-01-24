@@ -291,14 +291,14 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color:red</string>
     </property>
     <property name="text">
-     <string>Guest Count Can Not Be Null</string>
+     <string>Please Enter Correct No of Guests</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
