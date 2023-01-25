@@ -203,7 +203,11 @@ def navigateToScreen(Screen):
 
 def navigateGoBack():
         mainStackedWidget.removeWidget(mainStackedWidget.currentWidget())
-        mainStackedWidget.currentWidget().clear()
+        try:
+            mainStackedWidget.currentWidget().clear()
+        except Exception as e:
+            pass
+        
 
 def navigateToRestart():
         # mainStackedWidget.setCurrentIndex(0)
