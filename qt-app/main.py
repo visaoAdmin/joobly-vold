@@ -988,7 +988,7 @@ class BillScreen(QDialog):
         # print(serviceCalls)
         # serviceCallsSyncer.addServiceCall(copy.deepcopy(serviceCalls))
        
-        serviceCalls.clear()
+        # serviceCalls.clear()
     
         navigateToScreen(payQRScreen)
     
@@ -1148,11 +1148,17 @@ class FeedbackScreen(QDialog):
             # print("new self.ratings", self.ratings, hangoutRatings)
             ratingKeys = hangoutRatings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": hangoutRatings[x]}, ratingKeys)
+            if('close' not in serviceCalls[callNumber].keys()):
+                qWorker.addAPICall(waiterArrived(getTableId(),hangoutId,callNumber,time.time()-serviceCalls[callNumber]['open']))
+            
+            # print(serviceCalls[callNumber])
             callNumber = 1
         # try:
         #     print(list(_ratings)) 
             # addMultipleRatings(table,hangoutId,list(_ratings))
+            
             qWorker.addAPICall(addMultipleRatings,[getTableId(),hangoutId,list(_ratings)])
+            serviceCalls.clear()
             # foregroundQueue.enqueue(addMultipleRatings,getTableId(),hangoutId,list(_ratings),on_failure=addMultipleRatingsFailureHandler)
         # except:
             # multiApiThreadRunner.addAPICall(addMultipleRatings,[table,hangoutId,list(_ratings)])
