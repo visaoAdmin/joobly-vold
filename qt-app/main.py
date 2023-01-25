@@ -980,6 +980,9 @@ class BillScreen(QDialog):
         # navigateToScreen(DinerActionMenuScreen)
         navigateGoBack()
 
+    def clear(self):
+        lightThreadRunner.launch(yellowLight)
+
     def navigateToPayScreen(self):
         global table,waiterId,guestCount
         serviceCalls['tableId'] = table
