@@ -24,8 +24,6 @@ from QueueWorker import QueueWorker
 ENV=os.environ.get('ENV')
 
 # print(ENV)
-qWorker = QueueWorker()
-lightThreadRunner = ReUsableThreadRunner()
 storage = {}
 isWaiterCalled = False
 hangoutId=None
@@ -38,7 +36,7 @@ waiterId=None
 serialNumber=getserial()
 pixmap=None
 serviceCalls = {}
-serviceCallsSyncer = ServiceCallsSyncer()
+
 
 logoData =None
 
@@ -275,7 +273,7 @@ class ReserveScreen(QDialog):
         loadUi("ui/21ReserveScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWelcome)
         # runInNewThread(self, self.loadLogo)
-        self.loadLogo()
+        # self.loadLogo()
     def loadLogo(self):
         renderLogo(self)
     def clear(self):
@@ -547,7 +545,7 @@ class TableSelectionScreen(QDialog):
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
         self.backButton.clicked.connect(navigateGoBack)
-        self.loadTables()
+        # self.loadTables()
         # runInNewThread(self, self.loadTables)
 
     def clear(self): 
@@ -1034,7 +1032,7 @@ class PayQRScreen(QDialog):
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
-        self.loadQRCode()
+        # self.loadQRCode()
         # runInNewThread(self, self.loadQRCode)
     
     def clear(self):
@@ -1179,7 +1177,7 @@ class ThankYouScreen(QDialog):
         super(ThankYouScreen, self).__init__()
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
-        self.loadLogo()
+        # self.loadLogo()
         # runInNewThread(self, self.loadLogo)
     
     def clear(self):
@@ -1240,6 +1238,10 @@ chooseNumberOfGuests = ChooseNumberOfGuests()
 feedbackScreen = FeedbackScreen()
 correctChooseNumberOfGuests= CorrectChooseNumberOfGuests()
 billScreen = BillScreen()
+
+qWorker = QueueWorker()
+lightThreadRunner = ReUsableThreadRunner()
+serviceCallsSyncer = ServiceCallsSyncer()
 if ENV == "dev":
     #if start any other screen change this.
     mainwindow=idleLockScreen
