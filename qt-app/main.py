@@ -277,11 +277,11 @@ class ReserveScreen(QDialog):
         loadUi("ui/21ReserveScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWelcome)
         # runInNewThread(self, self.loadLogo)
-        # self.loadLogo()
+        self.loadLogo()
     def loadLogo(self):
         renderLogo(self)
-    def clear(self):
-        runInNewThread(self,self.loadLogo)
+    # def clear(self):
+    #     runInNewThread(self,self.loadLogo)
     def navigateToWelcome(self):
         navigateToScreen(waiterPinScreen)
 
@@ -314,7 +314,7 @@ class IdleLockScreen(QDialog):
 
     def clear(self):
         print("Clearing Idle")
-        runInNewThread(self,self.loadConfigAndLogo)
+        # runInNewThread(self,self.loadConfigAndLogo)
     def loadConfigAndLogo(self):
         loadConfig()
         # pixmap = loadLogoPixmap()
@@ -1036,7 +1036,7 @@ class PayQRScreen(QDialog):
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
-        # self.loadQRCode()
+        self.loadQRCode()
         # runInNewThread(self, self.loadQRCode)
     
     def clear(self):
@@ -1181,11 +1181,11 @@ class ThankYouScreen(QDialog):
         super(ThankYouScreen, self).__init__()
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
-        # self.loadLogo()
+        self.loadLogo()
         # runInNewThread(self, self.loadLogo)
     
-    def clear(self):
-        runInNewThread(self, self.loadLogo)
+    # def clear(self):
+    #     runInNewThread(self, self.loadLogo)
 
     def loadLogo(self):
         renderLogo(self)
