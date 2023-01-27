@@ -2,6 +2,7 @@ import requests
 
 
 from config.config import API_URL
+from serial import getserial
 BASE_URL = API_URL
 TIMEOUT = 15
 
@@ -13,7 +14,7 @@ def sendHangout(table, guestCount, waiterId, hangoutId):
         "waiter": waiterId,
         "hangout": hangoutId,
         "push":"true"
-    }, timeout=TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout=TIMEOUT)
     if(response.status_code==503):
         raise requests.exceptions.ConnectionError()
     return response
@@ -26,7 +27,7 @@ def startServiceCall(table, hangoutId, callNumber):
         "hangout":hangoutId,
         "callNumber":callNumber,
         "push":"true"
-    },timeout=TIMEOUT)
+    },headers={"device-serial":getserial()},timeout=TIMEOUT)
     if(response.status_code==503):
         raise requests.exceptions.ConnectionError()
 def endServiceCall(table, hangoutId, callNumber, responseTime):
@@ -37,7 +38,7 @@ def endServiceCall(table, hangoutId, callNumber, responseTime):
         "callNumber":callNumber,
         "responseTime":responseTime,
         "push":"true"
-    },timeout=TIMEOUT)
+    },headers={"device-serial":getserial()},timeout=TIMEOUT)
     print("TYPE",type(response))
     if(response.status_code==503):
         raise requests.exceptions.ConnectionError()
@@ -47,7 +48,7 @@ def sendRatings(table, hangoutId, ratings):
         "hangout": hangoutId,
         "ratings": ratings,
         "push":"true"
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise requests.exceptions.ConnectionError()
     return response

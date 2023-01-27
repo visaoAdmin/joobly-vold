@@ -3,12 +3,14 @@ from config.config import API_URL
 import os
 import copy
 from background_api import sendHangout,startServiceCall,endServiceCall,sendRatings
+from serial import getserial
 # from redis_queue import backgroundQueue
 # from rq import Retry, Queue
 # from redis_handler import failure_handler
 from multiThread import MultiApiThreadRunner
 
 backgroundRunner = MultiApiThreadRunner("function_queue")
+
 
 background_jobs = []
 index = -1
@@ -34,7 +36,7 @@ def startHangout(table, guestCount, waiterId, hangoutId):
         "waiter": waiterId,
         "hangout": hangoutId,
         "type": "CHECKIN"
-    }, timeout=TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout=TIMEOUT)
     if(response.status_code==503):
         raise Exception()
     return response
@@ -71,7 +73,7 @@ def callWaiter(table, hangoutId, callNumber):
         "hangout": hangoutId,
         "callNumber": callNumber,
         "type": "WAITER_CALLED"
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
     return response
@@ -97,7 +99,7 @@ def waiterArrived(table, hangoutId, callNumber, responseTime):
         "callNumber": callNumber,
         "responseTime": responseTime,
         "type": "WAITER_ARRIVED"
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
     return response
@@ -121,7 +123,7 @@ def serviceDelayed(table, hangoutId, callNumber):
         "hangout": hangoutId,
         "callNumber": callNumber,
         "type": "SERVICE_DELAYED"
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     return response
 
 def rate(table, hangoutId, ratingType, rating):
@@ -131,7 +133,7 @@ def rate(table, hangoutId, ratingType, rating):
         "ratingType": ratingType,
         "rating": rating,
         "type": "RATING_SUBMITTED"
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     return response
 
 def waiterExists(waiterId,restaurantId):
@@ -149,7 +151,7 @@ def addMultipleRatings(table, hangoutId, ratings):
         "hangout": hangoutId,
         "type": "RATINGS_SUBMITTED",
         "ratings": ratings
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
     return response
@@ -173,7 +175,7 @@ def notifyExperience(table, hangoutId, experience, previosExperience):
         "experience": experience,
         "previousExperience": previosExperience,
         "type": "EXPERIENCE_CHANGED"
-    }, timeout = TIMEOUT)
+    },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     return response
 
 def fetchTableId():
@@ -184,17 +186,19 @@ def fetchTableId():
 
 def getAllTables(restaurantId):
     url = BASE_URL + "/restaurants/"+restaurantId+"/tables"
-    response = requests.get(url, timeout = TIMEOUT)
+    response = requests.get(url,headers={"device-serial":getserial()}, timeout = TIMEOUT)
     
     tables = response.json()
     return tables.get("data").get("tables")
 
 def isTableOccupied(table):
     url = BASE_URL + "/tables/"+ table +"/hangout/open"
-    response = requests.get(url, timeout=TIMEOUT)
+    response = requests.get(url,headers={"device-serial":getserial()}, timeout=TIMEOUT)
     return response
 
-
+def changeDevice(hangout):
+    url = BASE_URL + "/hangouts/"+ hangout +"/device/"+getserial()
+    response = requests.post(url,timeout=TIMEOUT)
 # def syncHangOut(hangoutId,hangout):
 #     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
 #     response = requests.post(url,json=hangout)

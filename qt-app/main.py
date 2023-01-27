@@ -13,7 +13,7 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice
 import threading
 from subprocess import Popen
 import json
@@ -62,7 +62,8 @@ def loadConfig():
         except:
             pass
         config = getConfig(serialNumber)
-        # print("Config Loaded", config)
+        
+        print("Config Loaded", config)
         # if(config == None):
         #     raise Exception("Failed to load")
         storage = config
@@ -117,9 +118,12 @@ def getTableId ():
     tableId = table
     # print("getTableId")
     # print(storage)
-    if "tableId" in storage and storage["tableId"] != None:
-        tableId = storage["tableId"]
-    else:
+    try:
+        if "tableId" in storage and storage["tableId"] != None:
+            tableId = storage["tableId"]
+        else:
+            tableId = ""
+    except:
         tableId = ""
         # loadConfig()
         # tableId = storage["tableId"]
@@ -127,8 +131,11 @@ def getTableId ():
     return tableId
 
 def getRestaurantId ():
-    if "restaurantId" in storage and storage["restaurantId"] != None:
-        return storage["restaurantId"]
+    try:
+        if "restaurantId" in storage and storage["restaurantId"] != None:
+            return storage["restaurantId"]
+    except:
+        pass
     return None
 
 def saveStorage():
@@ -619,6 +626,7 @@ class ContinueExistingJourneyScreen(QDialog):
         guestCount = previousJourneyData["guestCount"]
         callDuration = previousJourneyData["callDuration"]
         print(callDuration)
+        qWorker.addAPICall(changeDevice,[hangoutId])
         if callDuration ==None:
             serviceCalls[callNumber] = {}
             serviceCalls[callNumber]['open'] = time.time()
@@ -1289,7 +1297,7 @@ if ENV=='dev':
     mainStackedWidget.show()
 else:
     mainStackedWidget.showFullScreen()
-
+print(serialNumber)
 
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
