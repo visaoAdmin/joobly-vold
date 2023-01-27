@@ -25,7 +25,7 @@ def runInNewThread(self, taskFunction):
 
             self.worker = Worker(taskFunction)
         except Exception as e:
-            print(e)
+            # print(e)
             pass
         # Step 4: Move worker to the thread
         
@@ -216,7 +216,7 @@ class MultiApiThreadRunner(object):
             try :
                 backgroundAPI = self.queue2.peek()
             except Exception as e:
-                print(e)
+                # print(e)
                 pass
             if backgroundAPI:
                 try:

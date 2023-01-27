@@ -34,6 +34,7 @@ def getConfig(serialNumber):
     print("getting config...")
     response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config", timeout = TIMEOUT)
     # print(response)
+    setRestartApp(response)
     config = response.json().get("data")
     return config
 
@@ -160,6 +161,7 @@ def waiterExists(waiterId,restaurantId):
 def addMultipleRatings(table, hangoutId, ratings):
     
     # print("rating sent")
+    global restartApp
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,
@@ -214,6 +216,7 @@ def isTableOccupied(table):
 def changeDevice(hangout):
     url = BASE_URL + "/hangouts/"+ hangout +"/device/"+getserial()
     response = requests.post(url,timeout=TIMEOUT)
+    setRestartApp(response)
 # def syncHangOut(hangoutId,hangout):
 #     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
 #     response = requests.post(url,json=hangout)
