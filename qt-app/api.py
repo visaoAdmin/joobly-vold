@@ -11,6 +11,17 @@ from multiThread import MultiApiThreadRunner
 
 backgroundRunner = MultiApiThreadRunner("function_queue")
 
+restartApp = False
+
+def setRestartApp(res):
+    global restartApp
+    if(res.status_code==401):
+        restartApp = True
+    else:
+        restartApp = False
+def getRestartApp():
+    global restartApp
+    return restartApp
 
 background_jobs = []
 index = -1
@@ -39,6 +50,7 @@ def startHangout(table, guestCount, waiterId, hangoutId):
     },headers={"device-serial":getserial()}, timeout=TIMEOUT)
     if(response.status_code==503):
         raise Exception()
+    
     return response
     
 
@@ -76,6 +88,7 @@ def callWaiter(table, hangoutId, callNumber):
     },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
+    setRestartApp(response)
     return response
 def callWaiterFailureHandler(job, connection, type, value, traceback):    
     global background_jobs,index
@@ -102,6 +115,7 @@ def waiterArrived(table, hangoutId, callNumber, responseTime):
     },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
+    setRestartApp(response)
     return response
     
 
@@ -154,6 +168,7 @@ def addMultipleRatings(table, hangoutId, ratings):
     },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
+    setRestartApp(response)
     return response
     
     

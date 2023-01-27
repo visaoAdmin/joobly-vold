@@ -13,7 +13,7 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice,getRestartApp
 import threading
 from subprocess import Popen
 import json
@@ -40,7 +40,7 @@ serviceCalls = {}
 continueExistingJourney = False
 previousJourneyData = None
 logoData =None
-
+restartApplication = False
 
 def continueJourneyCheck():
     # print("alfhlakhdfilauehkjdbfviuebfvjkbefjb")
@@ -810,7 +810,11 @@ class TapForServiceScreen(QDialog):
         if (value < 6):
             self.experience = "Bad"
     def clear(self):
+
+        
         lightThreadRunner.launch(yellowLight)
+        
+
 
     def experienceMarked(self):
         if(self.previousExperience != self.experience):
@@ -820,7 +824,11 @@ class TapForServiceScreen(QDialog):
     def navigateToCloseServiceScreen(self):
         # runInNewThread(self, self.callWaiter)
         self.callWaiter()
-        navigateToScreen(closeServiceScreen)
+        if(getRestartApp()):
+            print("RESTARTING")
+            navigateToScreen(idleLockScreen)
+        else:
+            navigateToScreen(closeServiceScreen)
     
     def callWaiter(self):
         try:
@@ -861,12 +869,19 @@ class CloseServiceScreen(QDialog):
         # thr.join()
     
     def clear(self):
+        global restartApplication
+        
         lightThreadRunner.launch(blueLight)
-
+        
+        
+        
     def navigateToTapForServiceScreen(self):
         # runInNewThread(self, self.waiterArrived)
         self.waiterArrived()
-        navigateToScreen(tapForServiceScreen)
+        if(getRestartApp()):
+            navigateToRestart()
+        else:
+            navigateToScreen(tapForServiceScreen)
     
     def waiterArrived(self):
         global isWaiterCalled,callNumber
@@ -1155,9 +1170,14 @@ class FeedbackScreen(QDialog):
             style = self.selectedStyle if i <= rating else self.normalStyle
             self.__dict__[type+str(i)].setStyleSheet(style)
     def clear(self):
-        
+        global restartApplication
         for i in ["food","service","ambience","music"]:
             self.markRating(i,0)
+        
+        if(getRestartApp()==False):
+            pass
+        else:
+            navigateToRestart()
         # self.ratings.clear()
     def sendRatings(self,ratings):
         try:
