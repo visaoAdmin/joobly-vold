@@ -6,8 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
-import aiohttp
-import asyncio
+
 # from redis_queue import foregroundQueue,handle_failure
 import copy 
 import signal
