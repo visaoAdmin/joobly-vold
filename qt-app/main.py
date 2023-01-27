@@ -13,7 +13,7 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,asyncCheckIfTableOccupied
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied
 import threading
 from subprocess import Popen
 import json
