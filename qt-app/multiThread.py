@@ -87,9 +87,13 @@ class ReUsableThreadRunner(object):
    
     def launcher(self):
         while(True):
+            
             try:
-                self.functions.pop(0)()
-            except:
+                fn = self.functions.pop(0)
+                print(fn)
+                fn()
+            except Exception as e:
+                # print("LIGHT THREAD",e)
                 pass
             # while( len(self.functions)!=0):
                 # self.funct`ions[0]()

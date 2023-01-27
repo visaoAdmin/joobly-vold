@@ -7,7 +7,8 @@ from background_api import sendHangout,startServiceCall,endServiceCall,sendRatin
 # from rq import Retry, Queue
 # from redis_handler import failure_handler
 from multiThread import MultiApiThreadRunner
-
+import asyncio
+import aiohttp
 backgroundRunner = MultiApiThreadRunner("function_queue")
 
 background_jobs = []
@@ -193,6 +194,12 @@ def isTableOccupied(table):
     url = BASE_URL + "/tables/"+ table +"/hangout/open"
     response = requests.get(url, timeout=TIMEOUT)
     return response
+
+async def asyncCheckIfTableOccupied(table):
+    url = BASE_URL + "/tables/"+ table +"/hangout/open"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            return resp.status
 # def syncHangOut(hangoutId,hangout):
 #     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
 #     response = requests.post(url,json=hangout)

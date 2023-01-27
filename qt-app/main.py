@@ -6,13 +6,15 @@ from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
+import aiohttp
+import asyncio
 # from redis_queue import foregroundQueue,handle_failure
 import copy 
 import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,asyncCheckIfTableOccupied
 import threading
 from subprocess import Popen
 import json
@@ -36,11 +38,20 @@ waiterId=None
 serialNumber=getserial()
 pixmap=None
 serviceCalls = {}
-
-
+continueExistingJourney = False
+previousJourneyData = None
 logoData =None
 
 
+def continueJourneyCheck():
+    # print("alfhlakhdfilauehkjdbfviuebfvjkbefjb")
+    global continueExistingJourney,previousJourneyData
+    # print(exist,"##############")
+    exist = isTableOccupied(getTableId())
+    previousJourneyData = exist.json()
+    # print(previousJourneyData)
+    if exist.status_code == 409:
+        continueExistingJourney = True
 
 
 def loadConfig():
@@ -521,15 +532,8 @@ class WaiterMenuScreen(QDialog):
         lightThreadRunner.launch(yellowLight)
 
     def navigateToChooseNumberOfGuests(self):
-        try:
-            occupied = isTableOccupied(getTableId())
-            print(occupied.status_code)
-            if(occupied.status_code==409):
-                navigateToScreen(continueExistingJourneyScreen)
-            else:
-                navigateToScreen(chooseNumberOfGuests)
-        except:
-            navigateToScreen(chooseNumberOfGuests)
+        navigateToScreen(chooseNumberOfGuests)
+        
     def navigateToReserveScreen(self):
         navigateToScreen(reserveScreen)
     
@@ -605,15 +609,16 @@ class ContinueExistingJourneyScreen(QDialog):
         # self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.goToBackButton.clicked.connect(navigateGoBack)
         self.goToContinueHangoutButton.clicked.connect(self.continueExistingJourney)
-        self.goToStartHangoutButton.clicked.connect(self.navigateToTapChooseNumberOfGuestsScreen)
+        self.goToStartHangoutButton.clicked.connect(self.navigateToCheckedIn)
     
     def continueExistingJourney(self):
-        global hangoutId,callNumber,serviceCalls,guestCount
-        hangoutData = isTableOccupied(getTableId()).json()
-        hangoutId = hangoutData["hangoutId"]
-        callNumber = hangoutData["callNumber"]
-        guestCount = hangoutData["guestCount"]
-        callDuration = hangoutData["callDuration"]
+        global hangoutId,callNumber,serviceCalls,guestCount,previousJourneyData
+        # hangoutData = previousJourneyData
+        # print(hangoutData)
+        hangoutId = previousJourneyData["hangoutId"]
+        callNumber = previousJourneyData["callNumber"]
+        guestCount = previousJourneyData["guestCount"]
+        callDuration = previousJourneyData["callDuration"]
         print(callDuration)
         if callDuration ==None:
             serviceCalls[callNumber] = {}
@@ -622,8 +627,10 @@ class ContinueExistingJourneyScreen(QDialog):
         else:
             callNumber+=1
             navigateToScreen(tapForServiceScreen)
-    def navigateToTapChooseNumberOfGuestsScreen(self):
-        navigateToScreen(chooseNumberOfGuests)
+    def navigateToCheckedIn(self):
+        global guestCount,waiterId,hangoutId
+        qWorker.addAPICall(startHangout,[getTableId(), guestCount, waiterId, hangoutId])
+        navigateToScreen(tapForServiceScreen)
 class ChooseNumberOfGuests(QDialog):
     global guestCount
     guestCount=""
@@ -643,6 +650,17 @@ class ChooseNumberOfGuests(QDialog):
         guestCount=""
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
+        global continueExistingJourney
+        # print("############## Before Aync")
+        # asyncio.run(setContinueExistingJourney())
+        print("############## After Aync")
+        # lightThreadRunner.launch(continueJourneyCheck)
+        qWorker.addAPICall(continueJourneyCheck,[])
+        # runInNewThread(self,continueJourneyCheck)
+        # occupied = isTableOccupied(getTableId())
+        # print(occupied.status_code)
+        # if(occupied.status_code==409):
+        #     continueExistingJourney = True
 
     def onKey(self, key):
         global guestCount
@@ -656,14 +674,27 @@ class ChooseNumberOfGuests(QDialog):
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
 
+
+
     def navigateToCheckedInScreen(self):
         try: 
-            global hangoutId,guestCount
+            global hangoutId,guestCount,continueExistingJourney,previousJourneyData
+            table = getTableId()
+            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            serviceCalls['hangoutId'] = hangoutId
             if(guestCount==0 or guestCount==""):
                 print("Navigating to correctChooseNumberOfGuests")
                 navigateToScreen(correctChooseNumberOfGuests)
                 return
-            table = getTableId()
+                
+            if(continueExistingJourney):
+
+                navigateToScreen(continueExistingJourneyScreen)
+                continueExistingJourney = False
+                # previousJourneyData = None
+                return
+
+            
             # print(table)
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             serviceCalls['hangoutId'] = hangoutId
