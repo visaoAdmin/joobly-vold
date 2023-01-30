@@ -482,6 +482,8 @@ class AboutScreen(QDialog):
         self.renderLabels()
     
     def renderLabels(self):
+        self.serialLabel.setText(serialNumber)
+
         if(storage==None):
             self.restaurantLabel.setText("Assign restaurant and table")
             self.brightnessLabel.setText("255")
@@ -496,7 +498,6 @@ class AboutScreen(QDialog):
         else:
             self.tableLabel.setText("Table Not assigned or no internet")
         
-        self.serialLabel.setText(serialNumber)
         if "podBrightness" in storage:
             self.brightnessLabel.setText(str(storage["podBrightness"]))
         else: 
