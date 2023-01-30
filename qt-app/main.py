@@ -1136,6 +1136,7 @@ class FeedbackScreen(QDialog):
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToPaymentOptionScreen)
         
+        
         self.food1.clicked.connect(lambda: self.markRating("food", 1))
         self.food2.clicked.connect(lambda: self.markRating("food", 2))
         self.food3.clicked.connect(lambda: self.markRating("food", 3))
@@ -1165,7 +1166,16 @@ class FeedbackScreen(QDialog):
 
     def markRating(self, type,rating):
         # print(rating)
-        self.ratings[type] = rating
+        try:
+            if self.ratings[type]==rating:
+                self.markRating(type,0)
+                return
+            else:
+                self.ratings[type] = rating
+        except Exception as e:
+            print(e)
+            self.ratings[type] = rating
+
         for a in range(5):
             i = a+1
             style = self.selectedStyle if i <= rating else self.normalStyle
