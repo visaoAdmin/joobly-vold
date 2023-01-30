@@ -331,6 +331,7 @@ class IdleLockScreen(QDialog):
 
     def clear(self):
         print("Clearing Idle")
+        lightThreadRunner.launch(yellowLight)
         # runInNewThread(self,self.loadConfigAndLogo)
     def loadConfigAndLogo(self):
         loadConfig()
