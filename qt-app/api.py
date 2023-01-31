@@ -13,6 +13,10 @@ backgroundRunner = MultiApiThreadRunner("function_queue")
 
 restartApp = False
 
+def setRestartAppFalse():
+    global restartApp
+    restartApp = False
+
 def setRestartApp(res):
     global restartApp
     if(res.status_code==401):

@@ -13,7 +13,7 @@ import signal
 import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice,getRestartApp
+from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice,getRestartApp,setRestartAppFalse
 import threading
 from subprocess import Popen
 import json
@@ -335,6 +335,7 @@ class IdleLockScreen(QDialog):
         except:
             pass
         print("Clearing Idle")
+        setRestartAppFalse()
         lightThreadRunner.launch(yellowLight)
         # runInNewThread(self,self.loadConfigAndLogo)
     def loadConfigAndLogo(self):
