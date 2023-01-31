@@ -504,7 +504,14 @@ class AboutScreen(QDialog):
             self.brightnessLabel.setText("255")
     
     def refresh(self):
+        restId = getRestaurantId()
+        
         loadConfig()
+        try:
+            if(getRestaurantId()!=restId):
+                navigateToScreen(waiterPinScreen)
+        except:
+            pass
         self.renderLabels()
 
         
