@@ -26,7 +26,7 @@ class QueueWorker(object):
             
             # time.sleep(2)
             while(len(self.queue.queue)>0):
-                print("Queue ",self.queue.queue)
+                # print("Queue ",self.queue.queue)
                 foregroundAPI = None
                 try :
                     
@@ -41,7 +41,7 @@ class QueueWorker(object):
                         # print("2nd",runFunction)
                         
                         try:
-                            print("2--",foregroundAPI)
+                            # print("2--",foregroundAPI)
                             runFunction = foregroundAPI[0]
                             args = foregroundAPI[1]
                             r = runFunction(*args)

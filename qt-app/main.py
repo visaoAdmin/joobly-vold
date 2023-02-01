@@ -366,6 +366,7 @@ class WaiterPinScreen(QDialog):
     def clear(self):
         self.pin.clear() 
         self.renderPin()
+        setRestartAppFalse()
 
     def onKey(self, key):
         global waiterId
@@ -578,7 +579,8 @@ class TableSelectionScreen(QDialog):
         # runInNewThread(self, self.loadTables)
 
     def clear(self): 
-        self.loadTables()   
+        self.loadTables()
+        setRestartAppFalse()   
     def loadTables(self):
         try:
             
