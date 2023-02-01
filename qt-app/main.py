@@ -1303,11 +1303,12 @@ def loadConfig():
         saveStorage()
         newRestId = getRestaurantId()
         if(restaurantId!=newRestId):
-            global idleLockScreen,payQRScreen,thankYouScreen
+            global idleLockScreen,payQRScreen,thankYouScreen,dinerActionMenuScreen
             restaurantChanged = True
             idleLockScreen = IdleLockScreen()
             payQRScreen = PayQRScreen()
             thankYouScreen = ThankYouScreen()
+            dinerActionMenuScreen = DinerActionMenuScreen()
             
         else:
             restaurantChanged = False
