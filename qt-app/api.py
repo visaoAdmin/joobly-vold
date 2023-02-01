@@ -31,11 +31,11 @@ background_jobs = []
 index = -1
 
 BASE_URL = API_URL
-print("BASE_URL",BASE_URL)
+# print("BASE_URL",BASE_URL)
 TIMEOUT = 15
 
 def getConfig(serialNumber):
-    print("getting config...")
+    # print("getting config...")
     response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config", timeout = TIMEOUT)
     # print(response)
     setRestartApp(response)
