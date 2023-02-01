@@ -44,7 +44,7 @@ def getConfig(serialNumber):
 
 
 def startHangout(table, guestCount, waiterId, hangoutId):
-    
+    setRestartAppFalse()
     # print("startHangout",table, guestCount, waiterId, hangoutId)
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
