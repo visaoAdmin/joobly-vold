@@ -85,7 +85,7 @@ class QueueWorker(object):
                     # print("2nd",runFunction)
                     
                 try:
-                    print("Background API",backgroundAPI)        
+                    # print("Background API",backgroundAPI)        
                     runFunction = backgroundAPI[0]
                     args = backgroundAPI[1]
                     r = runFunction(*args)

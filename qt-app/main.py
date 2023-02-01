@@ -1210,10 +1210,12 @@ class FeedbackScreen(QDialog):
             # print("new self.ratings", self.ratings, hangoutRatings)
             ratingKeys = hangoutRatings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": hangoutRatings[x]}, ratingKeys)
+            print("################",serviceCalls[callNumber])
             try:
                 if('close' not in serviceCalls[callNumber].keys()):
-                    qWorker.addAPICall(waiterArrived(getTableId(),hangoutId,callNumber,time.time()-serviceCalls[callNumber]['open']))
+                    qWorker.addAPICall(waiterArrived,[getTableId(),hangoutId,callNumber,time.time()-serviceCalls[callNumber]['open']])
             except:
+
                 pass
             # print(serviceCalls[callNumber])
             callNumber = 1
