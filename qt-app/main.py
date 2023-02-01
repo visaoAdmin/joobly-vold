@@ -486,6 +486,9 @@ class AboutScreen(QDialog):
         self.backButton.clicked.connect(navigateGoBack)
         self.renderLabels()
     
+    def clear(self):
+        self.refreshButton.setEnabled(True)
+
     def renderLabels(self):
         self.serialLabel.setText(serialNumber)
 
@@ -510,7 +513,7 @@ class AboutScreen(QDialog):
     
     def refresh(self):
         restId = getRestaurantId()
-        
+        self.refreshButton.setEnabled(False)
         loadConfig()
         try:
             if(getRestaurantId()!=restId):
