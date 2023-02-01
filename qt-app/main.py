@@ -57,12 +57,10 @@ def initialize():
     serialNumber=getserial()
     pixmap=None
     serviceCalls.clear()
-    continueExistingJourney = False
     previousJourneyData = None
     logoData =None
     restartApplication = False
     restaurantChanged = True
-
 def continueJourneyCheck():
     # print("alfhlakhdfilauehkjdbfviuebfvjkbefjb")
     global continueExistingJourney,previousJourneyData
@@ -325,7 +323,6 @@ class IdleLockScreen(QDialog):
 
     def clear(self):
         global serviceCalls,callNumber
-        initialize()
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
@@ -366,7 +363,6 @@ class WaiterPinScreen(QDialog):
     def clear(self):
         self.pin.clear() 
         self.renderPin()
-        setRestartAppFalse()
 
     def onKey(self, key):
         global waiterId
@@ -579,8 +575,7 @@ class TableSelectionScreen(QDialog):
         # runInNewThread(self, self.loadTables)
 
     def clear(self): 
-        self.loadTables()
-        setRestartAppFalse()   
+        self.loadTables()   
     def loadTables(self):
         try:
             
@@ -840,7 +835,6 @@ class TapForServiceScreen(QDialog):
     
     def navigateToCloseServiceScreen(self):
         # runInNewThread(self, self.callWaiter)
-        print("##################",getRestartApp())
         self.callWaiter()
         if(getRestartApp()):
             print("##################",getRestartApp())
