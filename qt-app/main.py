@@ -43,6 +43,26 @@ logoData =None
 restartApplication = False
 restaurantChanged = True
 
+def initialize():
+    global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
+    storage.clear()
+    isWaiterCalled = False
+    hangoutId=None
+    callNumber = 1
+    serviceCallStartTime=None
+    thr=None
+    guestCount = None
+    table=None
+    waiterId=None
+    serialNumber=getserial()
+    pixmap=None
+    serviceCalls.clear()
+    continueExistingJourney = False
+    previousJourneyData = None
+    logoData =None
+    restartApplication = False
+    restaurantChanged = True
+
 def continueJourneyCheck():
     # print("alfhlakhdfilauehkjdbfviuebfvjkbefjb")
     global continueExistingJourney,previousJourneyData
@@ -305,6 +325,7 @@ class IdleLockScreen(QDialog):
 
     def clear(self):
         global serviceCalls,callNumber
+        initialize()
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
