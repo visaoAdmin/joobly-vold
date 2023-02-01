@@ -327,7 +327,8 @@ class IdleLockScreen(QDialog):
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
-            loadConfig()
+            qWorker.addAPICall(loadConfig,[])
+            # loadConfig()
         except:
             pass
         serviceCalls.clear()
