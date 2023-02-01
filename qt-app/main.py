@@ -314,8 +314,8 @@ class IdleLockScreen(QDialog):
         serviceCalls.clear()
         callNumber = 1
         print("Clearing Idle")
-        
         setRestartAppFalse()
+        print(getRestartApp())
         lightThreadRunner.launch(yellowLight)
         
     def loadConfigAndLogo(self):
@@ -819,6 +819,7 @@ class TapForServiceScreen(QDialog):
         # runInNewThread(self, self.callWaiter)
         self.callWaiter()
         if(getRestartApp()):
+            print("##################",getRestartApp())
             navigateToScreen(idleLockScreen)
         else:
             navigateToScreen(closeServiceScreen)
