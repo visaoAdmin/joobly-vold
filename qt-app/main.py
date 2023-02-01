@@ -57,10 +57,11 @@ def initialize():
     serialNumber=getserial()
     pixmap=None
     serviceCalls.clear()
+    continueExistingJourney = False
     previousJourneyData = None
     logoData =None
     restartApplication = False
-    restaurantChanged = True
+    
 def continueJourneyCheck():
     # print("alfhlakhdfilauehkjdbfviuebfvjkbefjb")
     global continueExistingJourney,previousJourneyData
