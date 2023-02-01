@@ -304,7 +304,7 @@ class IdleLockScreen(QDialog):
         # runInNewThread(self, self.loadConfigAndLogo)
 
     def clear(self):
-        global serviceCalls
+        global serviceCalls,callNumber
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
@@ -312,6 +312,7 @@ class IdleLockScreen(QDialog):
         except:
             pass
         serviceCalls.clear()
+        callNumber = 1
         print("Clearing Idle")
         
         setRestartAppFalse()
