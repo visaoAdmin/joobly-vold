@@ -41,6 +41,7 @@ continueExistingJourney = False
 previousJourneyData = None
 logoData =None
 restartApplication = False
+restaurantChanged = True
 
 def continueJourneyCheck():
     # print("alfhlakhdfilauehkjdbfviuebfvjkbefjb")
@@ -53,38 +54,7 @@ def continueJourneyCheck():
         continueExistingJourney = True
 
 
-def loadConfig():
-    global storage, table
-    try:
-        restaurantId = getRestaurantId()
-        try:
-            table = storage["tableId"]
-        except:
-            pass
-        config = getConfig(serialNumber)
-        
-        print("Config Loaded", config)
-        # if(config == None):
-        #     raise Exception("Failed to load")
-        storage = config
-        try:
-            storage['tableId'] = table
-        except:
-            pass
-        # print("Tables",table)
-        saveStorage()
-        if(storage['tableId']):
-            if(restaurantId!=getRestaurantId() or storage['tableId'] not in storage['tables']):
-                storage['tableId'] = storage['tables'][0]
-        else:
-                storage['tableId'] = storage['tables'][0]
-          
 
-    except Exception as e:
-        
-        storage=loadStorage()
-        # saveStorage()
-        print("Failed to load config",e)
 
 def loadPicture(filepath,url):
         
@@ -297,8 +267,8 @@ class ReserveScreen(QDialog):
         self.loadLogo()
     def loadLogo(self):
         renderLogo(self)
-    # def clear(self):
-    #     runInNewThread(self,self.loadLogo)
+    def clear(self):
+        runInNewThread(self,self.loadLogo)
     def navigateToWelcome(self):
         navigateToScreen(waiterPinScreen)
 
@@ -330,6 +300,8 @@ class IdleLockScreen(QDialog):
         # runInNewThread(self, self.loadConfigAndLogo)
 
     def clear(self):
+        if restaurantChanged:
+            self.loadConfigAndLogo()
         try:
             loadConfig()
         except:
@@ -337,7 +309,7 @@ class IdleLockScreen(QDialog):
         print("Clearing Idle")
         setRestartAppFalse()
         lightThreadRunner.launch(yellowLight)
-        # runInNewThread(self,self.loadConfigAndLogo)
+        
     def loadConfigAndLogo(self):
         loadConfig()
         # pixmap = loadLogoPixmap()
@@ -938,7 +910,9 @@ class DinerActionMenuScreen(QDialog):
         # self.remoteApiLabel.setText(title);
     
     def clear(self):
-        runInNewThread(self,self.loadQRCode)
+        global restaurantChanged
+        if restaurantChanged:
+            self.loadQRCode()
 
     def navigateGoBack(self):
         global isOnMenuScreen
@@ -1106,7 +1080,9 @@ class PayQRScreen(QDialog):
         # runInNewThread(self, self.loadQRCode)
     
     def clear(self):
-        runInNewThread(self, self.loadQRCode)
+        global restaurantChanged
+        if restaurantChanged:
+            self.loadQRCode()
         lightThreadRunner.launch(self.billLight)
 
     def navigateBack(self):
@@ -1265,8 +1241,9 @@ class ThankYouScreen(QDialog):
         self.loadLogo()
         # runInNewThread(self, self.loadLogo)
     
-    # def clear(self):
-    #     runInNewThread(self, self.loadLogo)
+    def clear(self):
+        if restaurantChanged:
+            self.loadLogo()
 
     def loadLogo(self):
         renderLogo(self)
@@ -1274,7 +1251,49 @@ class ThankYouScreen(QDialog):
     def navigateToIdleLockScreen(self):
         navigateToRestart()
 
+def loadConfig():
+    global storage, table, restaurantChanged
+    try:
+        restaurantId = getRestaurantId()
+        try:
+            table = storage["tableId"]
+        except:
+            pass
+        config = getConfig(serialNumber)
+        
+        print("Config Loaded", config)
+        # if(config == None):
+        #     raise Exception("Failed to load")
+        storage = config
+        try:
+            storage['tableId'] = table
+        except:
+            pass
+        # print("Tables",table)
+        saveStorage()
+        newRestId = getRestaurantId()
+        if(restaurantId!=newRestId):
+            global idleLockScreen,payQRScreen,thankYouScreen
+            restaurantChanged = True
+            idleLockScreen = IdleLockScreen()
+            payQRScreen = PayQRScreen()
+            thankYouScreen = ThankYouScreen()
+            
+        else:
+            restaurantChanged = False
+            print("CHANGED##################")
+        if(storage['tableId']):
+            if(restaurantId!=getRestaurantId() or storage['tableId'] not in storage['tables']):
+                storage['tableId'] = storage['tables'][0]
+        else:
+                storage['tableId'] = storage['tables'][0]
+          
 
+    except Exception as e:
+        restaurantChanged = False
+        storage=loadStorage()
+        # saveStorage()
+        print("Failed to load config",e)
 
 
 #Main

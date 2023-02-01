@@ -9,6 +9,6 @@ def getserial():
         print("CPU serial",cpuserial)
     f.close()
   except:
-    cpuserial = "DEVLOCAL"
+    cpuserial = "DEVLOCAL8"
 
   return cpuserial
