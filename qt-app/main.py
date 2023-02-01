@@ -838,6 +838,7 @@ class TapForServiceScreen(QDialog):
     
     def navigateToCloseServiceScreen(self):
         # runInNewThread(self, self.callWaiter)
+        print("##################",getRestartApp())
         self.callWaiter()
         if(getRestartApp()):
             print("##################",getRestartApp())
