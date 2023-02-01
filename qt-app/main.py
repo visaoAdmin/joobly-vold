@@ -67,6 +67,10 @@ def loadPicture(filepath,url):
         print("Error un calling loadPicture")
     finally:
         print("runiing in finally")
+        print("########################## URL ###########################",url)
+        print("########################## URL ###########################",url)
+        if(url=="" or url==None):
+            return
         with open(filepath,"rb") as logo:
             return logo.read()
 
