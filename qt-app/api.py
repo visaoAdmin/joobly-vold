@@ -225,6 +225,10 @@ def changeDevice(hangout):
 #     url = BASE_URL + "/hangouts/"+hangoutId+"/sync"
 #     response = requests.post(url,json=hangout)
 
+def makeDeviceOnline(hangoutId):
+    url = BASE_URL + "/hangouts/" + hangoutId +"/online"
+    response = requests.get(url,timeout=TIMEOUT)
+
 apiDict ={
     "getConfig":getConfig,
     "startHangout":startHangout,

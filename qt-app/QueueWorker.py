@@ -3,6 +3,7 @@ from multiThread import Thread
 import time
 import requests
 from background_api import endServiceCall,sendHangout,sendRatings,startServiceCall
+from api import makeDeviceOnline
 class QueueWorker(object):
     def __init__(self):
         self.currentThread = Thread(lambda:())
@@ -22,6 +23,8 @@ class QueueWorker(object):
         self.queue.push(func,args)
 
     def syncAPICalls(self):
+        prev = 1
+        prev+=1
         while(True):
             
             # time.sleep(2)
@@ -79,7 +82,7 @@ class QueueWorker(object):
                 # print(e)
                 pass
             if backgroundAPI:
-            
+                
                     
                     
                     # print("2nd",runFunction)
@@ -87,6 +90,7 @@ class QueueWorker(object):
                 try:
                     # print("Background API",backgroundAPI)        
                     runFunction = backgroundAPI[0]
+                    prev = backgroundAPI
                     args = backgroundAPI[1]
                     r = runFunction(*args)
                     self.queue2.pop()
@@ -102,8 +106,16 @@ class QueueWorker(object):
                 except  requests.exceptions.ConnectionError:
                     pass
                 except Exception as e:
-                    # print(e)
+                    
                     self.queue2.pop()
+            else:
                 
+                try:
+                    time.sleep(1)
+                    if(prev[0].__name__!="sendRatings"):
+                        makeDeviceOnline(prev[1][1])
+                    prev = 1
+                except:
+                    pass
                     
 
