@@ -82,14 +82,14 @@ def loadPicture(filepath,url):
         with open(filepath,"wb") as logo:
             logo.write(data)
         print("successfully fetched picture")
-    except:
-        print("Error un calling loadPicture")
+    except Exception as e:
+        print("Error un calling loadPicture",e)
     finally:
         print("runiing in finally")
         print("########################## URL ###########################",url)
         print("########################## URL ###########################",url)
         if(url=="" or url==None):
-            return
+            return None
         with open(filepath,"rb") as logo:
             return logo.read()
 
@@ -328,6 +328,7 @@ class IdleLockScreen(QDialog):
             self.loadConfigAndLogo()
         try:
             qWorker.addAPICall(loadConfig,[])
+            qWorker.addAPICall(self.loadConfigAndLogo,[])
             # loadConfig()
         except:
             pass
@@ -942,9 +943,7 @@ class DinerActionMenuScreen(QDialog):
         # self.remoteApiLabel.setText(title);
     
     def clear(self):
-        global restaurantChanged
-        if restaurantChanged:
-            self.loadQRCode()
+        qWorker.addAPICall(self.loadQRCode,[])
 
     def navigateGoBack(self):
         global isOnMenuScreen
@@ -952,10 +951,14 @@ class DinerActionMenuScreen(QDialog):
         navigateGoBack()
 
     def loadQRCode(self):
+        print("EXECUTING INSIDE LOAD MENU QR")
         try:
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+            print(storage)
             if "menuQr" in storage:
                 url = storage["menuQr"] 
+                
+                print(url)
                 data = loadPicture("restaurantData/menuQr",url)
 
                 image = QImage()
@@ -1113,8 +1116,7 @@ class PayQRScreen(QDialog):
     
     def clear(self):
         global restaurantChanged
-        if restaurantChanged:
-            self.loadQRCode()
+        qWorker.addAPICall(self.loadQRCode,[])
         lightThreadRunner.launch(self.billLight)
 
     def navigateBack(self):
@@ -1276,8 +1278,7 @@ class ThankYouScreen(QDialog):
         # runInNewThread(self, self.loadLogo)
     
     def clear(self):
-        if restaurantChanged:
-            self.loadLogo()
+        qWorker.addAPICall(self.loadLogo,[])
 
     def loadLogo(self):
         renderLogo(self)
@@ -1309,10 +1310,7 @@ def loadConfig():
         if(restaurantId!=newRestId):
             global idleLockScreen,payQRScreen,thankYouScreen,dinerActionMenuScreen
             restaurantChanged = True
-            idleLockScreen = IdleLockScreen()
-            payQRScreen = PayQRScreen()
-            thankYouScreen = ThankYouScreen()
-            dinerActionMenuScreen = DinerActionMenuScreen()
+            
             
         else:
             restaurantChanged = False

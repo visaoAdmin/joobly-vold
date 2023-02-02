@@ -1,4 +1,4 @@
-from StorageQueue import StorageQueue
+from StorageQueue import StorageQueue,NonStorageQueue
 from multiThread import Thread
 import time
 import requests
@@ -10,7 +10,7 @@ class QueueWorker(object):
         self.function_args = []
         
         self.hangouts = []
-        self.queue = StorageQueue("function_queue.file")
+        self.queue = NonStorageQueue()
         self.queue2 = StorageQueue("background_queue.file")
         self.currentThread.run = self.syncAPICalls
 
