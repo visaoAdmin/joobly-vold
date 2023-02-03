@@ -111,7 +111,7 @@ class QueueWorker(object):
             else:
                 
                 try:
-                    time.sleep(1)
+
                     if(prev[0].__name__!="sendRatings"):
                         makeDeviceOnline(prev[1][1])
                     prev = 1
