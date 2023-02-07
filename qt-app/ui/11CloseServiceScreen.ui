@@ -42,9 +42,9 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>170</y>
+     <y>20</y>
      <width>391</width>
-     <height>411</height>
+     <height>341</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -57,9 +57,9 @@
   <widget class="QPushButton" name="menuButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>111</width>
+     <x>40</x>
+     <y>410</y>
+     <width>191</width>
      <height>91</height>
     </rect>
    </property>
@@ -73,10 +73,74 @@
   <widget class="QPushButton" name="checkoutButton">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>720</y>
-     <width>161</width>
-     <height>61</height>
+     <x>250</x>
+     <y>420</y>
+     <width>201</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="sadButton">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>580</y>
+     <width>113</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="neutralButton">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>580</y>
+     <width>121</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="happyButton">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>580</y>
+     <width>113</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="askForCableButton">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>710</y>
+     <width>141</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">

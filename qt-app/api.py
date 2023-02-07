@@ -229,6 +229,31 @@ def makeDeviceOnline(hangoutId):
     url = BASE_URL + "/hangouts/" + hangoutId +"/online"
     response = requests.get(url,timeout=TIMEOUT)
 
+def notifyFeelingBad(hangout,waiter,restaurant,table):
+    response = requests.post(BASE_URL + "/pod-events", json={
+        "table": table,
+        "hangout": hangout,
+        "waiter":waiter,
+        "restaurant":restaurant,
+        "type": "CUSTOMER_SAD",
+    })
+def notifyFeelingNeutral(hangout,waiter,restaurant,table):
+    response = requests.post(BASE_URL + "/pod-events", json={
+        "table": table,
+        "hangout": hangout,
+        "waiter":waiter,
+        "restaurant":restaurant,
+        "type": "CUSTOMER_NEUTRAL",
+    })
+def notifyFeelingHappy(hangout,waiter,restaurant,table):
+    response = requests.post(BASE_URL + "/pod-events", json={
+        "table": table,
+        "hangout": hangout,
+        "waiter":waiter,
+        "restaurant":restaurant,
+        "type": "CUSTOMER_HAPPY",
+    })
+
 apiDict ={
     "getConfig":getConfig,
     "startHangout":startHangout,

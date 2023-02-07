@@ -41,10 +41,10 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>120</y>
-     <width>401</width>
-     <height>71</height>
+     <x>10</x>
+     <y>140</y>
+     <width>221</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -57,10 +57,10 @@
   <widget class="QPushButton" name="clearTableButton">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>640</y>
-     <width>411</width>
-     <height>121</height>
+     <x>20</x>
+     <y>700</y>
+     <width>441</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -74,10 +74,10 @@ color: white;</string>
   <widget class="QPushButton" name="reserveButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>230</y>
-     <width>401</width>
-     <height>71</height>
+     <x>240</x>
+     <y>570</y>
+     <width>201</width>
+     <height>121</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -90,10 +90,10 @@ color: white;</string>
   <widget class="QPushButton" name="screenSaverButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>340</y>
-     <width>401</width>
-     <height>71</height>
+     <x>20</x>
+     <y>570</y>
+     <width>211</width>
+     <height>121</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -106,20 +106,20 @@ color: white;</string>
   <widget class="QPushButton" name="tableSelectionButton">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>450</y>
-     <width>391</width>
-     <height>81</height>
+     <x>240</x>
+     <y>130</y>
+     <width>231</width>
+     <height>231</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>18</pointsize>
+     <pointsize>24</pointsize>
      <kerning>true</kerning>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px; color: white;</string>
+    <string notr="true">background-color: transparent; border: 0px; color: white;text-align:right;</string>
    </property>
    <property name="text">
     <string/>
@@ -128,15 +128,15 @@ color: white;</string>
   <widget class="QLabel" name="tableNumber">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>450</y>
+     <x>270</x>
+     <y>20</y>
      <width>181</width>
      <height>81</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>18</pointsize>
+     <pointsize>24</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -144,6 +144,9 @@ color: white;</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
   <zorder>label_2</zorder>

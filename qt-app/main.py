@@ -14,6 +14,7 @@ import urllib.request
 import requests
 from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
 from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice,getRestartApp,setRestartAppFalse
+from api import notifyFeelingBad,notifyFeelingHappy,notifyFeelingNeutral
 import threading
 from subprocess import Popen
 import json
@@ -815,12 +816,22 @@ class TapForServiceScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
+        self.happyButton.clicked.connect(self.notifyHappy)
+        self.sadButton.clicked.connect(self.notifySad)
+        self.neutralButton.clicked.connect(self.notifyNeutral)
         # slider = self.experienceSlider
         # slider.setMinimum(0)
         # slider.setMaximum(10)
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
 
+    def notifyHappy(self):
+        qWorker.addAPICall(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+    def notifySad(self):
+        qWorker.addAPICall(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+    def notifyNeutral(self):
+        qWorker.addAPICall(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+    
     def onExperienceChanged(self, value):
         print(value)
         if (value >= 6):
@@ -884,8 +895,18 @@ class CloseServiceScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
+        self.happyButton.clicked.connect(self.notifyHappy)
+        self.sadButton.clicked.connect(self.notifySad)
+        self.neutralButton.clicked.connect(self.notifyNeutral)
         # thr.join()
-    
+
+    def notifyHappy(self):
+        qWorker.addAPICall(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+    def notifySad(self):
+        qWorker.addAPICall(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+    def notifyNeutral(self):
+        qWorker.addAPICall(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+       
     def clear(self):
         global restartApplication
         
