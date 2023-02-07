@@ -1236,6 +1236,10 @@ class FeedbackScreen(QDialog):
         # print("prev self.ratings", self.ratings)
         
         if(len(self.ratings)==4):
+            print(self.ratings)
+            for i in self.ratings:
+                if self.ratings[i] ==0:
+                    return
             global callNumber
             # print("self.ratings", self.ratings)
             hangoutRatings = copy.deepcopy(self.ratings)
@@ -1245,6 +1249,7 @@ class FeedbackScreen(QDialog):
             ratingKeys = hangoutRatings.keys()
             _ratings = map(lambda x: {"ratingType": x.capitalize(), "rating": hangoutRatings[x]}, ratingKeys)
             # print("################",serviceCalls[callNumber])
+            
             try:
                 if('close' not in serviceCalls[callNumber].keys()):
                     qWorker.addAPICall(waiterArrived,[getTableId(),hangoutId,callNumber,time.time()-serviceCalls[callNumber]['open']])
