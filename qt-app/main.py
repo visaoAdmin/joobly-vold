@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage, QColor
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
+from SmileyRunner import SmileyRunner
 
 # from redis_queue import foregroundQueue,handle_failure
 import copy 
@@ -43,6 +44,7 @@ previousJourneyData = None
 logoData =None
 restartApplication = False
 restaurantChanged = True
+smileyTimer =None
 
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -826,11 +828,13 @@ class TapForServiceScreen(QDialog):
         # slider.sliderReleased.connect(self.experienceMarked)
 
     def notifyHappy(self):
-        qWorker.addAPICall(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        global smileyTimer
+        
+        smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
-        qWorker.addAPICall(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
-        qWorker.addAPICall(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     
     def onExperienceChanged(self, value):
         print(value)
@@ -901,11 +905,11 @@ class CloseServiceScreen(QDialog):
         # thr.join()
 
     def notifyHappy(self):
-        qWorker.addAPICall(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
-        qWorker.addAPICall(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
-        qWorker.addAPICall(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
        
     def clear(self):
         global restartApplication
@@ -1405,6 +1409,7 @@ billScreen = BillScreen()
 qWorker = QueueWorker()
 lightThreadRunner = ReUsableThreadRunner()
 serviceCallsSyncer = ServiceCallsSyncer()
+smileyRunner = SmileyRunner()
 if ENV == "dev":
     #if start any other screen change this.
     mainwindow=idleLockScreen
