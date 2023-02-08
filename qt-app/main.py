@@ -845,6 +845,7 @@ class TapForServiceScreen(QDialog):
         # slider.sliderReleased.connect(self.experienceMarked)
     def clear(self):
         self.askedCable = False
+        print()
         setPixMap(self,"assets/WaiterLITE-UI-13.png")
         lightThreadRunner.launch(yellowLight)
     def askForCable(self):
@@ -874,9 +875,7 @@ class TapForServiceScreen(QDialog):
             self.experience = "Good"
         if (value < 6):
             self.experience = "Bad"
-    def clear(self):
-        self.askedCable = False
-        lightThreadRunner.launch(yellowLight)
+    
         
 
 
