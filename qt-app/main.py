@@ -872,7 +872,7 @@ class TapForServiceScreen(QDialog):
     def notifyNeutral(self):
 
         setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     
@@ -945,7 +945,7 @@ class CloseServiceScreen(QDialog):
 
     def notifyHappy(self):
         setIcon(self.happyButton,"assets/Happy.png")
-        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
@@ -955,7 +955,7 @@ class CloseServiceScreen(QDialog):
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
         setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
        
@@ -967,7 +967,7 @@ class CloseServiceScreen(QDialog):
             setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
         lightThreadRunner.launch(blueLight)
         setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         
         
