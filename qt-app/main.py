@@ -850,7 +850,7 @@ class TapForServiceScreen(QDialog):
         askingCable = False
         setPixMap(self,"assets/WaiterLITE-UI-13.png")
         setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         lightThreadRunner.launch(yellowLight)
     def askForCable(self):
@@ -860,7 +860,7 @@ class TapForServiceScreen(QDialog):
     def notifyHappy(self):
         global smileyTimer
         setIcon(self.happyButton,"assets/Happy.png")
-        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
