@@ -44,10 +44,10 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>30</y>
-     <width>391</width>
-     <height>341</height>
+     <x>0</x>
+     <y>10</y>
+     <width>481</width>
+     <height>381</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -92,8 +92,8 @@
   <widget class="QPushButton" name="sadButton">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>580</y>
+     <x>63</x>
+     <y>578</y>
      <width>113</width>
      <height>81</height>
     </rect>
@@ -104,12 +104,22 @@
    <property name="text">
     <string/>
    </property>
+   <property name="icon">
+    <iconset resource="../WaiterLITE01.qrc">
+     <normaloff>:/Screens/assets/sad-1.png</normaloff>:/Screens/assets/sad-1.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>58</width>
+     <height>58</height>
+    </size>
+   </property>
   </widget>
   <widget class="QPushButton" name="neutralButton">
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>580</y>
+     <y>578</y>
      <width>121</width>
      <height>81</height>
     </rect>
@@ -120,13 +130,23 @@
    <property name="text">
     <string/>
    </property>
+   <property name="icon">
+    <iconset resource="../WaiterLITE01.qrc">
+     <normaloff>:/Screens/assets/Average-1.png</normaloff>:/Screens/assets/Average-1.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>58</width>
+     <height>58</height>
+    </size>
+   </property>
   </widget>
   <widget class="QPushButton" name="happyButton">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>570</y>
-     <width>113</width>
+     <x>307</x>
+     <y>577</y>
+     <width>91</width>
      <height>81</height>
     </rect>
    </property>
@@ -135,6 +155,16 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="../WaiterLITE01.qrc">
+     <normaloff>:/Screens/assets/Happy-1.png</normaloff>:/Screens/assets/Happy-1.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>58</width>
+     <height>58</height>
+    </size>
    </property>
   </widget>
   <widget class="QPushButton" name="askForCableButton">

@@ -128,16 +128,19 @@ color: white;</string>
   <widget class="QLabel" name="tableNumber">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>20</y>
-     <width>181</width>
+     <x>260</x>
+     <y>271</y>
+     <width>191</width>
      <height>81</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>24</pointsize>
+     <pointsize>18</pointsize>
     </font>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: transparent; border: 0px; color: white;</string>
@@ -146,7 +149,7 @@ color: white;</string>
     <string/>
    </property>
    <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <zorder>label_2</zorder>

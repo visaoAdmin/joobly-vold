@@ -2,7 +2,7 @@ from re import S
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QPixmap, QImage, QColor
+from PyQt5.QtGui import QPixmap, QImage, QColor,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
@@ -45,6 +45,7 @@ logoData =None
 restartApplication = False
 restaurantChanged = True
 smileyTimer =None
+askingCable = False
 
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -76,7 +77,8 @@ def continueJourneyCheck():
         continueExistingJourney = True
 
 
-
+def setIcon(button,path):
+    button.setIcon(QIcon(path))
 
 def loadPicture(filepath,url):
         
@@ -844,29 +846,34 @@ class TapForServiceScreen(QDialog):
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
     def clear(self):
-        self.askedCable = False
-        print()
+        global askingCable
+        askingCable = False
         setPixMap(self,"assets/WaiterLITE-UI-13.png")
+        setIcon(self.happyButton,"assets/Happy-1.png")
+        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.neutralButton,"assets/Average-1.png")
         lightThreadRunner.launch(yellowLight)
     def askForCable(self):
-
-        if(self.askedCable==False):
-            self.askedCable = True
-            lightThreadRunner.launch(greenLight)
-            setPixMap(self,"assets/tapForServiceActive.png")
-
-        else:
-            self.askedCable = False
-            lightThreadRunner.launch(yellowLight)
-            setPixMap(self,"assets/WaiterLITE-UI-13.png")
-
+        global askingCable
+        askingCable = True
+        self.navigateToCloseServiceScreen()
     def notifyHappy(self):
         global smileyTimer
-        
+        setIcon(self.happyButton,"assets/Happy.png")
+        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
+
+        setIcon(self.happyButton,"assets/Happy-1.png")
+        setIcon(self.sadButton,"assets/Sad.png")
+        setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
+
+        setIcon(self.happyButton,"assets/Happy-1.png")
+        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     
     def onExperienceChanged(self, value):
@@ -934,32 +941,36 @@ class CloseServiceScreen(QDialog):
         self.neutralButton.clicked.connect(self.notifyNeutral)
         self.askedCable = False
         # thr.join()
-        self.askForCableButton.clicked.connect(self.askForCable)
+        self.askForCableButton.clicked.connect(self.navigateToTapForServiceScreen)
 
     def notifyHappy(self):
+        setIcon(self.happyButton,"assets/Happy.png")
+        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
+        setIcon(self.happyButton,"assets/Happy-1.png")
+        setIcon(self.sadButton,"assets/Sad.png")
+        setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
+        setIcon(self.happyButton,"assets/Happy-1.png")
+        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
        
     def clear(self):
-        global restartApplication
-        self.askedCable = False
-        lightThreadRunner.launch(blueLight)
-        setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
-        
-    def askForCable(self):
-
-        if(self.askedCable==False):
-            self.askedCable = True
-            lightThreadRunner.launch(greenLight)
+        global restartApplication,askingCable
+        if(askingCable):
             setPixMap(self,"assets/closeServiceScreenActive.png")
-
         else:
-            self.askedCable = False
-            lightThreadRunner.launch(blueLight)
             setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
+        lightThreadRunner.launch(blueLight)
+        setIcon(self.happyButton,"assets/Happy-1.png")
+        setIcon(self.sadButton,"assets/Sad-1.png")
+        setIcon(self.neutralButton,"assets/Average-1.png")
+        
+        
 
     def navigateToTapForServiceScreen(self):
         # runInNewThread(self, self.waiterArrived)

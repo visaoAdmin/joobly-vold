@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="Screens">
+    <file>assets/Average-1.png</file>
+    <file>assets/Average.png</file>
+    <file>assets/Happy-1.png</file>
+    <file>assets/Happy.png</file>
+    <file>assets/sad-1.png</file>
+    <file>assets/sad.png</file>
     <file>assets/ask for cable.png</file>
     <file>assets/WaiterLITE-UI-01.png</file>
     <file>assets/WaiterLITE-UI-02-1.png</file>
