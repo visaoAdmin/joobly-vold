@@ -1,14 +1,15 @@
 <RCC>
   <qresource prefix="Screens">
+    <file>assets/ask for cable.png</file>
     <file>assets/WaiterLITE-UI-01.png</file>
     <file>assets/WaiterLITE-UI-02-1.png</file>
     <file>assets/WaiterLITE-UI-02.png</file>
     <file>assets/WaiterLITE-UI-03.png</file>
     <file>assets/WaiterLITE-UI-04-1.png</file>
-    <file>assets/WaiterLITE-UI-04.png</file>
+    <file>assets/asked for cable.png</file>
     <file>assets/WaiterLITE-UI-06.png</file>
+    <file>assets/iteration 1-repeat.png</file>
     <file>assets/WaiterLITE-UI-09-1.png</file>
-    <file>assets/WaiterLITE-UI-09.png</file>
     <file>assets/WaiterLITE-UI-10.png</file>
     <file>assets/WaiterLITE-UI-11.png</file>
     <file>assets/WaiterLITE-UI-13-1.png</file>

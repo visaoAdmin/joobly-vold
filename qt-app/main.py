@@ -202,7 +202,10 @@ def neoxPixel(red, green, blue):
 def whiteLight():
     neoxPixel(255,255,255)
     print("White Light")
-    
+
+def greenLight():
+    neoxPixel(127,255,0)
+    print("Green Light")
 
 def navigateToScreen(Screen):
         nextScreen = Screen
@@ -241,6 +244,18 @@ def goBackToDinerHomeAfter(seconds):
     mainStackedWidget.menuScreenTime.timeout.connect(goBackAutomatically)
     mainStackedWidget.menuScreenTime.start()
 
+def setPixMap(self,path):
+    try:
+        
+        data = "Asdas"
+        with open(path,"rb") as logo:
+            data =  logo.read()
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+    except: 
+        pixmap=None
+    self.label_2.setPixmap(pixmap)
 
 def loadLogoPixmap():
     print("In load logo pixmap")
@@ -821,11 +836,28 @@ class TapForServiceScreen(QDialog):
         self.happyButton.clicked.connect(self.notifyHappy)
         self.sadButton.clicked.connect(self.notifySad)
         self.neutralButton.clicked.connect(self.notifyNeutral)
+        self.askForCableButton.clicked.connect(self.askForCable)
+        self.askedCable = False
         # slider = self.experienceSlider
         # slider.setMinimum(0)
         # slider.setMaximum(10)
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
+    def clear(self):
+        self.askedCable = False
+        setPixMap(self,"assets/WaiterLITE-UI-13.png")
+        lightThreadRunner.launch(yellowLight)
+    def askForCable(self):
+
+        if(self.askedCable==False):
+            self.askedCable = True
+            lightThreadRunner.launch(greenLight)
+            setPixMap(self,"assets/tapForServiceActive.png")
+
+        else:
+            self.askedCable = False
+            lightThreadRunner.launch(yellowLight)
+            setPixMap(self,"assets/WaiterLITE-UI-13.png")
 
     def notifyHappy(self):
         global smileyTimer
@@ -843,8 +875,7 @@ class TapForServiceScreen(QDialog):
         if (value < 6):
             self.experience = "Bad"
     def clear(self):
-
-        
+        self.askedCable = False
         lightThreadRunner.launch(yellowLight)
         
 
@@ -902,7 +933,9 @@ class CloseServiceScreen(QDialog):
         self.happyButton.clicked.connect(self.notifyHappy)
         self.sadButton.clicked.connect(self.notifySad)
         self.neutralButton.clicked.connect(self.notifyNeutral)
+        self.askedCable = False
         # thr.join()
+        self.askForCableButton.clicked.connect(self.askForCable)
 
     def notifyHappy(self):
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
@@ -913,11 +946,22 @@ class CloseServiceScreen(QDialog):
        
     def clear(self):
         global restartApplication
-        
+        self.askedCable = False
         lightThreadRunner.launch(blueLight)
+        setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
         
-        
-        
+    def askForCable(self):
+
+        if(self.askedCable==False):
+            self.askedCable = True
+            lightThreadRunner.launch(greenLight)
+            setPixMap(self,"assets/closeServiceScreenActive.png")
+
+        else:
+            self.askedCable = False
+            lightThreadRunner.launch(blueLight)
+            setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
+
     def navigateToTapForServiceScreen(self):
         # runInNewThread(self, self.waiterArrived)
         self.waiterArrived()

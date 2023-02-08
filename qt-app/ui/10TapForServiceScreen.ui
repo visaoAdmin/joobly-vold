@@ -22,6 +22,9 @@
      <height>800</height>
     </rect>
    </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
@@ -140,10 +143,10 @@
   <widget class="QPushButton" name="askForCableButton">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>710</y>
-     <width>131</width>
-     <height>91</height>
+     <x>320</x>
+     <y>720</y>
+     <width>151</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="styleSheet">
