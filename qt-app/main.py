@@ -866,7 +866,7 @@ class TapForServiceScreen(QDialog):
     def notifySad(self):
 
         setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/Sad.png")
+        setIcon(self.sadButton,"assets/sad.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
@@ -950,7 +950,7 @@ class CloseServiceScreen(QDialog):
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
         setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/Sad.png")
+        setIcon(self.sadButton,"assets/sad.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
