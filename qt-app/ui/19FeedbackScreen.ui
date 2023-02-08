@@ -281,16 +281,16 @@ font-size: 24px;</string>
    </property>
   </widget>
   <widget class="QPushButton" name="ambience1">
-    <property name="geometry">
-     <rect>
-      <x>45</x>
-      <y>430</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   <property name="geometry">
+    <rect>
+     <x>45</x>
+     <y>430</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -298,22 +298,22 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>1</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ambience2">
-    <property name="geometry">
-     <rect>
-      <x>125</x>
-      <y>430</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ambience2">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>430</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -321,22 +321,22 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>2</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ambience3">
-    <property name="geometry">
-     <rect>
-      <x>205</x>
-      <y>430</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ambience3">
+   <property name="geometry">
+    <rect>
+     <x>205</x>
+     <y>430</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -344,22 +344,22 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>3</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ambience4">
-    <property name="geometry">
-     <rect>
-      <x>285</x>
-      <y>430</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ambience4">
+   <property name="geometry">
+    <rect>
+     <x>285</x>
+     <y>430</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -367,22 +367,22 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>4</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ambience5">
-    <property name="geometry">
-     <rect>
-      <x>365</x>
-      <y>430</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="ambience5">
+   <property name="geometry">
+    <rect>
+     <x>365</x>
+     <y>430</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -390,89 +390,66 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>5</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="music1">
-    <property name="geometry">
-     <rect>
-      <x>45</x>
-      <y>560</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>5</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="music1">
+   <property name="geometry">
+    <rect>
+     <x>45</x>
+     <y>560</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>1</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="music2">
-    <property name="geometry">
-     <rect>
-      <x>125</x>
-      <y>560</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="music2">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>560</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>2</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="music3">
-    <property name="geometry">
-     <rect>
-      <x>205</x>
-      <y>560</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>3</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="music4">
-    <property name="geometry">
-     <rect>
-      <x>285</x>
-      <y>560</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="music3">
+   <property name="geometry">
+    <rect>
+     <x>205</x>
+     <y>560</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -480,22 +457,22 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>4</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="music5">
-    <property name="geometry">
-     <rect>
-      <x>365</x>
-      <y>560</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #223757;border-color: #4A5C75;
+   </property>
+   <property name="text">
+    <string>3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="music4">
+   <property name="geometry">
+    <rect>
+     <x>285</x>
+     <y>560</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
 
  border-width: 2px;
  border-radius: 35px;
@@ -503,11 +480,58 @@ font-size: 24px;</string>
  padding: 4px;
  color: white;
  font-size: 24px;</string>
-    </property>
-    <property name="text">
-     <string>5</string>
-    </property>
-   </widget>
+   </property>
+   <property name="text">
+    <string>4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="music5">
+   <property name="geometry">
+    <rect>
+     <x>365</x>
+     <y>560</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #223757;border-color: #4A5C75;
+
+ border-width: 2px;
+ border-radius: 35px;
+
+ padding: 4px;
+ color: white;
+ font-size: 24px;</string>
+   </property>
+   <property name="text">
+    <string>5</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="validationLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>630</y>
+     <width>461</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:red;</string>
+   </property>
+   <property name="text">
+    <string>Please Select All the Ratings</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>

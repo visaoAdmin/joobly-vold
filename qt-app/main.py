@@ -1285,7 +1285,7 @@ class FeedbackScreen(QDialog):
         global restartApplication
         for i in ["food","service","ambience","music"]:
             self.markRating(i,0)
-        
+        self.validationLabel.setVisible(False)
         if(getRestartApp()==False):
             pass
         else:
@@ -1318,6 +1318,7 @@ class FeedbackScreen(QDialog):
             print(self.ratings)
             for i in self.ratings:
                 if self.ratings[i] ==0:
+                    self.validationLabel.setVisible(True)
                     return
             global callNumber
             # print("self.ratings", self.ratings)
