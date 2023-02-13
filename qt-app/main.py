@@ -46,6 +46,7 @@ restartApplication = False
 restaurantChanged = True
 smileyTimer =None
 askingCable = False
+smiley = None
 
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -343,7 +344,8 @@ class IdleLockScreen(QDialog):
         # runInNewThread(self, self.loadConfigAndLogo)
 
     def clear(self):
-        global serviceCalls,callNumber
+        global serviceCalls,callNumber,smiley
+        smiley =None
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
@@ -846,31 +848,41 @@ class TapForServiceScreen(QDialog):
         # slider.valueChanged.connect(self.onExperienceChanged)
         # slider.sliderReleased.connect(self.experienceMarked)
     def clear(self):
-        global askingCable
+        global askingCable,smiley
         askingCable = False
         setPixMap(self,"assets/WaiterLITE-UI-13.png")
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
+
+        if smiley == "happy":
+            setIcon(self.happyButton,"assets/Happy.png")
+        elif smiley =="sad":
+            setIcon(self.sadButton,"assets/sad.png")
+        elif smiley == "neutral":
+            setIcon(self.neutralButton,"assets/Average.png")
         lightThreadRunner.launch(yellowLight)
     def askForCable(self):
         global askingCable
         askingCable = True
         self.navigateToCloseServiceScreen()
     def notifyHappy(self):
-        global smileyTimer
+        global smiley
+        smiley = "happy"
         setIcon(self.happyButton,"assets/Happy.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
-
+        global smiley
+        smiley = "sad"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
-
+        global smiley
+        smiley = "neutral"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average.png")
@@ -944,23 +956,29 @@ class CloseServiceScreen(QDialog):
         self.askForCableButton.clicked.connect(self.navigateToTapForServiceScreen)
 
     def notifyHappy(self):
+        global smiley
+        smiley = "happy"
         setIcon(self.happyButton,"assets/Happy.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
+        global smiley
+        smiley = "sad"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
+        global smiley
+        smiley = "neutral"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
        
     def clear(self):
-        global restartApplication,askingCable
+        global restartApplication,askingCable,smiley
         if(askingCable):
             setPixMap(self,"assets/closeServiceScreenActive.png")
         else:
@@ -969,6 +987,12 @@ class CloseServiceScreen(QDialog):
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
+        if smiley == "happy":
+            setIcon(self.happyButton,"assets/Happy.png")
+        elif smiley =="sad":
+            setIcon(self.sadButton,"assets/sad.png")
+        elif smiley == "neutral":
+            setIcon(self.neutralButton,"assets/Average.png")
         
         
 
