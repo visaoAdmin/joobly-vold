@@ -659,11 +659,21 @@ class ContinueExistingJourneyScreen(QDialog):
         global hangoutId,callNumber,serviceCalls,guestCount,previousJourneyData
         # hangoutData = previousJourneyData
         # print(hangoutData)
+        callDuration = None
         hangoutId = previousJourneyData["hangoutId"]
-        callNumber = previousJourneyData["callNumber"]
+        
         guestCount = previousJourneyData["guestCount"]
-        callDuration = previousJourneyData["callDuration"]
-        print(callDuration)
+        try:
+            callNumber = previousJourneyData["callNumber"]
+        except:
+            callNumber = 0
+            pass
+        try:
+            callDuration = previousJourneyData["callDuration"]
+            
+        except:
+            callDuration = 0
+
         qWorker.addAPICall(changeDevice,[hangoutId])
         if callDuration ==None:
             serviceCalls[callNumber] = {}
