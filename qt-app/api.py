@@ -236,7 +236,7 @@ def notifyFeelingBad(hangout,waiter,restaurant,table):
         "waiter":waiter,
         "restaurant":restaurant,
         "type": "CUSTOMER_SAD",
-    })
+    },headers={"device-serial":getserial()})
 def notifyFeelingNeutral(hangout,waiter,restaurant,table):
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
@@ -244,7 +244,7 @@ def notifyFeelingNeutral(hangout,waiter,restaurant,table):
         "waiter":waiter,
         "restaurant":restaurant,
         "type": "CUSTOMER_NEUTRAL",
-    })
+    },headers={"device-serial":getserial()})
 def notifyFeelingHappy(hangout,waiter,restaurant,table):
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
@@ -252,7 +252,7 @@ def notifyFeelingHappy(hangout,waiter,restaurant,table):
         "waiter":waiter,
         "restaurant":restaurant,
         "type": "CUSTOMER_HAPPY",
-    })
+    },headers={"device-serial":getserial()})
 
 apiDict ={
     "getConfig":getConfig,

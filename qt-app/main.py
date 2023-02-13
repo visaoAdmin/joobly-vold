@@ -7,8 +7,6 @@ from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWi
 from PyQt5.QtCore import QSize
 import os 
 from SmileyRunner import SmileyRunner
-
-# from redis_queue import foregroundQueue,handle_failure
 import copy 
 import signal
 import urllib.request
@@ -867,26 +865,26 @@ class TapForServiceScreen(QDialog):
         askingCable = True
         self.navigateToCloseServiceScreen()
     def notifyHappy(self):
-        global smiley
+        global smiley, hangoutId
         smiley = "happy"
         setIcon(self.happyButton,"assets/Happy.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
-        smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingHappy,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
-        global smiley
+        global smiley, hangoutId
         smiley = "sad"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
-        smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingBad,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
-        global smiley
+        global smiley, hangoutId
         smiley = "neutral"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average.png")
-        smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingNeutral,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     
     def onExperienceChanged(self, value):
         print(value)
@@ -956,26 +954,26 @@ class CloseServiceScreen(QDialog):
         self.askForCableButton.clicked.connect(self.navigateToTapForServiceScreen)
 
     def notifyHappy(self):
-        global smiley
+        global smiley, hangoutId
         smiley = "happy"
         setIcon(self.happyButton,"assets/Happy.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
-        smileyRunner.addSmiley(notifyFeelingHappy,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingHappy,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
-        global smiley
+        global smiley, hangoutId
         smiley = "sad"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad.png")
         setIcon(self.neutralButton,"assets/Average-1.png")
-        smileyRunner.addSmiley(notifyFeelingBad,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingBad,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
-        global smiley
+        global smiley, hangoutId
         smiley = "neutral"
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
         setIcon(self.neutralButton,"assets/Average.png")
-        smileyRunner.addSmiley(notifyFeelingNeutral,[getHangoutId(),waiterId,getRestaurantId(),getTableId()])
+        smileyRunner.addSmiley(notifyFeelingNeutral,[hangoutId,waiterId,getRestaurantId(),getTableId()])
        
     def clear(self):
         global restartApplication,askingCable,smiley
