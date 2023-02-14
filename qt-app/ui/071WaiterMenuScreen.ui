@@ -42,7 +42,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>140</y>
+     <y>120</y>
      <width>221</width>
      <height>211</height>
     </rect>
@@ -75,9 +75,9 @@ color: white;</string>
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>570</y>
-     <width>201</width>
-     <height>121</height>
+     <y>550</y>
+     <width>211</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -91,7 +91,7 @@ color: white;</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>570</y>
+     <y>560</y>
      <width>211</width>
      <height>121</height>
     </rect>
@@ -129,7 +129,7 @@ color: white;</string>
    <property name="geometry">
     <rect>
      <x>260</x>
-     <y>271</y>
+     <y>244</y>
      <width>191</width>
      <height>81</height>
     </rect>
@@ -140,7 +140,7 @@ color: white;</string>
     </font>
    </property>
    <property name="autoFillBackground">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: transparent; border: 0px; color: white;</string>

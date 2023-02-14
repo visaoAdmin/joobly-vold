@@ -3,7 +3,7 @@ import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap, QImage, QColor,QIcon
-from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem
+from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem,QLabel
 from PyQt5.QtCore import QSize
 import os 
 from SmileyRunner import SmileyRunner
@@ -44,7 +44,7 @@ restartApplication = False
 restaurantChanged = True
 smileyTimer =None
 askingCable = False
-smiley = None
+smiley = "neutral"
 
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -278,7 +278,15 @@ def renderLogo(self, key="logo", width=220, height=220):
     print("In Load logo")
     pixmap = loadLogoPixmap()
     if pixmap != None:
-        self.__dict__[key].setPixmap(pixmap)
+        
+        # self.__dict__[key].setPixmap(pixmap)
+        self.__dict__[key].setStyleSheet("border :3px;"
+                    "border-image : url('restaurantData/logo');"
+                    "border-top-left-radius :30px;"
+                    "border-top-right-radius : 30px; "
+                    "border-bottom-left-radius : 30px; "
+                    "border-bottom-right-radius : 30px")
+
 
 
 class SplashScreen(QDialog):
@@ -338,12 +346,13 @@ class IdleLockScreen(QDialog):
         loadUi("ui/05IdleLockScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToWaiterPinScreen)
         self.appCloseButton.clicked.connect(mainStackedWidget.close)
+        
         self.loadConfigAndLogo()
         # runInNewThread(self, self.loadConfigAndLogo)
 
     def clear(self):
         global serviceCalls,callNumber,smiley
-        smiley =None
+        smiley = "neutral"
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
@@ -506,9 +515,11 @@ class AboutScreen(QDialog):
         self.refreshButton.clicked.connect(self.refresh)
         self.backButton.clicked.connect(navigateGoBack)
         self.renderLabels()
+        self.refreshed = False
     
     def clear(self):
-        self.refreshButton.setEnabled(True)
+        self.refreshed = False
+        setIcon(self.refreshButton,"assets/refreshButton.png")
 
     def renderLabels(self):
         self.serialLabel.setText(serialNumber)
@@ -533,9 +544,12 @@ class AboutScreen(QDialog):
             self.brightnessLabel.setText("255")
     
     def refresh(self):
+        if(self.refreshed):
+            navigateGoBack()
         restId = getRestaurantId()
-        self.refreshButton.setEnabled(False)
+        setIcon(self.refreshButton,"assets/refreshDoneButton.png")
         loadConfig()
+        self.refreshed = True
         try:
             if(getRestaurantId()!=restId):
                 navigateToScreen(waiterPinScreen)
@@ -597,6 +611,27 @@ class TableSelectionScreen(QDialog):
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
         self.backButton.clicked.connect(navigateGoBack)
+        self.listWidget.setStyleSheet(
+                                  "QListView"
+                                  "{"
+                                    "background-color:#041c40;"
+                                    "font-size:20px;"
+                                    "border:0px;"
+                                  "}"
+                                  "QListView::item"
+                                  "{"
+                                    "background-color: #182e4f;"
+                                    "margin-bottom: 15px;"
+                                    "border-radius: 10px;"
+                                    "padding: 12px 12px 12px 12px;"
+                                    "padding-top:24px;"
+                                    "padding-bottom:24px;"
+                                  "}"
+                                  "QListView::item:selected"
+                                  "{"
+                                    "background-color: #c09c56;"
+                                    "color:#111f2a;"
+                                  "}")
         # self.loadTables()
         # runInNewThread(self, self.loadTables)
 
@@ -614,14 +649,22 @@ class TableSelectionScreen(QDialog):
             for t in tables:
                 # print(t)
                 item = QListWidgetItem(t['referenceId'])
-                item.setSizeHint(QSize(400, 60))
+                item.setSizeHint(QSize(360, 80))
                 self.listWidget.addItem(item)
         except:
+            print("Running in except")
             tables = storage["tables"]
             for t in tables:
                 # print(t)
+
+                    
                 item = QListWidgetItem(t)
-                item.setSizeHint(QSize(400, 60))
+                item.setSizeHint(QSize(364, 80))
+
+                
+                    
+
+
                 self.listWidget.addItem(item)
             # print("Failed to load tables")
 
@@ -1260,7 +1303,7 @@ class PayQRScreen(QDialog):
 class FeedbackScreen(QDialog):
     buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
     normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
-    selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60;"
+    selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40"
     ratings = {}
 
     def __init__(self):

@@ -41,10 +41,10 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>590</y>
-     <width>111</width>
-     <height>81</height>
+     <x>10</x>
+     <y>370</y>
+     <width>461</width>
+     <height>421</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -57,10 +57,10 @@
   <widget class="QLabel" name="logo">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>150</y>
-     <width>220</width>
-     <height>220</height>
+     <x>68</x>
+     <y>140</y>
+     <width>342</width>
+     <height>242</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -68,6 +68,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

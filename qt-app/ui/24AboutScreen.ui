@@ -25,9 +25,6 @@
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
    <property name="text">
     <string/>
    </property>
@@ -41,24 +38,34 @@
   <widget class="QPushButton" name="refreshButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>580</y>
-     <width>231</width>
-     <height>81</height>
+     <x>130</x>
+     <y>591</y>
+     <width>220</width>
+     <height>64</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
+    <string notr="true">border:0px;background-color:transparent;</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="../WaiterLITE01.qrc">
+     <normaloff>:/Screens/assets/refreshButton.png</normaloff>:/Screens/assets/refreshButton.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>220</width>
+     <height>64</height>
+    </size>
    </property>
   </widget>
   <widget class="QLabel" name="restaurantLabel">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>130</y>
+     <y>152</y>
      <width>461</width>
      <height>31</height>
     </rect>
@@ -93,7 +100,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>220</y>
+     <y>234</y>
      <width>391</width>
      <height>31</height>
     </rect>
@@ -112,7 +119,7 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>300</y>
+     <y>316</y>
      <width>211</width>
      <height>31</height>
     </rect>
@@ -131,7 +138,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>380</y>
+     <y>397</y>
      <width>461</width>
      <height>31</height>
     </rect>
@@ -149,8 +156,8 @@
   <widget class="QLabel" name="brightnessLabel">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>470</y>
+     <x>137</x>
+     <y>479</y>
      <width>211</width>
      <height>31</height>
     </rect>

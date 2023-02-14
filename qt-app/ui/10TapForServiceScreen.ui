@@ -92,8 +92,8 @@
   <widget class="QPushButton" name="sadButton">
    <property name="geometry">
     <rect>
-     <x>64</x>
-     <y>574</y>
+     <x>65</x>
+     <y>572</y>
      <width>113</width>
      <height>81</height>
     </rect>

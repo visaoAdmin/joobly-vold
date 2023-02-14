@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="Screens">
+    <file>assets/refreshButton.png</file>
+    <file>assets/refreshDoneButton.png</file>
     <file>assets/Average-1.png</file>
     <file>assets/Average.png</file>
     <file>assets/Happy-1.png</file>
