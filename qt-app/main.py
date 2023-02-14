@@ -1,27 +1,24 @@
-from re import S
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QPixmap, QImage, QColor,QIcon
-from PyQt5.QtWidgets import QApplication, QDialog, QSlider, QListWidget, QListWidgetItem,QLabel
+from PyQt5.QtGui import QPixmap, QImage,QIcon
+from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize
 import os 
 from SmileyRunner import SmileyRunner
 import copy 
 import signal
 import urllib.request
-import requests
-from api import startHangout,callWaiter, waiterArrived,sendRatings,sendHangout,startServiceCall,endServiceCall, serviceDelayed, notifyExperience, addMultipleRatings, fetchTableId, getConfig, getAllTables,waiterExists
-from api import startHangoutFailureHandler,callWaiterFailureHandler,waiterArrivedFailureHandler,addMultipleRatingsFailureHandler,isTableOccupied,changeDevice,getRestartApp,setRestartAppFalse
-from api import notifyFeelingBad,notifyFeelingHappy,notifyFeelingNeutral
-import threading
-from subprocess import Popen
+from api import startHangout, callWaiter, waiterArrived, notifyExperience, addMultipleRatings, getConfig, waiterExists
+from api import isTableOccupied, changeDevice, getRestartApp, setRestartAppFalse
+from api import notifyFeelingBad, notifyFeelingHappy, notifyFeelingNeutral
 import json
 import time
 from datetime import datetime
-from multiThread import runInNewThread,ReUsableThreadRunner,ServiceCallsSyncer,MultiApiThreadRunner,Thread
+from multiThread import runInNewThread,ReUsableThreadRunner,ServiceCallsSyncer,Thread
 from serial import getserial
 from QueueWorker import QueueWorker
+
 ENV=os.environ.get('ENV')
 
 # print(ENV)
@@ -89,13 +86,12 @@ def loadPicture(filepath,url):
         data = urllib.request.urlopen(url).read()
         with open(filepath,"wb") as logo:
             logo.write(data)
-        print("successfully fetched picture")
+
     except Exception as e:
-        print("Error un calling loadPicture",e)
+        pass
     finally:
-        print("runiing in finally")
-        print("########################## URL ###########################",url)
-        print("########################## URL ###########################",url)
+
+
         if(url=="" or url==None):
             return None
         with open(filepath,"rb") as logo:
@@ -291,6 +287,8 @@ def renderLogo(self, key="logo", width=220, height=220):
                     "border-bottom-left-radius : 30px; "
                     "border-bottom-right-radius : 30px")
 
+# class Communicate(QObject):
+#     pass
 class TimeBoundScreen(QDialog):
     def __init__(self,time):
         super(TimeBoundScreen,self).__init__()
@@ -315,11 +313,13 @@ class TimeBoundScreen(QDialog):
                     if((time.time() - self.timer)>self.resetTime):
                         try:
                             self.runnable[0](*self.runnable[1])
+                            return
                         except:
                             pass
                         self.timer = None
                 except:
                     pass
+
 class SplashScreen(QDialog):
     def __init__(self):
         super(SplashScreen, self).__init__()
@@ -423,7 +423,11 @@ class WaiterPinScreen(TimeBoundScreen):
         self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.goToConfigButton.clicked.connect(self.navigateToConfigScreen)
         self.setupKeyboard()
-        super().setRunnable(navigateToScreen,[idleLockScreen])
+        super().setRunnable(self.navigateToIdleLockScreen,[])
+
+    def navigateToIdleLockScreen(self):
+        navigateToScreen(idleLockScreen)
+        return
 
     def setupKeyboard(self):
         setupKeyboard(self)
@@ -721,23 +725,14 @@ class TableSelectionScreen(QDialog):
             print("Running in except")
             tables = storage["tables"]
             for t in tables:
-                # print(t)
-
-                    
                 item = QListWidgetItem(t)
                 item.setSizeHint(QSize(364, 80))
-
-                
-                    
-
-
                 self.listWidget.addItem(item)
             # print("Failed to load tables")
 
     def tableSelected(self,item):
         global firstJourney
         try:
-
             storage["tableId"] = item.text()
         except:
             try:
