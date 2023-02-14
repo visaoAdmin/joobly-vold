@@ -23,5 +23,8 @@ class SmileyRunner(object):
         while(self.timer):
             if self.runnable:
                 if((time.time() - self.timer)>50):
-                    self.runnable[0](*self.runnable[1])
+                    try:
+                        self.runnable[0](*self.runnable[1])
+                    except:
+                        pass
                     self.timer = None
