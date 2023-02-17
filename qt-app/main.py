@@ -1130,54 +1130,8 @@ class DinerActionMenuScreen(TimeBoundScreen):
         super().stop()
         navigateToScreen(quickMenuScreen)
 
-class QuickMenuScreen(QDialog):
-    def __init__(self):
-        super(QuickMenuScreen, self).__init__()
-        loadUi("ui/13QuickMenuScreen.ui", self)
-        self.drinksButton.clicked.connect(self.navigateToDrinkItemScreen)
-        self.mainCourseButton.clicked.connect(self.navigateToFoodMenuScreen)
-        self.startersButton.clicked.connect(self.navigateToFoodMenuScreen)
-        self.chefSpecialsButton.clicked.connect(self.navigateToFoodMenuScreen)
-        self.dessertsButton.clicked.connect(self.navigateToFoodMenuScreen)
-        self.backButton.clicked.connect(self.navigateBack)
-    
-    def navigateBack(self):
-        navigateToScreen(dinerActionMenuScreen)
-
-    def navigateToDrinkItemScreen(self):
-        navigateToScreen(drinkItemScreen)
-    
-    def navigateToFoodMenuScreen(self):
-        navigateToScreen(foodMenuScreen)
 
 
-
-class FoodMenuScreen(QDialog):
-    def __init__(self):
-        super(FoodMenuScreen, self).__init__()
-        loadUi("ui/15FoodMenuScreen.ui", self)
-        self.backButton.clicked.connect(self.navigateBack)
-        self.cartButton.clicked.connect(self.navigateToCartScreen)
-        self.goToNextButton.clicked.connect(self.navigateToCartScreen)
-    
-    def navigateBack(self):
-        navigateToScreen(quickMenuScreen)
-
-    def navigateToCartScreen(self):
-        navigateToScreen(cartScreen)
-
-class CartScreen(QDialog):
-    def __init__(self):
-        super(CartScreen, self).__init__()
-        loadUi("ui/16CartScreen.ui", self)
-        self.backButton.clicked.connect(self.navigateBack)
-        self.goToNextButton.clicked.connect(self.navigateToBillScreen)
-    
-    def navigateBack(self):
-        navigateToScreen(foodMenuScreen)
-
-    def navigateToBillScreen(self):
-        navigateToScreen(billScreen)
 
 class BillScreen(QDialog):
     def __init__(self):
@@ -1207,22 +1161,6 @@ class BillScreen(QDialog):
         
         navigateToScreen(feedbackScreen)
 
-class PaymentOptionsScreen(QDialog):
-    def __init__(self):
-        super(PaymentOptionsScreen, self).__init__()
-        loadUi("ui/23PaymentOptionsScreen.ui", self)
-        self.backButton.clicked.connect(navigateGoBack)
-        self.cardButton.clicked.connect(self.navigateToServerWillAssistScreen)
-        self.cashButton.clicked.connect(self.navigateToServerWillAssistScreen)
-        self.scanButton.clicked.connect(self.navigateToUpiScreen)
-
-
-    
-    def navigateToServerWillAssistScreen(self):
-        navigateToScreen(serverWillAssistScreen)
-    
-    def navigateToUpiScreen(self):
-        navigateToScreen(payQRScreen)
 
 class ServerWillAssistScreen(QDialog):
     def __init__(self):
@@ -1510,10 +1448,7 @@ app=QApplication(sys.argv)
 app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
 # idleLockScreen = IdleLockScreen()
-cartScreen = CartScreen()
-foodMenuScreen = FoodMenuScreen()
 
-quickMenuScreen = QuickMenuScreen()
 dinerActionMenuScreen = DinerActionMenuScreen()
 closeServiceScreen = CloseServiceScreen()
 checkedInScreen = CheckedInScreen()
@@ -1526,7 +1461,7 @@ continueExistingJourneyScreen = ContinueExistingJourneyScreen()
 tableSelectionScreen = TableSelectionScreen()
 waiterMenuScreen  = WaiterMenuScreen()
 aboutScreen = AboutScreen() 
-paymentOptionsScreen = PaymentOptionsScreen()
+
 
 payQRScreen = PayQRScreen()
 serverWillAssistScreen = ServerWillAssistScreen()

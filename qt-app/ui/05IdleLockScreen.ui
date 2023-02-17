@@ -80,7 +80,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 2px;border-top-left-radius:100px;border-top-right-radius:100px;</string>
+    <string notr="true">background-color: transparent; border: 2px;</string>
    </property>
    <property name="text">
     <string/>
