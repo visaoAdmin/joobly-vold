@@ -21,7 +21,7 @@ class StorageQueue():
         self.queue.append([functionName,arg])
         with open(self.path , "wb") as f:
                 pickle.dump(self.queue,f)
-                print("added")
+
     
     def peek(self):
         if(len(self.queue)>0):

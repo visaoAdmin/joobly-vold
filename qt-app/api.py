@@ -31,13 +31,13 @@ background_jobs = []
 index = -1
 
 BASE_URL = API_URL
-# print("BASE_URL",BASE_URL)
+
 TIMEOUT = 15
 
 def getConfig(serialNumber):
-    # print("getting config...")
+
     response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config", timeout = TIMEOUT)
-    # print(response)
+
     setRestartApp(response)
     config = response.json().get("data")
     return config
@@ -110,7 +110,7 @@ def callWaiterFailureHandler(job, connection, type, value, traceback):
 
 def waiterArrived(table, hangoutId, callNumber, responseTime):
     
-    print("waiter arrived")
+
     response = requests.post(BASE_URL + "/pod-events", json={
         "table": table,
         "hangout": hangoutId,

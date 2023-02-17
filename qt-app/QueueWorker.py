@@ -49,11 +49,11 @@ class QueueWorker(object):
                             args = foregroundAPI[1]
                             r = runFunction(*args)
                             self.queue.pop()
-                            print(r)
+
                             if(r.status_code==503):
                                 raise  Exception()
                         except Exception as e: 
-                            print(e)
+
                             if(runFunction.__name__=="startHangout"):
                                 self.queue2.push(sendHangout,[*args])
                             elif(runFunction.__name__=="callWaiter"):
