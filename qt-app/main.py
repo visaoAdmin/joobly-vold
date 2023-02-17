@@ -692,7 +692,7 @@ class TableSelectionScreen(TimeBoundScreen):
         
 
     def navigateToWaiterMenuScreen(self):
-        super.stop()
+        super().stop()
         navigateToScreen(waiterMenuScreen)
     
     def navigateToIdleLockScreen(self):
@@ -1479,7 +1479,7 @@ lightThreadRunner = ReUsableThreadRunner()
 
 smileyRunner = SmileyRunner()
 if ENV == "dev":
-    #if start any other screen change this.
+
     mainwindow=idleLockScreen
 else:
     mainwindow=idleLockScreen
