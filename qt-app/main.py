@@ -45,8 +45,8 @@ askingCable = False
 firstJourney = True
 smiley = "neutral"
 timeOuts = {
-    'generalTimeout':10,
-    'thankYouTimeout':20
+    'generalTimeout':60,
+    'thankYouTimeout':120
 }
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
