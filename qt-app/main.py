@@ -337,6 +337,7 @@ class IdleLockScreen(QDialog):
 class WaiterPinScreen(TimeBoundScreen):
     pin=[]
     signal = pyqtSignal()
+    isWrong = False
     def __init__(self):
         super(WaiterPinScreen, self).__init__(timeOuts["generalTimeout"])
         self.pin=[]
@@ -345,9 +346,11 @@ class WaiterPinScreen(TimeBoundScreen):
         self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.goToConfigButton.clicked.connect(self.navigateToConfigScreen)
         self.signal.connect(self.navigateToIdleLockScreenSlot)
+        self.backButton.clicked.connect(self.goBack)
         self.setupKeyboard()
         super().setRunnable(self.navigateToIdleLockScreen,[])
-
+    def goBack(self):
+        navigateGoBack()
     @pyqtSlot()
     def navigateToIdleLockScreen(self):
         self.signal.emit()
@@ -360,6 +363,7 @@ class WaiterPinScreen(TimeBoundScreen):
         setupKeyboard(self)
 
     def clear(self):
+        setPixMap(self,"assets/WaiterLITE-UI-08.png")
         super().reset()
         self.pin.clear() 
         self.renderPin()
@@ -423,9 +427,13 @@ class WaiterPinScreen(TimeBoundScreen):
                         currentWaiter = waiter
                         navigateToScreen(waiterMenuScreen)
                         return
-            navigateToScreen(waiterNotExist)
+            self.pin = []
+            self.renderPin()
+            setPixMap(self,"assets/WaiterLITE-UI-08 2.png")
         except:
-            navigateToScreen(waiterNotExist)
+            self.pin = []
+            self.renderPin()
+            setPixMap(self,"assets/WaiterLITE-UI-08 2.png")
          
 class WaiterNotExist(TimeBoundScreen):
     pin=[]
@@ -699,7 +707,7 @@ class TableSelectionScreen(QDialog):
 
         if firstJourney:
             firstJourney = False
-            navigateToScreen(waiterPinScreen)
+            navigateToScreen(idleLockScreen)
             return
         self.navigateToWaiterMenuScreen()
         
@@ -771,7 +779,7 @@ class ChooseNumberOfGuests(QDialog):
 
     def clear(self):
         global guestCount
-
+        setPixMap(self,"assets/WaiterLITE-UI-09-1.png")
         guestCount=""
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
@@ -800,7 +808,7 @@ class ChooseNumberOfGuests(QDialog):
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             serviceCalls['hangoutId'] = hangoutId
             if(guestCount==0 or guestCount==""):
-                navigateToScreen(correctChooseNumberOfGuests)
+                setPixMap(self,"assets/WaiterLITE-UI-09-2.png")
                 return
             if(continueExistingJourney):
                 navigateToScreen(continueExistingJourneyScreen)

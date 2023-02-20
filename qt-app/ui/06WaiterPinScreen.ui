@@ -51,9 +51,9 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>690</y>
-     <width>81</width>
-     <height>70</height>
+     <y>679</y>
+     <width>91</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -66,10 +66,10 @@
   <widget class="QPushButton" name="key1">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>430</y>
-     <width>70</width>
-     <height>70</height>
+     <x>80</x>
+     <y>380</y>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -82,10 +82,10 @@
   <widget class="QPushButton" name="key2">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>430</y>
-     <width>70</width>
-     <height>70</height>
+     <x>200</x>
+     <y>380</y>
+     <width>81</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -99,9 +99,9 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>430</y>
-     <width>70</width>
-     <height>70</height>
+     <y>380</y>
+     <width>91</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -114,10 +114,10 @@
   <widget class="QPushButton" name="key4">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>520</y>
-     <width>70</width>
-     <height>70</height>
+     <x>80</x>
+     <y>480</y>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -130,10 +130,10 @@
   <widget class="QPushButton" name="key5">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>520</y>
-     <width>70</width>
-     <height>70</height>
+     <x>200</x>
+     <y>480</y>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -147,9 +147,9 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>520</y>
-     <width>70</width>
-     <height>70</height>
+     <y>480</y>
+     <width>91</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -162,10 +162,10 @@
   <widget class="QPushButton" name="key7">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>605</y>
-     <width>70</width>
-     <height>70</height>
+     <x>80</x>
+     <y>580</y>
+     <width>91</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -178,10 +178,10 @@
   <widget class="QPushButton" name="key8">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>605</y>
-     <width>70</width>
-     <height>70</height>
+     <x>200</x>
+     <y>580</y>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -195,9 +195,9 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>605</y>
-     <width>70</width>
-     <height>70</height>
+     <y>580</y>
+     <width>91</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -210,10 +210,10 @@
   <widget class="QPushButton" name="key0">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>695</y>
-     <width>70</width>
-     <height>70</height>
+     <x>200</x>
+     <y>680</y>
+     <width>81</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -226,10 +226,10 @@
   <widget class="QPushButton" name="key_del">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>695</y>
-     <width>70</width>
-     <height>70</height>
+     <x>80</x>
+     <y>670</y>
+     <width>91</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -242,8 +242,8 @@
   <widget class="QLabel" name="input_pin_0">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>280</y>
+     <x>84</x>
+     <y>277</y>
      <width>61</width>
      <height>61</height>
     </rect>
@@ -261,8 +261,8 @@
   <widget class="QLabel" name="input_pin_1">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>280</y>
+     <x>168</x>
+     <y>277</y>
      <width>61</width>
      <height>61</height>
     </rect>
@@ -281,7 +281,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>280</y>
+     <y>277</y>
      <width>61</width>
      <height>61</height>
     </rect>
@@ -299,8 +299,8 @@
   <widget class="QLabel" name="input_pin_3">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>280</y>
+     <x>334</x>
+     <y>277</y>
      <width>61</width>
      <height>61</height>
     </rect>
@@ -318,10 +318,10 @@
   <widget class="QPushButton" name="goToConfigButton">
    <property name="geometry">
     <rect>
-     <x>382</x>
-     <y>20</y>
-     <width>71</width>
-     <height>61</height>
+     <x>370</x>
+     <y>10</y>
+     <width>101</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -329,10 +329,6 @@
    </property>
    <property name="text">
     <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>../PngItem_12226.png</normaloff>../PngItem_12226.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -342,6 +338,22 @@
    </property>
    <property name="autoDefault">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="backButton">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>131</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border:0px;background-color:transparent;</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

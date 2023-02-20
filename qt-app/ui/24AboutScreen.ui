@@ -44,7 +44,9 @@
      <height>104</height>
     </rect>
    </property>
-   
+   <property name="styleSheet">
+    <string notr="true">border:0px;background-color:transparent;</string>
+   </property>
    <property name="text">
     <string/>
    </property>

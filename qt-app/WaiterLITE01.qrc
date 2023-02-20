@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="Screens">
+    <file>assets/WaiterLITE-UI-08 2.png</file>
     <file>assets/refreshButton.png</file>
     <file>assets/refreshDoneButton.png</file>
     <file>assets/Average-1.png</file>
