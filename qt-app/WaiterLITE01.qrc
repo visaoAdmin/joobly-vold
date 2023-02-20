@@ -28,11 +28,12 @@
     <file>assets/WaiterLITE-UI-16.png</file>
     <file>assets/WaiterLITE-UI-17-1.png</file>
     <file>assets/WaiterLITE-UI-17.png</file>
-    <file>assets/WaiterLITE-UI-19.png</file>
     <file>assets/WaiterLITE-UI-20-1.png</file>
     <file>assets/WaiterLITE-UI-20-2.png</file>
+    <file>assets/WaiterLITE-UI-19.png</file>
     <file>assets/WaiterLITE-UI-20.png</file>
   </qresource>
+  <qresource prefix="newPrefix"/>
   <qresource prefix="newPrefix"/>
   <qresource prefix="newPrefix">
     <file>PngItem_12226.png</file>
