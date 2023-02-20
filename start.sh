@@ -1,5 +1,4 @@
 #!/bin/bash
-git pull &&
 cd /home/pi/waiterlite-raspberry && 
 git pull origin &
 ./startup-scripts.sh &
