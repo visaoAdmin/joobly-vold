@@ -1,6 +1,4 @@
 #!/bin/bash
-git fetch --all && 
-git checkout feature/phase-2 &&
 git pull &&
 cd /home/pi/waiterlite-raspberry && 
 git pull origin &

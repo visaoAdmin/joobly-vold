@@ -27,6 +27,7 @@ storage = {}
 isWaiterCalled = False
 hangoutId=None
 callNumber = 1
+currentWaiter = None
 serviceCallStartTime=None
 thr=None
 guestCount = None
@@ -46,7 +47,8 @@ firstJourney = True
 smiley = "neutral"
 timeOuts = {
     'generalTimeout':60,
-    'thankYouTimeout':120
+    'thankYouTimeout':120,
+    'ratingTimeout':300
 }
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -408,14 +410,20 @@ class WaiterPinScreen(TimeBoundScreen):
         navigateToScreen(aboutScreen)
 
     def navigateToWaiterMenuScreen(self):
+        global currentWaiter,waiterId
         super().stop()
-            
+        
         try:
             thePin = "".join(self.pin)
-            if  ("waiters" in storage and thePin in storage["waiters"]):
-                navigateToScreen(waiterMenuScreen)
-            else:
-                navigateToScreen(waiterNotExist)
+            if  ("waiters" in storage):
+                for waiter in storage["waiters"]:
+
+                    if waiter["referenceId"] == "W"+str(thePin):
+                        waiterId = thePin
+                        currentWaiter = waiter
+                        navigateToScreen(waiterMenuScreen)
+                        return
+            navigateToScreen(waiterNotExist)
         except:
             navigateToScreen(waiterNotExist)
          
@@ -493,13 +501,19 @@ class WaiterNotExist(TimeBoundScreen):
         super().stop()
         navigateToScreen(aboutScreen)
     def navigateToWaiterMenuScreen(self):
+        global waiterId,currentWaiter
         super().stop()
         try:
             thePin = "".join(self.pin)
-            if  ("waiters" in storage and thePin in storage["waiters"]) or waiterExists(thePin,getRestaurantId()):
-                navigateToScreen(waiterMenuScreen)
-            else:
-                navigateToScreen(waiterNotExist)
+            if  ("waiters" in storage):
+                for waiter in storage["waiters"]:
+
+                    if waiter["referenceId"] == "W"+str(thePin):
+                        waiterId = thePin
+                        currentWaiter = waiter
+                        navigateToScreen(waiterMenuScreen)
+                        return
+            navigateToScreen(waiterNotExist)
         except:
             navigateToScreen(waiterNotExist)
               
@@ -608,14 +622,14 @@ class WaiterMenuScreen(QDialog):
     def navigateToIdleLockScreen(self):
         navigateToRestart()
 
-class TableSelectionScreen(TimeBoundScreen):
-    signal = pyqtSignal()
+class TableSelectionScreen(QDialog):
+
     def __init__(self):
-        super(TableSelectionScreen, self).__init__(timeOuts["generalTimeout"])
+        super(TableSelectionScreen, self).__init__()
         loadUi("ui/25TableSelectionScreen.ui", self)
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
-        self.backButton.clicked.connect(navigateGoBack)
+        self.backButton.clicked.connect(self.navigateGoBackSlot)
         self.listWidget.setStyleSheet(
                                   "QListView"
                                   "{"
@@ -639,18 +653,17 @@ class TableSelectionScreen(TimeBoundScreen):
                                     "background-color: #c09c56;"
                                     "color:#111f2a;"
                                   "}")
-        self.signal.connect(self.navigateGoBackSlot)
-        self.setRunnable(self.navigateGoBack,[])
+
+
         # self.loadTables()
         # runInNewThread(self, self.loadTables)
 
-    def navigateGoBack(self):
-        self.signal.emit()
+
     def navigateGoBackSlot(self):
         navigateGoBack()
 
     def clear(self): 
-        super().reset()
+
         self.loadTables()   
     def loadTables(self):
         try:
@@ -683,7 +696,7 @@ class TableSelectionScreen(TimeBoundScreen):
             except:
                 pass
         saveStorage()
-        super().stop()
+
         if firstJourney:
             firstJourney = False
             navigateToScreen(waiterPinScreen)
@@ -692,11 +705,11 @@ class TableSelectionScreen(TimeBoundScreen):
         
 
     def navigateToWaiterMenuScreen(self):
-        super().stop()
+
         navigateToScreen(waiterMenuScreen)
     
     def navigateToIdleLockScreen(self):
-        super().stop()
+
         navigateToRestart()
 class ContinueExistingJourneyScreen(QDialog):
     def __init__(self):
@@ -735,32 +748,30 @@ class ContinueExistingJourneyScreen(QDialog):
         global guestCount,waiterId,hangoutId
         qWorker.addAPICall(startHangout,[getTableId(), guestCount, waiterId, hangoutId])
         navigateToScreen(tapForServiceScreen)
-class ChooseNumberOfGuests(TimeBoundScreen):
+class ChooseNumberOfGuests(QDialog):
     global guestCount
     guestCount=""
-    signal = pyqtSignal()
+
     def navigateBack(self):
-        super().stop()
         navigateGoBack()
 
     def __init__(self):
-        super(ChooseNumberOfGuests, self).__init__(timeOuts["generalTimeout"])
+        super(ChooseNumberOfGuests, self).__init__()
         loadUi("ui/08ChooseNumberOfGuests.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
         self.goBackButton.clicked.connect(self.navigateBack)
-        self.signal.connect(navigateGoBack)
+
         self.setupKeyboard()    
-        super().setRunnable(self.navigateGoBack,[])
+
     
-    def navigateGoBack(self):
-        self.signal.emit()
+
 
     def setupKeyboard(self):
         setupKeyboard(self)
 
     def clear(self):
         global guestCount
-        super().reset()
+
         guestCount=""
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
@@ -769,7 +780,7 @@ class ChooseNumberOfGuests(TimeBoundScreen):
 
     def onKey(self, key):
         global guestCount
-        super().reset()
+
         if key == "x":
             guestCount=""
         elif key == "0":
@@ -782,7 +793,7 @@ class ChooseNumberOfGuests(TimeBoundScreen):
 
 
     def navigateToCheckedInScreen(self):
-        super().stop()
+
         try: 
             global hangoutId,guestCount,continueExistingJourney,previousJourneyData
             table = getTableId()
@@ -804,18 +815,18 @@ class ChooseNumberOfGuests(TimeBoundScreen):
             pass
         navigateToScreen(tapForServiceScreen)
 
-class CorrectChooseNumberOfGuests(TimeBoundScreen):
+class CorrectChooseNumberOfGuests(QDialog):
     global guestCount
     guestCount=""
-    signal = pyqtSignal()
+
     def __init__(self):
-        super(CorrectChooseNumberOfGuests, self).__init__(timeOuts["generalTimeout"])
+        super(CorrectChooseNumberOfGuests, self).__init__()
         loadUi("ui/CorrectChooseNumberOfGuests.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
         self.goBackButton.clicked.connect(self.navigateBack)
-        self.signal.connect(self.navigateToWaiterMenuScreenSlot)
+
         self.setupKeyboard()
-        super().setRunnable(self.navigateToWaiterMenuScreen,[])
+
     
     def navigateToWaiterMenuScreenSlot(self):
         navigateToScreen(waiterMenuScreen)
@@ -824,21 +835,21 @@ class CorrectChooseNumberOfGuests(TimeBoundScreen):
         self.signal.emit()
 
     def navigateBack(self):
-        super().stop()
+
         navigateGoBack()
     def setupKeyboard(self):
         setupKeyboard(self)
 
     def clear(self):
         global guestCount
-        super().reset()
+
         guestCount=""
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
 
     def onKey(self, key):
         global guestCount
-        super().reset()
+
         if key == "x":
             guestCount=""
         elif key == "0":
@@ -850,7 +861,7 @@ class CorrectChooseNumberOfGuests(TimeBoundScreen):
         self.__dict__["inputCount"].setText(countLabel)
 
     def navigateToCheckedInScreen(self):
-        super().stop()
+
         try: 
             
             global hangoutId,guestCount
@@ -1028,10 +1039,13 @@ class CloseServiceScreen(QDialog):
        
     def clear(self):
         global restartApplication,askingCable,smiley
+        
         if(askingCable):
             setPixMap(self,"assets/closeServiceScreenActive.png")
         else:
             setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
+
+        self.messageLabel.setText(currentWaiter["firstName"][0:12]+" on the way")
         lightThreadRunner.launch(blueLight)
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
@@ -1223,7 +1237,7 @@ class FeedbackScreen(TimeBoundScreen):
     ratings = {}
 
     def __init__(self):
-        super(FeedbackScreen, self).__init__(timeOuts["generalTimeout"])
+        super(FeedbackScreen, self).__init__(timeOuts["ratingTimeout"])
         loadUi("ui/19FeedbackScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToPaymentOptionScreen)
@@ -1370,7 +1384,7 @@ class FeedbackScreen(TimeBoundScreen):
 class ThankYouScreen(TimeBoundScreen):
     signal = pyqtSignal()
     def __init__(self):
-        super(ThankYouScreen, self).__init__(timeOuts["thankYouTimeout"])
+        super(ThankYouScreen, self).__init__(timeOuts["generalTimeout"])
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
         self.signal.connect(self.navigateToIdleLockScreenSlot)
