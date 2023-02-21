@@ -189,12 +189,12 @@
      <x>30</x>
      <y>310</y>
      <width>421</width>
-     <height>51</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>32</pointsize>
+     <pointsize>30</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
@@ -205,8 +205,14 @@
    <property name="text">
     <string/>
    </property>
+   <property name="scaledContents">
+    <bool>false</bool>
+   </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

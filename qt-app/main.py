@@ -1128,7 +1128,7 @@ class CloseServiceScreen(QDialog):
         else:
             setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
 
-        self.messageLabel.setText(currentWaiter["firstName"][0:12]+" on the way")
+        self.messageLabel.setText(currentWaiter["firstName"][0:10]+" on the way")
         lightThreadRunner.launch(blueLight)
         setIcon(self.happyButton,"assets/Happy-1.png")
         setIcon(self.sadButton,"assets/sad-1.png")
