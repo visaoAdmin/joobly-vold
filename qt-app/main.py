@@ -83,6 +83,7 @@ def setIcon(button,path):
 def loadPicture(filepath,url):
         
     try:
+
         data = urllib.request.urlopen(url).read()
         with open(filepath,"wb") as logo:
             logo.write(data)
@@ -323,14 +324,12 @@ class IdleLockScreen(QDialog):
     def clear(self):
         global serviceCalls,callNumber,smiley
         smiley = "neutral"
-
         if restaurantChanged:
             self.loadConfigAndLogo()
         try:
-            qWorker.addAPICall(loadConfig,[])
             qWorker.addAPICall(self.loadConfigAndLogo,[])
-            # loadConfig()
-        except:
+        except Exception as e:
+
             pass
         serviceCalls.clear()
         callNumber = 1
@@ -1585,7 +1584,25 @@ mainStackedWidget=QtWidgets.QStackedWidget()
 idleLockScreen = IdleLockScreen.getInstance()
 
 
-
+ReserveScreen()
+WaiterPinScreen()
+WaiterNotExist()
+AboutScreen()
+ConfirmTable()
+WaiterMenuScreen()
+TableSelectionScreen()
+ContinueExistingJourneyScreen()
+ChooseNumberOfGuests()
+CorrectChooseNumberOfGuests()
+CheckedInScreen()
+TapForServiceScreen()
+CloseServiceScreen()
+DinerActionMenuScreen()
+BillScreen()
+ServerWillAssistScreen()
+PayQRScreen()
+FeedbackScreen()
+ThankYouScreen()
 
 qWorker = QueueWorker()
 lightThreadRunner = ReUsableThreadRunner()

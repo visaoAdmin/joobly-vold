@@ -44,7 +44,7 @@ class QueueWorker(object):
                         # print("2nd",runFunction)
                         
                         try:
-                            # print("2--",foregroundAPI)
+
                             runFunction = foregroundAPI[0]
                             args = foregroundAPI[1]
                             r = runFunction(*args)
