@@ -193,7 +193,7 @@ def greenLight():
     neoxPixel(127,255,0)
 
 def navigateToScreen(Screen):
-        nextScreen = Screen
+        nextScreen = Screen.getInstance()
         try:
             nextScreen.clear()
         except Exception as e:
@@ -212,7 +212,7 @@ def navigateGoBack():
 
 def navigateToRestart():
         # mainStackedWidget.setCurrentIndex(0)
-        navigateToScreen(idleLockScreen)
+        navigateToScreen(IdleLockScreen)
 
 
 menuScreenTime = None
@@ -276,6 +276,12 @@ def renderLogo(self, key="logo", width=220, height=220):
 
 
 class ReserveScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ReserveScreen.shared_instance == None):
+            ReserveScreen.shared_instance = ReserveScreen()
+        return ReserveScreen.shared_instance
     def __init__(self):
         super(ReserveScreen, self).__init__()
         loadUi("ui/21ReserveScreen.ui", self)
@@ -287,13 +293,24 @@ class ReserveScreen(QDialog):
     def clear(self):
         runInNewThread(self,self.loadLogo)
     def navigateToWelcome(self):
-        navigateToScreen(waiterPinScreen)
+        navigateToScreen(WaiterPinScreen)
 
 
 
 
 
 class IdleLockScreen(QDialog):
+    
+    
+        # runInNewThread(self, self.loadConfigAndLogo)
+
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(IdleLockScreen.shared_instance == None):
+            IdleLockScreen.shared_instance = IdleLockScreen()
+        return IdleLockScreen.shared_instance
+
     def __init__(self):
         super(IdleLockScreen, self).__init__()
         loadUi("ui/05IdleLockScreen.ui", self)
@@ -301,8 +318,7 @@ class IdleLockScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToWaiterPinScreen)
         self.appCloseButton.clicked.connect(mainStackedWidget.close)
         
-        self.loadConfigAndLogo()
-        # runInNewThread(self, self.loadConfigAndLogo)
+        self.loadConfigAndLogo()  
 
     def clear(self):
         global serviceCalls,callNumber,smiley
@@ -330,14 +346,20 @@ class IdleLockScreen(QDialog):
     def navigateToWaiterPinScreen(self):
         global firstJourney
         if firstJourney:
-            navigateToScreen(tableSelectionScreen)
+            navigateToScreen(TableSelectionScreen)
             return
-        navigateToScreen(waiterPinScreen)
+        navigateToScreen(WaiterPinScreen)
 
 class WaiterPinScreen(TimeBoundScreen):
     pin=[]
     signal = pyqtSignal()
     isWrong = False
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(WaiterPinScreen.shared_instance == None):
+            WaiterPinScreen.shared_instance = WaiterPinScreen()
+        return WaiterPinScreen.shared_instance
     def __init__(self):
         super(WaiterPinScreen, self).__init__(timeOuts["generalTimeout"])
         self.pin=[]
@@ -356,7 +378,7 @@ class WaiterPinScreen(TimeBoundScreen):
         self.signal.emit()
 
     def navigateToIdleLockScreenSlot(self):
-        navigateToScreen(idleLockScreen)
+        navigateToScreen(IdleLockScreen)
         
         
     def setupKeyboard(self):
@@ -407,11 +429,11 @@ class WaiterPinScreen(TimeBoundScreen):
     
     def navigateToConfirmTable(self):
         super().stop()
-        navigateToScreen(confirmTable)
+        navigateToScreen(ConfirmTable)
         
     def navigateToConfigScreen(self):
         super().stop()
-        navigateToScreen(aboutScreen)
+        navigateToScreen(AboutScreen)
 
     def navigateToWaiterMenuScreen(self):
         global currentWaiter,waiterId
@@ -425,7 +447,7 @@ class WaiterPinScreen(TimeBoundScreen):
                     if waiter["referenceId"] == "W"+str(thePin):
                         waiterId = thePin
                         currentWaiter = waiter
-                        navigateToScreen(waiterMenuScreen)
+                        navigateToScreen(WaiterMenuScreen)
                         return
             self.pin = []
             self.renderPin()
@@ -454,7 +476,7 @@ class WaiterNotExist(TimeBoundScreen):
         self.signal.emit()
 
     def navigateToIdleLockScreenSlot(self):
-        navigateToScreen(idleLockScreen)
+        navigateToScreen(IdleLockScreen)
 
     def setupKeyboard(self):
         setupKeyboard(self)
@@ -503,11 +525,11 @@ class WaiterNotExist(TimeBoundScreen):
     def navigateToConfirmTable(self):
         super().stop()
 
-        navigateToScreen(confirmTable)
+        navigateToScreen(ConfirmTable)
 
     def navigateToConfigScreen(self):
         super().stop()
-        navigateToScreen(aboutScreen)
+        navigateToScreen(AboutScreen)
     def navigateToWaiterMenuScreen(self):
         global waiterId,currentWaiter
         super().stop()
@@ -519,14 +541,20 @@ class WaiterNotExist(TimeBoundScreen):
                     if waiter["referenceId"] == "W"+str(thePin):
                         waiterId = thePin
                         currentWaiter = waiter
-                        navigateToScreen(waiterMenuScreen)
+                        navigateToScreen(WaiterMenuScreen)
                         return
-            navigateToScreen(waiterNotExist)
+            navigateToScreen(WaiterNotExist)
         except:
-            navigateToScreen(waiterNotExist)
+            navigateToScreen(WaiterNotExist)
               
 class AboutScreen(TimeBoundScreen):
     signal = pyqtSignal()
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(AboutScreen.shared_instance == None):
+            AboutScreen.shared_instance = AboutScreen()
+        return AboutScreen.shared_instance
     def __init__(self):
         super(AboutScreen, self).__init__(timeOuts["generalTimeout"])
         loadUi("ui/24AboutScreen.ui", self)
@@ -580,7 +608,7 @@ class AboutScreen(TimeBoundScreen):
         try:
             if(getRestaurantId()!=restId):
                 super().stop()
-                navigateToScreen(waiterPinScreen)
+                navigateToScreen(WaiterPinScreen)
         except:
             pass
         self.renderLabels()
@@ -588,6 +616,12 @@ class AboutScreen(TimeBoundScreen):
         
 
 class ConfirmTable(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ConfirmTable.shared_instance == None):
+            ConfirmTable.shared_instance = ConfirmTable()
+        return ConfirmTable.shared_instance
     def __init__(self):
         super(ConfirmTable, self).__init__()
         loadUi("ui/07ConfirmTable.ui", self)
@@ -598,6 +632,12 @@ class ConfirmTable(QDialog):
         navigateToScreen(ChooseNumberOfGuests)
 
 class WaiterMenuScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(WaiterMenuScreen.shared_instance == None):
+            WaiterMenuScreen.shared_instance = WaiterMenuScreen()
+        return WaiterMenuScreen.shared_instance
     def __init__(self):
         super(WaiterMenuScreen, self).__init__()
         loadUi("ui/071WaiterMenuScreen.ui", self)
@@ -616,22 +656,27 @@ class WaiterMenuScreen(QDialog):
         lightThreadRunner.launch(yellowLight)
 
     def navigateToChooseNumberOfGuests(self):
-        navigateToScreen(chooseNumberOfGuests)
+        navigateToScreen(ChooseNumberOfGuests)
         
     def navigateToReserveScreen(self):
-        navigateToScreen(reserveScreen)
+        navigateToScreen(ReserveScreen)
     
     def navigateToAboutScreen(self):
-        navigateToScreen(aboutScreen)
+        navigateToScreen(AboutScreen)
     
     def navigateToTableSelectionScreen(self):
-        navigateToScreen(tableSelectionScreen)
+        navigateToScreen(TableSelectionScreen)
     
     def navigateToIdleLockScreen(self):
         navigateToRestart()
 
 class TableSelectionScreen(QDialog):
-
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(TableSelectionScreen.shared_instance == None):
+            TableSelectionScreen.shared_instance = TableSelectionScreen()
+        return TableSelectionScreen.shared_instance
     def __init__(self):
         super(TableSelectionScreen, self).__init__()
         loadUi("ui/25TableSelectionScreen.ui", self)
@@ -671,7 +716,10 @@ class TableSelectionScreen(QDialog):
         navigateGoBack()
 
     def clear(self): 
-
+        if firstJourney:
+            setPixMap(self,"assets/WaiterLITE-UI-25 1.png")
+        else:
+            setPixMap(self,"assets/WaiterLITE-UI-25.png")
         self.loadTables()   
     def loadTables(self):
         try:
@@ -707,19 +755,25 @@ class TableSelectionScreen(QDialog):
 
         if firstJourney:
             firstJourney = False
-            navigateToScreen(idleLockScreen)
+            navigateToScreen(IdleLockScreen)
             return
         self.navigateToWaiterMenuScreen()
         
 
     def navigateToWaiterMenuScreen(self):
 
-        navigateToScreen(waiterMenuScreen)
+        navigateToScreen(WaiterMenuScreen)
     
     def navigateToIdleLockScreen(self):
 
         navigateToRestart()
 class ContinueExistingJourneyScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ContinueExistingJourneyScreen.shared_instance == None):
+            ContinueExistingJourneyScreen.shared_instance = ContinueExistingJourneyScreen()
+        return ContinueExistingJourneyScreen.shared_instance
     def __init__(self):
         super(ContinueExistingJourneyScreen, self).__init__()
         loadUi("ui/26ContinueExistingJourney.ui", self)
@@ -748,18 +802,23 @@ class ContinueExistingJourneyScreen(QDialog):
         if callDuration ==None:
             serviceCalls[callNumber] = {}
             serviceCalls[callNumber]['open'] = time.time()
-            navigateToScreen(closeServiceScreen)
+            navigateToScreen(CloseServiceScreen)
         else:
             callNumber+=1
-            navigateToScreen(tapForServiceScreen)
+            navigateToScreen(TapForServiceScreen)
     def navigateToCheckedIn(self):
         global guestCount,waiterId,hangoutId
         qWorker.addAPICall(startHangout,[getTableId(), guestCount, waiterId, hangoutId])
-        navigateToScreen(tapForServiceScreen)
+        navigateToScreen(TapForServiceScreen)
 class ChooseNumberOfGuests(QDialog):
     global guestCount
     guestCount=""
-
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ChooseNumberOfGuests.shared_instance == None):
+            ChooseNumberOfGuests.shared_instance = ChooseNumberOfGuests()
+        return ChooseNumberOfGuests.shared_instance
     def navigateBack(self):
         navigateGoBack()
 
@@ -811,7 +870,7 @@ class ChooseNumberOfGuests(QDialog):
                 setPixMap(self,"assets/WaiterLITE-UI-09-2.png")
                 return
             if(continueExistingJourney):
-                navigateToScreen(continueExistingJourneyScreen)
+                navigateToScreen(ContinueExistingJourneyScreen)
                 continueExistingJourney = False
                 return
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
@@ -821,7 +880,7 @@ class ChooseNumberOfGuests(QDialog):
 
         except Exception as e:
             pass
-        navigateToScreen(tapForServiceScreen)
+        navigateToScreen(TapForServiceScreen)
 
 class CorrectChooseNumberOfGuests(QDialog):
     global guestCount
@@ -837,7 +896,7 @@ class CorrectChooseNumberOfGuests(QDialog):
 
     
     def navigateToWaiterMenuScreenSlot(self):
-        navigateToScreen(waiterMenuScreen)
+        navigateToScreen(WaiterMenuScreen)
     
     def navigateToWaiterMenuScreen(self):
         self.signal.emit()
@@ -890,22 +949,33 @@ class CorrectChooseNumberOfGuests(QDialog):
 
         except Exception as e:
             pass
-        navigateToScreen(tapForServiceScreen)
+        navigateToScreen(TapForServiceScreen)
 
 
 
 
 class CheckedInScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(CheckedInScreen.shared_instance == None):
+            CheckedInScreen.shared_instance = CheckedInScreen()
+        return CheckedInScreen.shared_instance
     def __init__(self):
         super(CheckedInScreen, self).__init__()
         loadUi("ui/09CheckedInScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
     
     def navigateToTapForServiceScreen(self):
-        navigateToScreen(tapForServiceScreen)
+        navigateToScreen(TapForServiceScreen)
 
 class TapForServiceScreen(QDialog):
-
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(TapForServiceScreen.shared_instance == None):
+            TapForServiceScreen.shared_instance = TapForServiceScreen()
+        return TapForServiceScreen.shared_instance
     previousExperience="Good"
     experience=None
 
@@ -984,9 +1054,9 @@ class TapForServiceScreen(QDialog):
     def navigateToCloseServiceScreen(self):
         self.callWaiter()
         if(getRestartApp()):
-            navigateToScreen(idleLockScreen)
+            navigateToScreen(IdleLockScreen)
         else:
-            navigateToScreen(closeServiceScreen)
+            navigateToScreen(CloseServiceScreen)
     
     def callWaiter(self):
         try:
@@ -1001,13 +1071,19 @@ class TapForServiceScreen(QDialog):
             pass
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(dinerActionMenuScreen)
+        navigateToScreen(DinerActionMenuScreen)
     
     def navigateToCheckoutScreen(self):
         
-        navigateToScreen(billScreen)
+        navigateToScreen(BillScreen)
 
 class CloseServiceScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(CloseServiceScreen.shared_instance == None):
+            CloseServiceScreen.shared_instance = CloseServiceScreen()
+        return CloseServiceScreen.shared_instance
     def __init__(self):
         super(CloseServiceScreen, self).__init__()
         loadUi("ui/11CloseServiceScreen.ui", self)
@@ -1073,7 +1149,7 @@ class CloseServiceScreen(QDialog):
         if(getRestartApp()):
             navigateToRestart()
         else:
-            navigateToScreen(tapForServiceScreen)
+            navigateToScreen(TapForServiceScreen)
     
     def waiterArrived(self):
         global isWaiterCalled,callNumber
@@ -1093,13 +1169,20 @@ class CloseServiceScreen(QDialog):
 
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(dinerActionMenuScreen)
+        navigateToScreen(DinerActionMenuScreen)
     
     def navigateToCheckoutScreen(self):
-        navigateToScreen(billScreen)
+        navigateToScreen(BillScreen)
 
 class DinerActionMenuScreen(TimeBoundScreen):
+    
     signal = pyqtSignal()
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(DinerActionMenuScreen.shared_instance == None):
+            DinerActionMenuScreen.shared_instance = DinerActionMenuScreen()
+        return DinerActionMenuScreen.shared_instance
     def __init__(self):
         super(DinerActionMenuScreen, self).__init__(timeOuts["generalTimeout"])
         loadUi("ui/12DinerActionMenuScreen.ui", self)
@@ -1146,16 +1229,20 @@ class DinerActionMenuScreen(TimeBoundScreen):
 
     def navigateToCheckoutScreen(self):
         super().stop()
-        navigateToScreen(billScreen)
+        navigateToScreen(BillScreen)
 
-    def navigateToQuickMenuScreen(self):
-        super().stop()
-        navigateToScreen(quickMenuScreen)
+
 
 
 
 
 class BillScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(BillScreen.shared_instance == None):
+            BillScreen.shared_instance = BillScreen()
+        return BillScreen.shared_instance
     def __init__(self):
         super(BillScreen, self).__init__()
         loadUi("ui/17BillScreen.ui", self)
@@ -1177,14 +1264,20 @@ class BillScreen(QDialog):
         serviceCalls['guestCount'] = guestCount
 
     
-        navigateToScreen(payQRScreen)
+        navigateToScreen(PayQRScreen)
     
     def navigateToFeedbackScreen(self):
         
-        navigateToScreen(feedbackScreen)
+        navigateToScreen(FeedbackScreen)
 
 
 class ServerWillAssistScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ServerWillAssistScreen.shared_instance == None):
+            ServerWillAssistScreen.shared_instance = ServerWillAssistScreen()
+        return ServerWillAssistScreen.shared_instance
     def __init__(self):
         super(ServerWillAssistScreen, self).__init__()
         loadUi("ui/22ServerWillAssist.ui", self)
@@ -1194,9 +1287,15 @@ class ServerWillAssistScreen(QDialog):
 
     
     def navigateToThankYouScreen(self):
-        navigateToScreen(thankYouScreen)
+        navigateToScreen(ThankYouScreen)
 
 class PayQRScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(PayQRScreen.shared_instance == None):
+            PayQRScreen.shared_instance = PayQRScreen()
+        return PayQRScreen.shared_instance
     def __init__(self):
         super(PayQRScreen, self).__init__()
         loadUi("ui/18PayQRScreen.ui", self)
@@ -1214,7 +1313,7 @@ class PayQRScreen(QDialog):
         navigateGoBack()
     
     def navigateToThankYouScreen(self):
-        navigateToScreen(feedbackScreen)
+        navigateToScreen(FeedbackScreen)
 
     def loadQRCode(self):
         try:
@@ -1243,7 +1342,12 @@ class FeedbackScreen(TimeBoundScreen):
     normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
     selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40"
     ratings = {}
-
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(FeedbackScreen.shared_instance == None):
+            FeedbackScreen.shared_instance = FeedbackScreen()
+        return FeedbackScreen.shared_instance
     def __init__(self):
         super(FeedbackScreen, self).__init__(timeOuts["ratingTimeout"])
         loadUi("ui/19FeedbackScreen.ui", self)
@@ -1351,7 +1455,7 @@ class FeedbackScreen(TimeBoundScreen):
         serviceCalls.clear()
         
         lightThreadRunner.launch(yellowLight)
-        navigateToScreen(idleLockScreen)
+        navigateToScreen(IdleLockScreen)
 
     def navigateToPaymentOptionScreen(self):
 
@@ -1386,11 +1490,17 @@ class FeedbackScreen(TimeBoundScreen):
             serviceCalls.clear()
 
             lightThreadRunner.launch(yellowLight)
-            navigateToScreen(thankYouScreen)
+            navigateToScreen(ThankYouScreen)
 
 
 class ThankYouScreen(TimeBoundScreen):
     signal = pyqtSignal()
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ThankYouScreen.shared_instance == None):
+            ThankYouScreen.shared_instance = ThankYouScreen()
+        return ThankYouScreen.shared_instance
     def __init__(self):
         super(ThankYouScreen, self).__init__(timeOuts["generalTimeout"])
         loadUi("ui/20ThankYouScreen.ui", self)
@@ -1471,38 +1581,18 @@ app.setStyleSheet(MainStyle)
 mainStackedWidget=QtWidgets.QStackedWidget()
 # idleLockScreen = IdleLockScreen()
 
-dinerActionMenuScreen = DinerActionMenuScreen()
-closeServiceScreen = CloseServiceScreen()
-checkedInScreen = CheckedInScreen()
-reserveScreen = ReserveScreen()
 
-idleLockScreen = IdleLockScreen()
-waiterPinScreen = WaiterPinScreen()
-tapForServiceScreen = TapForServiceScreen()
-continueExistingJourneyScreen = ContinueExistingJourneyScreen()
-tableSelectionScreen = TableSelectionScreen()
-waiterMenuScreen  = WaiterMenuScreen()
-aboutScreen = AboutScreen() 
+idleLockScreen = None
 
 
-payQRScreen = PayQRScreen()
-serverWillAssistScreen = ServerWillAssistScreen()
-waiterNotExist = WaiterNotExist()
-confirmTable = ConfirmTable()
 
-thankYouScreen = ThankYouScreen()
-chooseNumberOfGuests = ChooseNumberOfGuests()
-feedbackScreen = FeedbackScreen()
-correctChooseNumberOfGuests= CorrectChooseNumberOfGuests()
-billScreen = BillScreen()
 
 qWorker = QueueWorker()
 lightThreadRunner = ReUsableThreadRunner()
-
 smileyRunner = SmileyRunner()
 if ENV == "dev":
 
-    mainwindow=idleLockScreen
+    mainwindow=IdleLockScreen.getInstance()
 else:
     mainwindow=idleLockScreen
 mainStackedWidget.addWidget(mainwindow)
