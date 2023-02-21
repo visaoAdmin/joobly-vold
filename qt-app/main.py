@@ -261,12 +261,18 @@ def renderLogo(self, key="logo", width=220, height=220):
     if pixmap != None:
         
         # self.__dict__[key].setPixmap(pixmap)
-        self.__dict__[key].setStyleSheet("border :3px;"
+        # self.__dict__[key].setIcon(QIcon("restaurantData/logo"))
+        self.__dict__[key].setStyleSheet(
                     "border-image : url('restaurantData/logo');"
                     "border-top-left-radius :30px;"
                     "border-top-right-radius : 30px; "
                     "border-bottom-left-radius : 30px; "
-                    "border-bottom-right-radius : 30px")
+                    "border-bottom-right-radius : 30px;")
+        self.logoBorder.setStyleSheet("border :1.5px solid yellow;"
+                    "border-top-left-radius :30px;"
+                    "border-top-right-radius : 30px; "
+                    "border-bottom-left-radius : 30px; "
+                    "border-bottom-right-radius : 30px;")
 
 # class Communicate(QObject):
 #     pass

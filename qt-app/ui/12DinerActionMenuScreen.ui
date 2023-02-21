@@ -57,8 +57,8 @@
   <widget class="QLabel" name="qrimage">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>260</y>
+     <x>114</x>
+     <y>259</y>
      <width>251</width>
      <height>251</height>
     </rect>
@@ -68,6 +68,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="checkoutButton">

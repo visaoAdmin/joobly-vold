@@ -73,6 +73,19 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="logoBorder">
+   <property name="geometry">
+    <rect>
+     <x>68</x>
+     <y>140</y>
+     <width>342</width>
+     <height>242</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>
