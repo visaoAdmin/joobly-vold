@@ -1582,7 +1582,7 @@ mainStackedWidget=QtWidgets.QStackedWidget()
 # idleLockScreen = IdleLockScreen()
 
 
-idleLockScreen = None
+idleLockScreen = IdleLockScreen.getInstance()
 
 
 
