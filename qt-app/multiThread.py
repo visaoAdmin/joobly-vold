@@ -66,26 +66,26 @@ class ReUsableThreadRunner(object):
     def __init__(self):
         self.name = None
         self.currentThread = Thread(lambda:())
-
-        # self.functions = []
+        self.currentThread.run = self.launcher
+        self.functions = []
         self.currentThread.start()
     def launch(self,taskFunction):
-        if(self.name == taskFunction.__name__):
-            return
-        self.name = taskFunction.__name__
-
-        self.currentThread.run = taskFunction
-        self.currentThread.start()
-    #     self.functions.append(taskFunction)
+        
+        # self.currentThread.run = taskFunction
+        # self.currentThread.start()
+        self.functions.append(taskFunction)
    
-    # def launcher(self):
-    #     while(True):
-            
-    #         try:
-    #             fn = self.functions.pop(0)
-    #             fn()
-    #         except Exception as e:
-    #             pass
+    def launcher(self):
+        while(True):
+            try:
+                fn = self.functions.pop(0)
+                if(self.name == fn.__name__):
+                    continue
+                self.name = fn.__name__
+        
+                fn()
+            except Exception as e:
+                pass
 
 
 
