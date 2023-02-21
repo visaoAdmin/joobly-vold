@@ -64,11 +64,16 @@ class Thread (QThread):
         self.task()
 class ReUsableThreadRunner(object):
     def __init__(self):
+        self.name = None
         self.currentThread = Thread(lambda:())
 
         # self.functions = []
         self.currentThread.start()
     def launch(self,taskFunction):
+        if(self.name == taskFunction.__name__):
+            return
+        self.name = taskFunction.__name__
+
         self.currentThread.run = taskFunction
         self.currentThread.start()
     #     self.functions.append(taskFunction)
