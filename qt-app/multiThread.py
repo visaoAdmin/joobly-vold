@@ -65,20 +65,22 @@ class Thread (QThread):
 class ReUsableThreadRunner(object):
     def __init__(self):
         self.currentThread = Thread(lambda:())
-        self.currentThread.run = self.launcher
-        self.functions = []
+
+        # self.functions = []
         self.currentThread.start()
     def launch(self,taskFunction):
-        self.functions.append(taskFunction)
+        self.currentThread.run = taskFunction
+        self.currentThread.start()
+    #     self.functions.append(taskFunction)
    
-    def launcher(self):
-        while(True):
+    # def launcher(self):
+    #     while(True):
             
-            try:
-                fn = self.functions.pop(0)
-                fn()
-            except Exception as e:
-                pass
+    #         try:
+    #             fn = self.functions.pop(0)
+    #             fn()
+    #         except Exception as e:
+    #             pass
 
 
 
