@@ -1596,7 +1596,7 @@ aboutScreen = AboutScreen.getInstance()
 confirmTable = ConfirmTable.getInstance()
 waiterMenuScreen =  WaiterMenuScreen.getInstance()
 tableSelectionScreen = TableSelectionScreen.getInstance()
-continueExistingJourney =  ContinueExistingJourneyScreen.getInstance()
+ContinueExistingJourneyScreen.getInstance()
 chooseNumberOfGuests =  ChooseNumberOfGuests.getInstance()
 
 checkedInScreen =  CheckedInScreen.getInstance()
