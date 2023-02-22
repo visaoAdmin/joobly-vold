@@ -1,6 +1,7 @@
 from StorageQueue import StorageQueue,NonStorageQueue
 from multiThread import Thread
 import time
+import datetime
 import requests
 from background_api import endServiceCall,sendHangout,sendRatings,startServiceCall
 from api import makeDeviceOnline
@@ -49,11 +50,17 @@ class QueueWorker(object):
                             args = foregroundAPI[1]
                             r = runFunction(*args)
                             self.queue.pop()
+                            if(runFunction.__name__=="startHangout"):
+                                with open("logFile.txt","a+") as logFile:
+                                    logFile.write("\n"+str(datetime.datetime.now())+" "+str(args)+"\n"+str(r.status_code)+"\n")
+                                    
 
-                            if(r.status_code==503):
+                            if(r.status_code!=200):
                                 raise  Exception()
                         except Exception as e: 
-
+                            if(runFunction.__name__=="startHangout"):
+                                with open("logFile.txt","a+") as logFile:
+                                    logFile.write("\n"+str(datetime.datetime.now())+" "+str(args)+"\n"+str(e)+"\n")
                             if(runFunction.__name__=="startHangout"):
                                 self.queue2.push(sendHangout,[*args])
                             elif(runFunction.__name__=="callWaiter"):

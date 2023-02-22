@@ -53,7 +53,7 @@ def startHangout(table, guestCount, waiterId, hangoutId):
         "hangout": hangoutId,
         "type": "CHECKIN"
     },headers={"device-serial":getserial()}, timeout=TIMEOUT)
-    if(response.status_code==503):
+    if(response.status_code!=200):
         raise Exception()
     
     return response

@@ -3,3 +3,4 @@ storage.json
 __pycache__
 function_queue.file
 background_queue.file
+logFile.txt
