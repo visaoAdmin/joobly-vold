@@ -93,7 +93,7 @@
    <property name="geometry">
     <rect>
      <x>65</x>
-     <y>572</y>
+     <y>573</y>
      <width>113</width>
      <height>81</height>
     </rect>
@@ -110,8 +110,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>58</width>
-     <height>58</height>
+     <width>70</width>
+     <height>70</height>
     </size>
    </property>
   </widget>
@@ -136,8 +136,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>58</width>
-     <height>58</height>
+     <width>70</width>
+     <height>70</height>
     </size>
    </property>
   </widget>
@@ -165,8 +165,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>58</width>
-     <height>58</height>
+     <width>70</width>
+     <height>70</height>
     </size>
    </property>
   </widget>
