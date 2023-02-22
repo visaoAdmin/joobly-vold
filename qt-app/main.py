@@ -268,7 +268,7 @@ def renderLogo(self, key="logo", width=220, height=220):
                     "border-top-right-radius : 30px; "
                     "border-bottom-left-radius : 30px; "
                     "border-bottom-right-radius : 30px;")
-        self.logoBorder.setStyleSheet("border :1.5px solid yellow;"
+        self.logoBorder.setStyleSheet("border :1.5px solid #D6AD60;"
                     "border-top-left-radius :30px;"
                     "border-top-right-radius : 30px; "
                     "border-bottom-left-radius : 30px; "
