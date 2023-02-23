@@ -680,6 +680,7 @@ class WaiterMenuScreen(QDialog):
 
 class TableSelectionScreen(QDialog):
     shared_instance = None
+    item = None
     @staticmethod
     def getInstance():
         if(TableSelectionScreen.shared_instance == None):
@@ -691,6 +692,7 @@ class TableSelectionScreen(QDialog):
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
         self.backButton.clicked.connect(self.navigateGoBackSlot)
+        self.confirmSelectionButton.clicked.connect(self.confirmSelection)
         self.listWidget.setStyleSheet(
                                   "QListView"
                                   "{"
@@ -724,6 +726,7 @@ class TableSelectionScreen(QDialog):
         navigateGoBack()
 
     def clear(self): 
+        self.confirmSelectionButton.setVisible(False)
         if firstJourney:
             setPixMap(self,"assets/WaiterLITE-UI-25 1.png")
         else:
@@ -751,12 +754,16 @@ class TableSelectionScreen(QDialog):
                 self.listWidget.addItem(item)
 
     def tableSelected(self,item):
+        self.item = item
+        self.confirmSelectionButton.setVisible(True)
+        print("Set visibles")
+    def confirmSelection(self):
         global firstJourney
         try:
-            storage["tableId"] = item.text()
+            storage["tableId"] = self.item.text()
         except:
             try:
-                storage["tableId"] = item
+                storage["tableId"] = self.item
             except:
                 pass
         saveStorage()

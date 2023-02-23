@@ -60,7 +60,7 @@
      <x>49</x>
      <y>130</y>
      <width>381</width>
-     <height>631</height>
+     <height>561</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -81,6 +81,32 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="confirmSelectionButton">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>700</y>
+     <width>201</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border:0px;background-color:transparent;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../assets/ConfirmButton.png</normaloff>../assets/ConfirmButton.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>188</width>
+     <height>114</height>
+    </size>
    </property>
   </widget>
  </widget>
