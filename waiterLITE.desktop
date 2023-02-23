@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=WaitereLITE
+Comment=Woobly WaiterLITE
+NoDisplay=false
+Terminal=false
+Exec=/usr/bin/sh /home/pi/waiterlite-raspberry/start.sh
+NotShowIn=GNOME;KDE;XFCE;

@@ -52,7 +52,8 @@ timeOuts = {
     'generalTimeout':60,
     'thankYouTimeout':120,
     'ratingTimeout':300,
-    'realTimeExpTimeout':20
+    'realTimeExpTimeout':20,
+    'waiterMenuTimeout':120
 }
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -640,43 +641,53 @@ class ConfirmTable(QDialog):
     def navigateToChooseNumberOfGuests(self):
         navigateToScreen(ChooseNumberOfGuests)
 
-class WaiterMenuScreen(QDialog):
+class WaiterMenuScreen(TimeBoundScreen):
     shared_instance = None
+    signal = pyqtSignal()
     @staticmethod
     def getInstance():
         if(WaiterMenuScreen.shared_instance == None):
             WaiterMenuScreen.shared_instance = WaiterMenuScreen()
         return WaiterMenuScreen.shared_instance
     def __init__(self):
-        super(WaiterMenuScreen, self).__init__()
+        super(WaiterMenuScreen, self).__init__(timeOuts["waiterMenuTimeout"])
         loadUi("ui/071WaiterMenuScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
         self.reserveButton.clicked.connect(self.navigateToReserveScreen)
         self.screenSaverButton.clicked.connect(self.navigateToIdleLockScreen)
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
         tableId = getTableId()
-        
+        self.signal.connect(self.navigateToIdleLockScreen)
         self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
+        super().setRunnable(self.navigateToIdleLockScreenEmitter,[])
 
-    
+    def navigateToIdleLockScreenEmitter(self):
+        self.signal.emit() 
+
     def clear(self):
+        super().reset()
         tableId = getTableId()
         self.tableNumber.setText(tableId)
         lightThreadRunner.launch(yellowLight)
 
     def navigateToChooseNumberOfGuests(self):
+        super().stop()
         navigateToScreen(ChooseNumberOfGuests)
         
     def navigateToReserveScreen(self):
+        super().stop()
         navigateToScreen(ReserveScreen)
     
     def navigateToAboutScreen(self):
+        super().stop()
         navigateToScreen(AboutScreen)
     
     def navigateToTableSelectionScreen(self):
+        super().stop()
         navigateToScreen(TableSelectionScreen)
     
     def navigateToIdleLockScreen(self):
+        super().stop()
         navigateToRestart()
 
 class TableSelectionScreen(QDialog):
