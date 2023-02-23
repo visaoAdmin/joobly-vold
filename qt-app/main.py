@@ -39,6 +39,9 @@ serviceCalls = {}
 continueExistingJourney = False
 previousJourneyData = None
 logoData =None
+qWorker = None
+lightThreadRunner = None
+smileyRunner =  None
 restartApplication = False
 restaurantChanged = True
 smileyTimer =None
@@ -1497,7 +1500,45 @@ class FeedbackScreen(TimeBoundScreen):
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
 
+class SplashScreen(TimeBoundScreen):
+    signal = pyqtSignal()
+    def __init__(self) :
+        super(SplashScreen, self).__init__(1)
+        loadUi("ui/Splash.ui",self)
+        
+        self.signal.connect(self.initialize)
+        super().setRunnable(self.initializeEmit,[])
+        super().reset()
+   
+    def initializeEmit(self):
+        self.signal.emit()
+    def initialize(self):
+        global qWorker,lightThreadRunner,smileyRunner
+        reserveScreen = ReserveScreen.getInstance()
+        waiterPinScreen =  WaiterPinScreen.getInstance()
+        aboutScreen = AboutScreen.getInstance()
+        confirmTable = ConfirmTable.getInstance()
+        waiterMenuScreen =  WaiterMenuScreen.getInstance()
+        tableSelectionScreen = TableSelectionScreen.getInstance()
+        continueExistingJourneyScreen = ContinueExistingJourneyScreen.getInstance()
+        chooseNumberOfGuests =  ChooseNumberOfGuests.getInstance()
+        checkedInScreen =  CheckedInScreen.getInstance()
+        tapForServiceScreen = TapForServiceScreen.getInstance()
+        closeServiceScreen = CloseServiceScreen.getInstance()
+        dinerActionMenuScreen = DinerActionMenuScreen.getInstance()
+        billScreen = BillScreen.getInstance()
+        serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
+        payQrscreen = PayQRScreen.getInstance()
+        feedbackScreen = FeedbackScreen.getInstance()
+        thankYouScreen =  ThankYouScreen.getInstance()
+        qWorker = QueueWorker()
+        lightThreadRunner = ReUsableThreadRunner()
+        smileyRunner = SmileyRunner()
 
+        navigateToScreen(idleLockScreen)
+    def clear(self):
+        super().reset() 
+        # navigateToScreen(IdleLockScreen)
 class ThankYouScreen(TimeBoundScreen):
     signal = pyqtSignal()
     shared_instance = None
@@ -1590,33 +1631,11 @@ mainStackedWidget=QtWidgets.QStackedWidget()
 idleLockScreen = IdleLockScreen.getInstance()
 
 
-reserveScreen = ReserveScreen.getInstance()
-waiterPinScreen =  WaiterPinScreen.getInstance()
-aboutScreen = AboutScreen.getInstance()
-confirmTable = ConfirmTable.getInstance()
-waiterMenuScreen =  WaiterMenuScreen.getInstance()
-tableSelectionScreen = TableSelectionScreen.getInstance()
-ContinueExistingJourneyScreen.getInstance()
-chooseNumberOfGuests =  ChooseNumberOfGuests.getInstance()
-
-checkedInScreen =  CheckedInScreen.getInstance()
-tapForServiceScreen = TapForServiceScreen.getInstance()
-closeServiceScreen = CloseServiceScreen.getInstance()
-dinerActionMenuScreen = DinerActionMenuScreen.getInstance()
-billScreen = BillScreen.getInstance()
-serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
-payQrscreen = PayQRScreen.getInstance()
-feedbackScreen = FeedbackScreen.getInstance()
-thankYouScreen =  ThankYouScreen.getInstance()
-
-qWorker = QueueWorker()
-lightThreadRunner = ReUsableThreadRunner()
-smileyRunner = SmileyRunner()
 if ENV == "dev":
 
-    mainwindow=IdleLockScreen.getInstance()
+    mainwindow=SplashScreen()
 else:
-    mainwindow=idleLockScreen
+    mainwindow=SplashScreen()
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
