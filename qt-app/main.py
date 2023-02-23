@@ -51,7 +51,8 @@ smiley = "neutral"
 timeOuts = {
     'generalTimeout':60,
     'thankYouTimeout':120,
-    'ratingTimeout':300
+    'ratingTimeout':300,
+    'realTimeExpTimeout':20
 }
 def initialize():
     global storage,isWaiterCalled,hangoutId,callNumber,serviceCallStartTime,thr,guestCount,table,waiterId,serialNumber,pixmap,serviceCalls,continueExistingJourney,previousJourneyData,restartApplication,restaurantChanged
@@ -1355,7 +1356,7 @@ class FeedbackScreen(TimeBoundScreen):
     signal = pyqtSignal()
     buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
     normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
-    selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40"
+    selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40; font-weight:bold;"
     ratings = {}
     shared_instance = None
     @staticmethod

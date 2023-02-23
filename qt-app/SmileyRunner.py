@@ -22,7 +22,7 @@ class SmileyRunner(object):
     def syncCalls(self):
         while(self.timer):
             if self.runnable:
-                if((time.time() - self.timer)>50):
+                if((time.time() - self.timer)>20):
                     try:
                         self.runnable[0](*self.runnable[1])
                     except:
