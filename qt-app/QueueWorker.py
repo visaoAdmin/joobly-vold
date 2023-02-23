@@ -36,8 +36,8 @@ class QueueWorker(object):
                     
                     foregroundAPI = self.queue.peek()
                 except Exception as e:
-                    # print(e)
-                    pass
+                    with open("logFile.txt","a+") as logFile:
+                        logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
                 if foregroundAPI:
                     try:
                         
@@ -50,17 +50,16 @@ class QueueWorker(object):
                             args = foregroundAPI[1]
                             r = runFunction(*args)
                             self.queue.pop()
-                            if(runFunction.__name__=="startHangout"):
-                                with open("logFile.txt","a+") as logFile:
-                                    logFile.write("\n"+str(datetime.datetime.now())+" "+str(args)+"\n"+str(r.status_code)+"\n")
+
                                     
 
-                            if(r.status_code!=200):
+                            if(r ==None or r.status_code!=200):
                                 raise  Exception()
                         except Exception as e: 
-                            if(runFunction.__name__=="startHangout"):
-                                with open("logFile.txt","a+") as logFile:
-                                    logFile.write("\n"+str(datetime.datetime.now())+" "+str(args)+"\n"+str(e)+"\n")
+                            with open("logFile.txt","a+") as logFile:
+                                logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
+
+
                             if(runFunction.__name__=="startHangout"):
                                 self.queue2.push(sendHangout,[*args])
                             elif(runFunction.__name__=="callWaiter"):
@@ -71,8 +70,9 @@ class QueueWorker(object):
                                 self.queue2.push(sendRatings,[*args])
                             self.queue.pop()
                             pass
-                    except:
-                        pass
+                    except Exception as e:
+                        with open("logFile.txt","a+") as logFile:
+                            logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
                         
                         
             
@@ -89,9 +89,6 @@ class QueueWorker(object):
                 # print(e)
                 pass
             if backgroundAPI:
-                
-                    
-                    
                     # print("2nd",runFunction)
                     
                 try:
@@ -101,24 +98,21 @@ class QueueWorker(object):
                     args = backgroundAPI[1]
                     r = runFunction(*args)
                     self.queue2.pop()
-                    # print("3--",backgroundAPI)
-                    # print(len(self.queue2.queue))
-                    # print("peeking")
-                    # print(self.queue2.peek())
-                    # print("peek end")
-                    # print(r)
-                    
-                    if(r==None or r.status_code==503):
+                    if(r==None or r.status_code!=503):
+                        # self.queue2.push(runFunction,args)
                         raise requests.exceptions.ConnectionError()
+                    
+                    
+                    
+                    
                 except  requests.exceptions.ConnectionError:
                     pass
                 except Exception as e:
-                    
-                    self.queue2.pop()
+                    with open("logFile.txt","a+") as logFile:
+                            logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
+                    pass
             else:
-                
                 try:
-
                     if(prev[0].__name__!="sendRatings"):
                         makeDeviceOnline(prev[1][1])
                     prev = 1
