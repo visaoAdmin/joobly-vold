@@ -669,6 +669,7 @@ class ConfirmTable(QDialog):
 class WaiterMenuScreen(TimeBoundScreen):
     shared_instance = None
     signal = pyqtSignal()
+    gotoGuestSelectionScreenSignal = pyqtSignal()
     @staticmethod
     def getInstance():
         if(WaiterMenuScreen.shared_instance == None):
@@ -677,10 +678,11 @@ class WaiterMenuScreen(TimeBoundScreen):
     def __init__(self):
         super(WaiterMenuScreen, self).__init__(timeOuts["waiterMenuTimeout"])
         loadUi("ui/071WaiterMenuScreen.ui", self)
-        self.goToNextButton.clicked.connect(self.navigateToChooseNumberOfGuests)
+        self.goToNextButton.clicked.connect(self.loaderVisible)
         self.reserveButton.clicked.connect(self.navigateToReserveScreen)
         self.screenSaverButton.clicked.connect(self.navigateToIdleLockScreen)
         self.clearTableButton.clicked.connect(self.navigateToAboutScreen)
+        self.gotoGuestSelectionScreenSignal.connect(self.navigateToChooseNumberOfGuests)
         tableId = getTableId()
         self.signal.connect(self.navigateToIdleLockScreen)
         self.tableSelectionButton.clicked.connect(self.navigateToTableSelectionScreen)
@@ -696,9 +698,13 @@ class WaiterMenuScreen(TimeBoundScreen):
         self.tableNumber.setText(tableId)
         lightThreadRunner.launch(yellowLight)
 
+    @pyqtSlot()
+    def loaderVisible(self):
+        self.loader.setVisible(True)
+        super().stop()
+        self.gotoGuestSelectionScreenSignal.emit()
     def navigateToChooseNumberOfGuests(self):
         super().stop()
-        self.loader.setVisible(True)
         navigateToScreen(ChooseNumberOfGuests)
         
     def navigateToReserveScreen(self):
