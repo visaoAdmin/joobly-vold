@@ -8,6 +8,7 @@ from TimeBoundScreen import TimeBoundScreen
 import os 
 from SmileyRunner import SmileyRunner
 import copy 
+import datetime
 import signal
 import urllib.request
 from api import startHangout, callWaiter, waiterArrived, notifyExperience, addMultipleRatings, getConfig, waiterExists
@@ -94,6 +95,8 @@ def loadPicture(filepath,url):
             logo.write(data)
 
     except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
         pass
     finally:
 
@@ -124,15 +127,19 @@ def getTableId ():
             tableId = storage["tableId"]
         else:
             tableId = ""
-    except:
+    except Exception as e:
         tableId = ""
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
     return tableId
 
 def getRestaurantId ():
     try:
         if "restaurantId" in storage and storage["restaurantId"] != None:
             return storage["restaurantId"]
-    except:
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
         pass
     return None
 
@@ -144,7 +151,9 @@ def loadStorage():
     try:
         with open("storage.json", "r") as f:
             return json.load(f)
-    except:
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
         with open("storage.json", "w") as f:
             json.dump({}, f)
             return {}
@@ -203,7 +212,8 @@ def navigateToScreen(Screen):
         try:
             nextScreen.clear()
         except Exception as e:
-            pass
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
         mainStackedWidget.addWidget(nextScreen)
         mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
         
@@ -213,6 +223,8 @@ def navigateGoBack():
         try:
             mainStackedWidget.currentWidget().clear()
         except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         
 
@@ -244,8 +256,10 @@ def setPixMap(self,path):
         image = QImage()
         image.loadFromData(data)
         pixmap = QPixmap(image)
-    except: 
+    except Exception as e: 
         pixmap=None
+        with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
     self.label_2.setPixmap(pixmap)
 
 def loadLogoPixmap():
@@ -257,7 +271,9 @@ def loadLogoPixmap():
         image = QImage()
         image.loadFromData(data)
         pixmap = QPixmap(image)
-    except: 
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n") 
         pixmap=None
     return pixmap
 
@@ -340,7 +356,8 @@ class IdleLockScreen(QDialog):
         try:
             qWorker.addAPICall(self.loadConfigAndLogo,[])
         except Exception as e:
-
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         serviceCalls.clear()
         callNumber = 1
@@ -462,7 +479,9 @@ class WaiterPinScreen(TimeBoundScreen):
             self.pin = []
             self.renderPin()
             setPixMap(self,"assets/WaiterLITE-UI-08 2.png")
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             self.pin = []
             self.renderPin()
             setPixMap(self,"assets/WaiterLITE-UI-08 2.png")
@@ -554,7 +573,9 @@ class WaiterNotExist(TimeBoundScreen):
                         navigateToScreen(WaiterMenuScreen)
                         return
             navigateToScreen(WaiterNotExist)
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             navigateToScreen(WaiterNotExist)
               
 class AboutScreen(TimeBoundScreen):
@@ -619,7 +640,9 @@ class AboutScreen(TimeBoundScreen):
             if(getRestaurantId()!=restId):
                 super().stop()
                 navigateToScreen(WaiterPinScreen)
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         self.renderLabels()
 
@@ -757,7 +780,7 @@ class TableSelectionScreen(QDialog):
                 item = QListWidgetItem(t['referenceId'])
                 item.setSizeHint(QSize(360, 80))
                 self.listWidget.addItem(item)
-        except:
+        except Exception as e:
 
             tables = storage["tables"]
             for t in tables:
@@ -816,13 +839,17 @@ class ContinueExistingJourneyScreen(QDialog):
         guestCount = previousJourneyData["guestCount"]
         try:
             callNumber = previousJourneyData["callNumber"]
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             callNumber = 0
             pass
         try:
             callDuration = previousJourneyData["callDuration"]
             
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             callDuration = 0
 
         qWorker.addAPICall(changeDevice,[hangoutId])
@@ -906,6 +933,8 @@ class ChooseNumberOfGuests(QDialog):
 
 
         except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         navigateToScreen(TapForServiceScreen)
 
@@ -975,6 +1004,8 @@ class CorrectChooseNumberOfGuests(QDialog):
             # multiApiThreadRunner.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
 
         except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         navigateToScreen(TapForServiceScreen)
 
@@ -1095,6 +1126,8 @@ class TapForServiceScreen(QDialog):
 
             qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
         except:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
     
     def navigateToDinerActionMenu(self):
@@ -1192,6 +1225,8 @@ class CloseServiceScreen(QDialog):
             qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
             callNumber = callNumber+1
         except:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
 
     
@@ -1251,6 +1286,8 @@ class DinerActionMenuScreen(TimeBoundScreen):
                 pixmap = QPixmap(image)
                 self.qrimage.setPixmap(pixmap.scaled(250, 250))
         except:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         
 
@@ -1353,12 +1390,16 @@ class PayQRScreen(QDialog):
                 pixmap = QPixmap(image)
                 self.qrimage.setPixmap(pixmap.scaled(230, 230))
         except:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
     
     def billLight(self):
         try:
             neoxPixel(255, 45, 208)
         except:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
 
 
@@ -1423,6 +1464,8 @@ class FeedbackScreen(TimeBoundScreen):
             else:
                 self.ratings[type] = rating
         except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             self.ratings[type] = rating
 
         for a in range(5):
@@ -1452,11 +1495,15 @@ class FeedbackScreen(TimeBoundScreen):
             addMultipleRatings(getTableId(), hangoutId, list(_ratings))
 
         except:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
     def tryToSendRatings(self,table,hangout,ratings):
         try:
             addMultipleRatings(table,hangout,ratings)
         except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
     
     def endHangout(self):
@@ -1467,7 +1514,9 @@ class FeedbackScreen(TimeBoundScreen):
         try:
             if('close' not in serviceCalls[callNumber].keys()):
                 qWorker.addAPICall(waiterArrived,[getTableId(),hangoutId,callNumber,time.time()-serviceCalls[callNumber]['open']])
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
 
             pass
         
@@ -1506,7 +1555,9 @@ class FeedbackScreen(TimeBoundScreen):
             try:
                 if('close' not in serviceCalls[callNumber].keys()):
                     qWorker.addAPICall(waiterArrived,[getTableId(),hangoutId,callNumber,time.time()-serviceCalls[callNumber]['open']])
-            except:
+            except Exception as e:
+                with open("logFile.txt","a+") as logFile:
+                    logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
 
                 pass
 
@@ -1594,7 +1645,9 @@ def loadConfig():
         restaurantId = getRestaurantId()
         try:
             table = storage["tableId"]
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         config = getConfig(serialNumber)
         
@@ -1602,7 +1655,9 @@ def loadConfig():
         storage = config
         try:
             storage['tableId'] = table
-        except:
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
             pass
 
         saveStorage()
@@ -1623,6 +1678,8 @@ def loadConfig():
           
 
     except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.datetime.now())+" "+"\n"+str(e)+"\n")
         restaurantChanged = False
         storage=loadStorage()
 

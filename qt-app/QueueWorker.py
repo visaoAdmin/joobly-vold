@@ -109,7 +109,7 @@ class QueueWorker(object):
                     pass
                 except Exception as e:
                     with open("logFile.txt","a+") as logFile:
-                            logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
+                        logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
                     pass
             else:
                 try:
