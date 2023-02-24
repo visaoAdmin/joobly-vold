@@ -2,6 +2,7 @@ import requests
 from config.config import API_URL
 import os
 import copy
+from datetime import datetime
 from background_api import sendHangout,startServiceCall,endServiceCall,sendRatings
 from serial import getserial
 # from redis_queue import backgroundQueue
@@ -45,19 +46,20 @@ def getConfig(serialNumber):
 
 def startHangout(table, guestCount, waiterId, hangoutId):
     setRestartAppFalse()
-    # print("startHangout",table, guestCount, waiterId, hangoutId)
-    response = requests.post(BASE_URL + "/pod-events", json={
-        "table": table,
-        "guestCount": guestCount,
-        "waiter": waiterId,
-        "hangout": hangoutId,
-        "type": "CHECKIN"
-    },headers={"device-serial":getserial()}, timeout=TIMEOUT)
-    if(response.status_code!=200):
-        raise Exception()
-    
-    return response
-    
+    try:
+        response = requests.post(BASE_URL + "/pod-events", json={
+            "table": table,
+            "guestCount": guestCount,
+            "waiter": waiterId,
+            "hangout": hangoutId,
+            "type": "CHECKIN"
+        },headers={"device-serial":getserial()}, timeout=TIMEOUT)
+        if(response ==None or response.status_code!=200):
+            raise Exception()
+        return response
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.now())+" Trying to add hangout"+"\n"+str(e)+"\n")
 
 def startHangoutFailureHandler(job, connection, type, value, traceback):
     global background_jobs,index

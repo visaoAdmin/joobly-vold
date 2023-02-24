@@ -796,10 +796,10 @@ class TableSelectionScreen(QDialog):
         global firstJourney
         try:
             storage["tableId"] = self.item.text()
-        except:
+        except Exception as e:
             try:
                 storage["tableId"] = self.item
-            except:
+            except Exception as e:
                 pass
         saveStorage()
 
@@ -916,7 +916,10 @@ class ChooseNumberOfGuests(QDialog):
     def navigateToCheckedInScreen(self):
 
         try: 
+            
             global hangoutId,guestCount,continueExistingJourney,previousJourneyData
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.now())+" Trying to add hangout"+"\n"+"\n")
             table = getTableId()
             hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             serviceCalls['hangoutId'] = hangoutId
@@ -934,7 +937,7 @@ class ChooseNumberOfGuests(QDialog):
 
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
-                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+                logFile.write("\n"+str(datetime.now())+" Error in adding hangout"+"\n"+str(e)+"\n")
             pass
         navigateToScreen(TapForServiceScreen)
 
@@ -1000,7 +1003,7 @@ class CorrectChooseNumberOfGuests(QDialog):
             # foregroundQueue.enqueue(startHangout,table, guestCount, waiterId, hangoutId,on_failure=startHangoutFailureHandler)
         # try:
             # startHangout(table, guestCount, waiterId, hangoutId)
-        # except:
+        # except Exception as e:
             # multiApiThreadRunner.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
 
         except Exception as e:
@@ -1125,7 +1128,7 @@ class TapForServiceScreen(QDialog):
             serviceCallStartTime=getCurrentTime()
 
             qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
-        except:
+        except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
@@ -1224,7 +1227,7 @@ class CloseServiceScreen(QDialog):
 
             qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
             callNumber = callNumber+1
-        except:
+        except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
@@ -1285,7 +1288,7 @@ class DinerActionMenuScreen(TimeBoundScreen):
                 image.loadFromData(data)
                 pixmap = QPixmap(image)
                 self.qrimage.setPixmap(pixmap.scaled(250, 250))
-        except:
+        except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
@@ -1389,7 +1392,7 @@ class PayQRScreen(QDialog):
                 image.loadFromData(data)
                 pixmap = QPixmap(image)
                 self.qrimage.setPixmap(pixmap.scaled(230, 230))
-        except:
+        except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
@@ -1397,7 +1400,7 @@ class PayQRScreen(QDialog):
     def billLight(self):
         try:
             neoxPixel(255, 45, 208)
-        except:
+        except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
@@ -1494,7 +1497,7 @@ class FeedbackScreen(TimeBoundScreen):
             serviceCalls["ratings"] = list(_ratings)
             addMultipleRatings(getTableId(), hangoutId, list(_ratings))
 
-        except:
+        except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
@@ -1727,5 +1730,5 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 try:
     sys.exit(app.exec())
-except:
+except Exception as e:
     pass
