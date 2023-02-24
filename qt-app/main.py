@@ -709,6 +709,7 @@ class WaiterMenuScreen(TimeBoundScreen):
         navigateToScreen(AboutScreen)
     
     def navigateToTableSelectionScreen(self):
+        self.loader.setVisible(True)
         super().stop()
         navigateToScreen(TableSelectionScreen)
     
