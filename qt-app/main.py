@@ -78,7 +78,7 @@ def initialize():
     
 def continueJourneyCheck():
     global continueExistingJourney,previousJourneyData
-    waiterMenuScreen.loader.setVisible(True)
+
     exist = isTableOccupied(getTableId())
     previousJourneyData = exist.json()
     if exist.status_code == 409:
@@ -692,12 +692,13 @@ class WaiterMenuScreen(TimeBoundScreen):
     def clear(self):
         super().reset()
         tableId = getTableId()
-        self.loader.setVisible(True)
+        self.loader.setVisible(False)
         self.tableNumber.setText(tableId)
         lightThreadRunner.launch(yellowLight)
 
     def navigateToChooseNumberOfGuests(self):
         super().stop()
+        self.loader.setVisible(True)
         navigateToScreen(ChooseNumberOfGuests)
         
     def navigateToReserveScreen(self):
@@ -709,8 +710,8 @@ class WaiterMenuScreen(TimeBoundScreen):
         navigateToScreen(AboutScreen)
     
     def navigateToTableSelectionScreen(self):
-        self.loader.setVisible(True)
         super().stop()
+        
         navigateToScreen(TableSelectionScreen)
     
     def navigateToIdleLockScreen(self):
