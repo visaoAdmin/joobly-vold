@@ -46,7 +46,12 @@ def getConfig(serialNumber):
 
 def startHangout(table, guestCount, waiterId, hangoutId):
     setRestartAppFalse()
+
+    with open("logFile.txt","a+") as logFile:
+        logFile.write("\n"+str(datetime.now())+" Before Try startHangout"+"\n"+"\n")
     try:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.now())+" Inside Try startHangout"+"\n"+"\n")
         response = requests.post(BASE_URL + "/pod-events", json={
             "table": table,
             "guestCount": guestCount,
@@ -59,7 +64,7 @@ def startHangout(table, guestCount, waiterId, hangoutId):
         return response
     except Exception as e:
         with open("logFile.txt","a+") as logFile:
-            logFile.write("\n"+str(datetime.now())+" Trying to add hangout"+"\n"+str(e)+"\n")
+            logFile.write("\n"+str(datetime.now())+" Trying to add hangout Exception"+"\n"+str([table,guestCount,waiterId,hangoutId])+str(e)+"\n")
 
 def startHangoutFailureHandler(job, connection, type, value, traceback):
     global background_jobs,index
