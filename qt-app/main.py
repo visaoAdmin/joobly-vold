@@ -699,7 +699,7 @@ class WaiterMenuScreen(TimeBoundScreen):
         self.screenSaverButton.setEnabled(True)
         self.clearTableButton.setEnabled(True)
         self.tableNumber.setText(tableId)
-        setPixMap(self,"assets/waiterMenuScreenLoader.png")
+        setPixMap(self,"assets/WaiterLITE-UI-07.png")
         lightThreadRunner.launch(yellowLight)
 
     @pyqtSlot()
