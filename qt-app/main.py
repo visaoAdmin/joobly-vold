@@ -210,10 +210,12 @@ def greenLight():
     neoxPixel(127,255,0)
 
 def navigateToScreen(Screen):
-        nextScreen = Screen.getInstance()
         try:
+            nextScreen = Screen.getInstance()
+        
             nextScreen.clear()
         except Exception as e:
+            print(e)
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         mainStackedWidget.addWidget(nextScreen)
@@ -704,12 +706,10 @@ class WaiterMenuScreen(TimeBoundScreen):
 
     @pyqtSlot()
     def loaderVisible(self):
-        self.goToNextButton.setEnabled(False)
-        self.reserveButton.setEnabled(False)
-        self.screenSaverButton.setEnabled(False)
-        self.clearTableButton.setEnabled(False)
-        setPixMap(self,"assets/waiterMenuScreenLoader.png")
-        self.gotoGuestSelectionScreenSignal.emit()
+        print("Trying to navigaete")
+        super().stop()
+        navigateToScreen(WaiterMenuScreenLoader)
+        
         
     def navigateToChooseNumberOfGuests(self):
         super().stop()
@@ -732,6 +732,29 @@ class WaiterMenuScreen(TimeBoundScreen):
         super().stop()
         navigateToRestart()
 
+class WaiterMenuScreenLoader(TimeBoundScreen):
+    shared_instance = None
+    signal = pyqtSignal()
+    @staticmethod
+    def getInstance():
+        if(WaiterMenuScreenLoader.shared_instance == None):
+            WaiterMenuScreenLoader.shared_instance = WaiterMenuScreenLoader()
+        return WaiterMenuScreenLoader.shared_instance
+    def __init__(self):
+        super(WaiterMenuScreenLoader, self).__init__(0.1)
+        self.signal.connect(self.navigateChooseNumGuestsSlot)
+        super().setRunnable(self.navigateToGuestScreen,[])
+        loadUi("ui/WaiterMenuLoader.ui", self)
+    def clear(self):
+        tableId = getTableId()
+        self.tableNumber.setText(tableId)
+        super().reset()
+    def navigateToGuestScreen(self):
+        self.signal.emit()
+    def navigateChooseNumGuestsSlot(self):
+        super().stop()
+        navigateToScreen(ChooseNumberOfGuests)
+        
 class TableSelectionScreen(QDialog):
     shared_instance = None
     item = None
@@ -893,7 +916,7 @@ class ChooseNumberOfGuests(QDialog):
             ChooseNumberOfGuests.shared_instance = ChooseNumberOfGuests()
         return ChooseNumberOfGuests.shared_instance
     def navigateBack(self):
-        navigateGoBack()
+        navigateToScreen(WaiterMenuScreen)
 
     def __init__(self):
         super(ChooseNumberOfGuests, self).__init__()
