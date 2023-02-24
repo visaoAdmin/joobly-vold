@@ -152,6 +152,22 @@ color: white;</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QLabel" name="loader">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>101</y>
+     <width>251</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../assets/Loader Select Guest.png</pixmap>
+   </property>
+  </widget>
   <zorder>label_2</zorder>
   <zorder>goToNextButton</zorder>
   <zorder>clearTableButton</zorder>
@@ -159,6 +175,7 @@ color: white;</string>
   <zorder>screenSaverButton</zorder>
   <zorder>tableNumber</zorder>
   <zorder>tableSelectionButton</zorder>
+  <zorder>loader</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>

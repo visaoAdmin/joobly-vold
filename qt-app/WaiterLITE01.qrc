@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="Screens">
+    <file>assets/Loader Select Guest.png</file>
     <file>assets/ConfirmButton.png</file>
     <file>assets/Splash.png</file>
     <file>assets/WaiterLITE-UI-08 2.png</file>

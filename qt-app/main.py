@@ -45,6 +45,7 @@ lightThreadRunner = None
 smileyRunner =  None
 restartApplication = False
 restaurantChanged = True
+waiterMenuScreen = None
 smileyTimer =None
 askingCable = False
 firstJourney = True
@@ -77,6 +78,7 @@ def initialize():
     
 def continueJourneyCheck():
     global continueExistingJourney,previousJourneyData
+    waiterMenuScreen.loader.setVisible(True)
     exist = isTableOccupied(getTableId())
     previousJourneyData = exist.json()
     if exist.status_code == 409:
@@ -690,6 +692,7 @@ class WaiterMenuScreen(TimeBoundScreen):
     def clear(self):
         super().reset()
         tableId = getTableId()
+        self.loader.setVisible(False)
         self.tableNumber.setText(tableId)
         lightThreadRunner.launch(yellowLight)
 
@@ -897,6 +900,7 @@ class ChooseNumberOfGuests(QDialog):
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
         global continueExistingJourney
+        
         continueJourneyCheck()
 
         # qWorker.addAPICall(continueJourneyCheck,[])
@@ -1588,7 +1592,7 @@ class SplashScreen(TimeBoundScreen):
     def initializeEmit(self):
         self.signal.emit()
     def initialize(self):
-        global qWorker,lightThreadRunner,smileyRunner
+        global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen
         reserveScreen = ReserveScreen.getInstance()
         waiterPinScreen =  WaiterPinScreen.getInstance()
         aboutScreen = AboutScreen.getInstance()
