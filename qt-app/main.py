@@ -694,15 +694,23 @@ class WaiterMenuScreen(TimeBoundScreen):
     def clear(self):
         super().reset()
         tableId = getTableId()
-        self.loader.setVisible(False)
+        self.goToNextButton.setEnabled(True)
+        self.reserveButton.setEnabled(True)
+        self.screenSaverButton.setEnabled(True)
+        self.clearTableButton.setEnabled(True)
         self.tableNumber.setText(tableId)
+        setPixMap(self,"assets/waiterMenuScreenLoader.png")
         lightThreadRunner.launch(yellowLight)
 
     @pyqtSlot()
     def loaderVisible(self):
-        self.loader.setVisible(True)
-        super().stop()
+        self.goToNextButton.setEnabled(False)
+        self.reserveButton.setEnabled(False)
+        self.screenSaverButton.setEnabled(False)
+        self.clearTableButton.setEnabled(False)
+        setPixMap(self,"assets/waiterMenuScreenLoader.png")
         self.gotoGuestSelectionScreenSignal.emit()
+        
     def navigateToChooseNumberOfGuests(self):
         super().stop()
         navigateToScreen(ChooseNumberOfGuests)
