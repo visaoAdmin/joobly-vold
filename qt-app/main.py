@@ -692,7 +692,7 @@ class WaiterMenuScreen(TimeBoundScreen):
     def clear(self):
         super().reset()
         tableId = getTableId()
-        self.loader.setVisible(False)
+        self.loader.setVisible(True)
         self.tableNumber.setText(tableId)
         lightThreadRunner.launch(yellowLight)
 
