@@ -897,7 +897,9 @@ class ChooseNumberOfGuests(QDialog):
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
         global continueExistingJourney
-        qWorker.addAPICall(continueJourneyCheck,[])
+        continueJourneyCheck()
+
+        # qWorker.addAPICall(continueJourneyCheck,[])
 
     def onKey(self, key):
         global guestCount
