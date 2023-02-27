@@ -20,6 +20,7 @@ from datetime import datetime
 from multiThread import runInNewThread,ReUsableThreadRunner
 from serial import getserial
 from QueueWorker import QueueWorker
+from config.config import APP_VERSION,getConnectedWifi
 
 ENV=os.environ.get('ENV')
 
@@ -52,8 +53,8 @@ firstJourney = True
 smiley = "neutral"
 timeOuts = {
     'generalTimeout':60,
-    'thankYouTimeout':120,
-    'ratingTimeout':300,
+    'thankYouTimeout':600,
+    'ratingTimeout':600,
     'realTimeExpTimeout':20,
     'waiterMenuTimeout':120
 }
@@ -631,6 +632,8 @@ class AboutScreen(TimeBoundScreen):
             self.brightnessLabel.setText(str(storage["podBrightness"]))
         else: 
             self.brightnessLabel.setText("255")
+        self.wifiLabel.setText(getConnectedWifi())
+        self.versionLabel.setText(str(APP_VERSION))
     
     def refresh(self):
         if(self.refreshed):
@@ -747,7 +750,6 @@ class WaiterMenuScreenLoader(TimeBoundScreen):
         loadUi("ui/WaiterMenuLoader.ui", self)
     def clear(self):
         tableId = getTableId()
-        self.tableNumber.setText(tableId)
         super().reset()
     def navigateToGuestScreen(self):
         self.signal.emit()
@@ -1364,6 +1366,7 @@ class BillScreen(QDialog):
     
     def navigateBack(self):
         # navigateToScreen(DinerActionMenuScreen)
+
         navigateGoBack()
 
     def clear(self):
@@ -1375,11 +1378,11 @@ class BillScreen(QDialog):
         serviceCalls['waiterId'] = waiterId
         serviceCalls['guestCount'] = guestCount
 
-    
+
         navigateToScreen(PayQRScreen)
     
     def navigateToFeedbackScreen(self):
-        
+
         navigateToScreen(FeedbackScreen)
 
 
@@ -1401,30 +1404,40 @@ class ServerWillAssistScreen(QDialog):
     def navigateToThankYouScreen(self):
         navigateToScreen(ThankYouScreen)
 
-class PayQRScreen(QDialog):
+class PayQRScreen(TimeBoundScreen):
     shared_instance = None
+    signal = pyqtSignal()
     @staticmethod
     def getInstance():
         if(PayQRScreen.shared_instance == None):
             PayQRScreen.shared_instance = PayQRScreen()
         return PayQRScreen.shared_instance
     def __init__(self):
-        super(PayQRScreen, self).__init__()
+        super(PayQRScreen, self).__init__(timeOuts["generalTimeout"])
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
         self.loadQRCode()
+        self.signal.connect(self.navigateToFeedBackSlot)
+        super().setRunnable(self.navigateToFeedback,[])
         # runInNewThread(self, self.loadQRCode)
-    
+    def navigateToFeedback(self):
+        self.signal.emit()
+    def navigateToFeedBackSlot(self):
+        super().stop()
+        navigateToScreen(FeedbackScreen)
     def clear(self):
+        super().reset()
         global restaurantChanged
         qWorker.addAPICall(self.loadQRCode,[])
         lightThreadRunner.launch(self.billLight)
 
     def navigateBack(self):
+        super().stop()
         navigateGoBack()
     
     def navigateToThankYouScreen(self):
+        super().stop()
         navigateToScreen(FeedbackScreen)
 
     def loadQRCode(self):
