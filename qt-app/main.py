@@ -711,7 +711,7 @@ class WaiterMenuScreen(TimeBoundScreen):
     def loaderVisible(self):
         print("Trying to navigaete")
         super().stop()
-        navigateToScreen(WaiterMenuScreenLoader)
+        self.gotoGuestSelectionScreenSignal.emit()
         
         
     def navigateToChooseNumberOfGuests(self):
@@ -940,9 +940,6 @@ class ChooseNumberOfGuests(QDialog):
         guestCount=""
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
-        global continueExistingJourney
-        
-        continueJourneyCheck()
 
         # qWorker.addAPICall(continueJourneyCheck,[])
 
@@ -1776,6 +1773,8 @@ else:
 mainStackedWidget.addWidget(mainwindow)
 mainStackedWidget.setFixedWidth(480)
 mainStackedWidget.setFixedHeight(800)
+
+
 
 if ENV=='dev':
     mainStackedWidget.show()

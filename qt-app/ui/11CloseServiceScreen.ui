@@ -47,7 +47,7 @@
      <x>0</x>
      <y>10</y>
      <width>481</width>
-     <height>381</height>
+     <height>401</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -170,9 +170,9 @@
   <widget class="QPushButton" name="askForCableButton">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>0</x>
      <y>710</y>
-     <width>191</width>
+     <width>501</width>
      <height>91</height>
     </rect>
    </property>
@@ -187,7 +187,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>310</y>
+     <y>280</y>
      <width>461</width>
      <height>112</height>
     </rect>
@@ -224,6 +224,15 @@
     <number>0</number>
    </property>
   </widget>
+  <zorder>label_2</zorder>
+  <zorder>menuButton</zorder>
+  <zorder>checkoutButton</zorder>
+  <zorder>sadButton</zorder>
+  <zorder>neutralButton</zorder>
+  <zorder>happyButton</zorder>
+  <zorder>askForCableButton</zorder>
+  <zorder>messageLabel</zorder>
+  <zorder>goToNextButton</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>
