@@ -790,14 +790,20 @@ class TableSelectionScreen(QDialog):
                                     "border-radius: 10px;"
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
+                                    "border:0px;"
                                     "padding-bottom:24px;"
                                     "margin-right:20px;"
                                   "}"
                                   "QListView::item:selected"
                                   "{"
                                     "background-color: #c09c56;"
+                                    "border:0px;"
                                     "color:#111f2a;"
-                                  "}")
+                                  "}"
+                                  "QListView::item *{"
+                                    "border:0px;"
+                                  "}"
+                                  )
 
 
         # self.loadTables()
