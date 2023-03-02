@@ -8,4 +8,4 @@ sudo cp waiterLITE.desktop /etc/xdg/autostart/waiterLITE.desktop  &
 sudo cp waiterLITERepair.desktop /etc/xdg/autostart/waiterLITERepair.desktop  &
 sudo cp repair.sh /home/pi/repair.sh &
 git pull &
-cd /home/pi/waiterlite-raspberry/qt-app && /usr/bin/python3 main.py
+cd /home/pi/waiterlite-raspberry/qt-app && sudo /usr/bin/python3 main.py
