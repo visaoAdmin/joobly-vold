@@ -12,6 +12,6 @@ def pullLatestCode():
     try:
         output = subprocess.getoutput("cd /home/pi/waiterlite-raspberry && git pull")
         if "error" in output or "loose" in output or "empty" in output:
-            print(subprocess.getoutput("sudo bash /home/pi/repair.sh"))
+            print(subprocess.getoutput("bash /home/pi/repair.sh"))
     except Exception as e:
         print(e)
