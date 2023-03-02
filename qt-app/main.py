@@ -778,6 +778,7 @@ class TableSelectionScreen(QDialog):
                                     "background-color:#041c40;"
                                     "font-size:20px;"
                                     "color:white;"
+                                    "margin-right:10px;"
                                     "border:0px;"
                                   "}"
                                   "QListView::item"
@@ -789,6 +790,7 @@ class TableSelectionScreen(QDialog):
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
                                     "padding-bottom:24px;"
+                                    "margin-right:20px;"
                                   "}"
                                   "QListView::item:selected"
                                   "{"
@@ -1676,7 +1678,7 @@ class ThankYouScreen(TimeBoundScreen):
             ThankYouScreen.shared_instance = ThankYouScreen()
         return ThankYouScreen.shared_instance
     def __init__(self):
-        super(ThankYouScreen, self).__init__(timeOuts["generalTimeout"])
+        super(ThankYouScreen, self).__init__(timeOuts["thankYouTimeout"])
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
         self.signal.connect(self.navigateToIdleLockScreenSlot)
