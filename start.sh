@@ -7,5 +7,4 @@ sudo cp desktop-items-0.conf /home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.co
 sudo cp waiterLITE.desktop /etc/xdg/autostart/waiterLITE.desktop  &
 sudo cp waiterLITERepair.desktop /etc/xdg/autostart/waiterLITERepair.desktop  &
 sudo cp repair.sh /home/pi/repair.sh &
-sudo git pull &
 cd /home/pi/waiterlite-raspberry/qt-app && sudo /usr/bin/python3 main.py
