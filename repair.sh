@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+while ! iwgetid | grep -e "SSID" ; do
+        sleep 1
+done
 if grep -e "main.py" /home/pi/waiterlite-raspberry/start.sh
 then
         echo "Done"
