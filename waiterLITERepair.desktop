@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=WaitereLITERepair
+Comment=Woobly WaiterLITE Repair
+NoDisplay=false
+Terminal=false
+Exec=/usr/bin/sh /home/pi/repair.sh
+NotShowIn=GNOME;KDE;XFCE;
