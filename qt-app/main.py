@@ -779,7 +779,6 @@ class TableSelectionScreen(QDialog):
                                     "background-color:#041c40;"
                                     "font-size:20px;"
                                     "color:white;"
-                                    "margin-right:10px;"
                                     "border:0px;"
                                   "}"
                                   "QListView::item"
@@ -800,7 +799,7 @@ class TableSelectionScreen(QDialog):
                                     "border:0px;"
                                     "color:#111f2a;"
                                   "}"
-                                  "QListView::item *{"
+                                  "QListView *{"
                                     "border:0px;"
                                   "}"
                                   )
