@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
+import PyQt5.QtGui as QtGui
 from TimeBoundScreen import TimeBoundScreen
 import os 
 from SmileyRunner import SmileyRunner
@@ -790,12 +791,19 @@ class TableSelectionScreen(QDialog):
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
                                     "padding-bottom:24px;"
+                                    "margin-right:20px;"
                                   "}"
                                   "QListView::item:selected"
                                   "{"
                                     "background-color: #c09c56;"
-                                    "color:#111f2a;"
+                                    "color:#041C40;"
                                   "}"
+                                  
+
+                                   
+                                  
+
+                                  
                                   )
 
 
@@ -826,6 +834,7 @@ class TableSelectionScreen(QDialog):
                 item = QListWidgetItem(t['referenceId'])
                 item.setSizeHint(QSize(360, 80))
                 self.listWidget.addItem(item)
+
         except Exception as e:
 
             tables = storage["tables"]
@@ -834,10 +843,10 @@ class TableSelectionScreen(QDialog):
                 item.setSizeHint(QSize(364, 80))
                 self.listWidget.addItem(item)
 
+
     def tableSelected(self,item):
         self.item = item
         self.confirmSelectionButton.setVisible(True)
-        print("Set visibles")
     def confirmSelection(self):
         global firstJourney
         try:

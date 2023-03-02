@@ -64,7 +64,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background: #041C40; border: 0px; font-size: 24px; color: white; text-align: center; color: white;</string>
+    <string notr="true">background: #041C40; border: 0px; font-size: 24px; text-align: center; color: white;</string>
    </property>
   </widget>
   <widget class="QPushButton" name="backButton">
