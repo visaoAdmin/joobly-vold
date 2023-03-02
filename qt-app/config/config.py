@@ -7,3 +7,9 @@ def getConnectedWifi():
         return subprocess.getoutput("iwgetid | grep -e 'SSID' | awk '{print $2}'").split("\"")[1]
     except:
         return "Not Connected"
+
+def pullLatestCode():
+    try:
+        subprocess.getoutput("cd /home/pi/waiterlite-raspberry && git pull")
+    except Exception as e:
+        print(e)

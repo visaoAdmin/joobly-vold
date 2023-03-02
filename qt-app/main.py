@@ -20,7 +20,7 @@ from datetime import datetime
 from multiThread import runInNewThread,ReUsableThreadRunner
 from serial import getserial
 from QueueWorker import QueueWorker
-from config.config import APP_VERSION,getConnectedWifi
+from config.config import APP_VERSION,getConnectedWifi,pullLatestCode
 
 ENV=os.environ.get('ENV')
 
@@ -609,6 +609,7 @@ class AboutScreen(TimeBoundScreen):
     def clear(self):
         self.refreshed = False
         super().reset()
+        self.wifiLabel.setText(getConnectedWifi())
         setIcon(self.refreshButton,"assets/refreshButton.png")
 
     def renderLabels(self):
@@ -1664,6 +1665,7 @@ class SplashScreen(TimeBoundScreen):
         qWorker = QueueWorker()
         lightThreadRunner = ReUsableThreadRunner()
         smileyRunner = SmileyRunner()
+        pullLatestCode()
 
         navigateToScreen(idleLockScreen)
     def clear(self):
