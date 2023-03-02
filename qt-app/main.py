@@ -1416,7 +1416,7 @@ class PayQRScreen(TimeBoundScreen):
         super(PayQRScreen, self).__init__(timeOuts["generalTimeout"])
         loadUi("ui/18PayQRScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
-        self.goToNextButton.clicked.connect(self.navigateToThankYouScreen)
+        self.goToNextButton.clicked.connect(self.navigateToFeedBackSlot)
         self.loadQRCode()
         self.signal.connect(self.navigateToFeedBackSlot)
         super().setRunnable(self.navigateToFeedback,[])
