@@ -407,6 +407,8 @@ class WaiterPinScreen(TimeBoundScreen):
         self.pin.clear() 
         self.renderPin()
         super().setRunnable(self.navigateToIdleLockScreen,[])
+    def stopTimer(self):
+        super().stop()
     def goBack(self):
         navigateGoBack()
     @pyqtSlot()
@@ -470,7 +472,6 @@ class WaiterPinScreen(TimeBoundScreen):
     def navigateToConfigScreen(self):
         super().stop()
         navigateToScreen(AboutScreen)
-
     def navigateToWaiterMenuScreen(self):
         global currentWaiter,waiterId
         super().stop()
@@ -508,7 +509,8 @@ class WaiterNotExist(TimeBoundScreen):
         self.signal.connect(self.navigateToIdleLockScreenSlot)
         self.setupKeyboard()
         super().setRunnable(self.navigateToIdleLockScreen,[])
-
+    def stopTimer(self):
+        super().stop()
     @pyqtSlot()
     def navigateToIdleLockScreen(self):
         self.signal.emit()
@@ -606,7 +608,8 @@ class AboutScreen(TimeBoundScreen):
         self.wifiLabel.setText(getConnectedWifi())
         setIcon(self.refreshButton,"assets/refreshButton.png")
         self.refreshed = False
-
+    def stopTimer(self):
+        super().stop()
     def navigateBack(self):
         self.signal.emit()
     def navigateBackSlot(self):
@@ -702,7 +705,8 @@ class WaiterMenuScreen(TimeBoundScreen):
 
     def navigateToIdleLockScreenEmitter(self):
         self.signal.emit() 
-
+    def stopTimer(self):
+        super().stop()
     def clear(self):
         super().reset()
         tableId = getTableId()
@@ -757,6 +761,8 @@ class WaiterMenuScreenLoader(TimeBoundScreen):
         loadUi("ui/WaiterMenuLoader.ui", self)
     def clear(self):
         tableId = getTableId()
+    def stopTimer(self):
+        super().stop()
         super().reset()
     def navigateToGuestScreen(self):
         self.signal.emit()
@@ -1362,6 +1368,8 @@ class DinerActionMenuScreen(TimeBoundScreen):
     def navigateToCheckoutScreen(self):
         super().stop()
         navigateToScreen(BillScreen)
+    def stopTimer(self):
+        super().stop()
 
 
 
@@ -1457,6 +1465,8 @@ class PayQRScreen(TimeBoundScreen):
     def navigateToThankYouScreen(self):
         super().stop()
         navigateToScreen(FeedbackScreen)
+    def stopTimer(self):
+        super().stop()
 
     def loadQRCode(self):
         try:
@@ -1614,7 +1624,8 @@ class FeedbackScreen(TimeBoundScreen):
         
         lightThreadRunner.launch(yellowLight)
         navigateToScreen(IdleLockScreen)
-
+    def stopTimer(self):
+        super().stop()
     def navigateToPaymentOptionScreen(self):
 
         
@@ -1652,6 +1663,7 @@ class FeedbackScreen(TimeBoundScreen):
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
 
+
 class SplashScreen(TimeBoundScreen):
     signal = pyqtSignal()
     def __init__(self) :
@@ -1667,8 +1679,15 @@ class SplashScreen(TimeBoundScreen):
     def initialize(self):
         global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen
         reserveScreen = ReserveScreen.getInstance()
+
         waiterPinScreen =  WaiterPinScreen.getInstance()
+        waiterPinScreen.clear()
+        waiterPinScreen.stop()
+        
         aboutScreen = AboutScreen.getInstance()
+        aboutScreen.clear()
+        aboutScreen.stop()
+
         confirmTable = ConfirmTable.getInstance()
         waiterMenuScreen =  WaiterMenuScreen.getInstance()
         tableSelectionScreen = TableSelectionScreen.getInstance()
@@ -1681,7 +1700,11 @@ class SplashScreen(TimeBoundScreen):
         billScreen = BillScreen.getInstance()
         serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
         payQrscreen = PayQRScreen.getInstance()
+
         feedbackScreen = FeedbackScreen.getInstance()
+        feedbackScreen.clear()
+        feedbackScreen.stop()
+        
         thankYouScreen =  ThankYouScreen.getInstance()
         qWorker = QueueWorker()
         lightThreadRunner = ReUsableThreadRunner()
@@ -1689,6 +1712,8 @@ class SplashScreen(TimeBoundScreen):
         pullLatestCode()
 
         navigateToScreen(idleLockScreen)
+    def stopTimer(self):
+        super().stop()
     def clear(self):
         super().reset() 
         # navigateToScreen(IdleLockScreen)
@@ -1721,6 +1746,8 @@ class ThankYouScreen(TimeBoundScreen):
     def navigateToIdleLockScreenSlot(self):
         super().stop()
         navigateToRestart()
+    def stopTimer(self):
+        super().stop()
 
 def loadConfig():
     global storage, table, restaurantChanged
