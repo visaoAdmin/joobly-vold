@@ -403,6 +403,9 @@ class WaiterPinScreen(TimeBoundScreen):
         self.signal.connect(self.navigateToIdleLockScreenSlot)
         self.backButton.clicked.connect(self.goBack)
         self.setupKeyboard()
+        setPixMap(self,"assets/WaiterLITE-UI-08.png")
+        self.pin.clear() 
+        self.renderPin()
         super().setRunnable(self.navigateToIdleLockScreen,[])
     def goBack(self):
         navigateGoBack()
@@ -600,6 +603,8 @@ class AboutScreen(TimeBoundScreen):
         self.renderLabels()
         self.signal.connect(self.navigateBackSlot)
         super().setRunnable(self.navigateBack,[])
+        self.wifiLabel.setText(getConnectedWifi())
+        setIcon(self.refreshButton,"assets/refreshButton.png")
         self.refreshed = False
 
     def navigateBack(self):
@@ -937,7 +942,12 @@ class ChooseNumberOfGuests(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToCheckedInScreen)
         self.goBackButton.clicked.connect(self.navigateBack)
 
-        self.setupKeyboard()    
+        self.setupKeyboard()  
+        global guestCount
+        setPixMap(self,"assets/WaiterLITE-UI-09-1.png")
+        guestCount=""
+        countLabel = "10+" if guestCount == "10" else guestCount
+        self.__dict__["inputCount"].setText(countLabel)  
 
     
 
@@ -1518,6 +1528,9 @@ class FeedbackScreen(TimeBoundScreen):
         self.music3.clicked.connect(lambda: self.markRating("music", 3))
         self.music4.clicked.connect(lambda: self.markRating("music", 4))
         self.music5.clicked.connect(lambda: self.markRating("music", 5))
+        for i in ["food","service","ambience","music"]:
+            self.markRating(i,0)
+        self.validationLabel.setVisible(False)
     
     def navigateBack(self):
         super().stop()
