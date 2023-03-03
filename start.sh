@@ -1,7 +1,6 @@
 #!/bin/bash
 
-sudo chmod -R 755 /home/pi/waiterlite-raspberry &
-sudo chmod -R 755 /home/pi/repair.sh &
+
 cd /home/pi/waiterlite-raspberry && 
 sudo cp wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf &
 sudo cp qt-app/assets/Splash.png /usr/share/plymouth/themes/pix/splash.png &
