@@ -1680,13 +1680,10 @@ class SplashScreen(TimeBoundScreen):
         global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen
         reserveScreen = ReserveScreen.getInstance()
 
-        waiterPinScreen =  WaiterPinScreen.getInstance()
-        waiterPinScreen.clear()
-        waiterPinScreen.stop()
+        mainStackedWidget.addWidget(WaiterPinScreen.getInstance())
         
-        aboutScreen = AboutScreen.getInstance()
-        aboutScreen.clear()
-        aboutScreen.stop()
+        
+        mainStackedWidget.addWidget(AboutScreen.getInstance())
 
         confirmTable = ConfirmTable.getInstance()
         waiterMenuScreen =  WaiterMenuScreen.getInstance()
@@ -1701,10 +1698,8 @@ class SplashScreen(TimeBoundScreen):
         serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
         payQrscreen = PayQRScreen.getInstance()
 
-        feedbackScreen = FeedbackScreen.getInstance()
-        feedbackScreen.clear()
-        feedbackScreen.stop()
-        
+        mainStackedWidget.addWidget(FeedbackScreen.getInstance())
+
         thankYouScreen =  ThankYouScreen.getInstance()
         qWorker = QueueWorker()
         lightThreadRunner = ReUsableThreadRunner()
