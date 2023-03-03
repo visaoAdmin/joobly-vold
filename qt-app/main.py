@@ -217,7 +217,7 @@ def navigateToScreen(Screen):
         
             nextScreen.clear()
         except Exception as e:
-            print(e)
+
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         mainStackedWidget.addWidget(nextScreen)
@@ -600,6 +600,8 @@ class AboutScreen(TimeBoundScreen):
         self.renderLabels()
         self.signal.connect(self.navigateBackSlot)
         super().setRunnable(self.navigateBack,[])
+        self.wifiLabel.setText(getConnectedWifi())
+        setIcon(self.refreshButton,"assets/refreshButton.png")
         self.refreshed = False
 
     def navigateBack(self):
@@ -711,7 +713,7 @@ class WaiterMenuScreen(TimeBoundScreen):
 
     @pyqtSlot()
     def loaderVisible(self):
-        print("Trying to navigaete")
+
         super().stop()
         self.gotoGuestSelectionScreenSignal.emit()
         
@@ -1494,7 +1496,7 @@ class FeedbackScreen(TimeBoundScreen):
         self.signal.connect(self.endHangoutSlot)
 
         super().setRunnable(self.endHangout,[])
-        
+        self.validationLabel.setVisible(False)
         self.food1.clicked.connect(lambda: self.markRating("food", 1))
         self.food2.clicked.connect(lambda: self.markRating("food", 2))
         self.food3.clicked.connect(lambda: self.markRating("food", 3))
@@ -1654,6 +1656,7 @@ class SplashScreen(TimeBoundScreen):
     def initialize(self):
         global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen
 
+
         reserveScreen = ReserveScreen.getInstance()
         waiterPinScreen =  WaiterPinScreen.getInstance()
         aboutScreen = AboutScreen.getInstance()
@@ -1672,42 +1675,25 @@ class SplashScreen(TimeBoundScreen):
         feedbackScreen = FeedbackScreen.getInstance()
         thankYouScreen =  ThankYouScreen.getInstance()
         
-        mainStackedWidget.addWidget(reserveScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(waiterPinScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(aboutScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(confirmTable)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(waiterMenuScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(tableSelectionScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(continueExistingJourneyScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(chooseNumberOfGuests)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(checkedInScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(tapForServiceScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(closeServiceScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(dinerActionMenuScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(billScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(serverWillAssistScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(payQrscreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(feedbackScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(thankYouScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
-        mainStackedWidget.addWidget(idleLockScreen)
-        mainStackedWidget.setCurrentIndex(mainStackedWidget.currentIndex()+1)
+        # navigateToScreen(ReserveScreen)
+        # navigateToScreen(WaiterPinScreen)
+        # navigateToScreen(AboutScreen)
+        # navigateToScreen(ConfirmTable)
+        # navigateToScreen(WaiterMenuScreen)
+        # navigateToScreen(TableSelectionScreen)
+        # navigateToScreen(ContinueExistingJourneyScreen)
+        # navigateToScreen(ChooseNumberOfGuests)
+        # navigateToScreen(CheckedInScreen)
+        # navigateToScreen(TapForServiceScreen)
+        # navigateToScreen(CloseServiceScreen)
+        # navigateToScreen(DinerActionMenuScreen)
+        # navigateToScreen(ServerWillAssistScreen)
+        # navigateToScreen(BillScreen)
+        # navigateToScreen(PayQRScreen)
+        # navigateToScreen(FeedbackScreen)
+        # navigateToScreen(ThankYouScreen)
+        # navigateToScreen(IdleLockScreen)
+
 
         
         qWorker = QueueWorker()
