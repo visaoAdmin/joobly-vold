@@ -4,6 +4,7 @@
 while ! iwgetid | grep -e "SSID" ; do
         sleep 1
 done
+cd /home/pi/waiterlite-raspberry && git pull &
 if grep -e "main.py" /home/pi/waiterlite-raspberry/start.sh
 then
         echo "Done"
