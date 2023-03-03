@@ -1494,7 +1494,7 @@ class FeedbackScreen(TimeBoundScreen):
         self.goToNextButton.clicked.connect(self.navigateToPaymentOptionScreen)
         
         self.signal.connect(self.endHangoutSlot)
-
+        setPixMap(self,"assets/WaiterLITE-UI-19.png")
         super().setRunnable(self.endHangout,[])
         self.validationLabel.setVisible(False)
         self.food1.clicked.connect(lambda: self.markRating("food", 1))
