@@ -46,7 +46,7 @@ logoData =None
 qWorker = None
 lightThreadRunner = None
 smileyRunner =  None
-firstBoot = False
+firstBoot = True
 restartApplication = False
 restaurantChanged = True
 waiterMenuScreen = None
@@ -411,6 +411,7 @@ class WaiterPinScreen(QDialog):
         self.signal.connect(self.navigateToIdleLockScreenSlot)
         self.backButton.clicked.connect(self.goBack)
         self.setupKeyboard()
+        setPixMap(self,"assets/WaiterLITE-UI-08.png")
         
     def goBack(self):
         navigateGoBack()
@@ -426,8 +427,9 @@ class WaiterPinScreen(QDialog):
         setupKeyboard(self)
 
     def clear(self):
-        setPixMap(self,"assets/WaiterLITE-UI-08.png")
-        self.timer.reset()
+        
+        if firstBoot==False:
+            self.timer.reset()
         self.pin.clear() 
         self.renderPin()
 
@@ -712,7 +714,8 @@ class WaiterMenuScreen(QDialog):
         self.signal.emit() 
 
     def clear(self):
-        self.timer.reset()
+        if firstBoot == False:
+            self.timer.reset()
         tableId = getTableId()
         self.goToNextButton.setEnabled(True)
         self.reserveButton.setEnabled(True)
@@ -1560,7 +1563,10 @@ class FeedbackScreen(QDialog):
             self.__dict__[type+str(i)].setStyleSheet(style)
     
     def clear(self):
-        self.timer.reset()
+        if firstBoot == True:
+            pass
+        else:
+            self.timer.reset()
         
 
 
