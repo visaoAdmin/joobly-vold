@@ -11,6 +11,7 @@ from SmileyRunner import SmileyRunner
 import copy 
 from datetime import datetime
 import signal
+from RedirectTimer import RedirectTimer
 import urllib.request
 from api import startHangout, callWaiter, waiterArrived, notifyExperience, addMultipleRatings, getConfig, waiterExists
 from api import isTableOccupied, changeDevice, getRestartApp, setRestartAppFalse
@@ -45,12 +46,14 @@ logoData =None
 qWorker = None
 lightThreadRunner = None
 smileyRunner =  None
+firstBoot = False
 restartApplication = False
 restaurantChanged = True
 waiterMenuScreen = None
 smileyTimer =None
 askingCable = False
 firstJourney = True
+feedbackRedirectTimer = RedirectTimer()
 smiley = "neutral"
 timeOuts = {
     'generalTimeout':60,
@@ -1475,12 +1478,14 @@ class PayQRScreen(TimeBoundScreen):
 
 
 
-class FeedbackScreen(TimeBoundScreen):
+class FeedbackScreen(QDialog):
     signal = pyqtSignal()
     buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
     normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
     selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40; font-weight:bold;"
     ratings = {}
+    timer = feedbackRedirectTimer
+    redirectSet = False
     shared_instance = None
     @staticmethod
     def getInstance():
@@ -1488,14 +1493,14 @@ class FeedbackScreen(TimeBoundScreen):
             FeedbackScreen.shared_instance = FeedbackScreen()
         return FeedbackScreen.shared_instance
     def __init__(self):
-        super(FeedbackScreen, self).__init__(timeOuts["ratingTimeout"])
+        super(FeedbackScreen, self).__init__()
         loadUi("ui/19FeedbackScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToPaymentOptionScreen)
         
         self.signal.connect(self.endHangoutSlot)
-
-        super().setRunnable(self.endHangout,[])
+        self.timer.setRedirectTime(timeOuts['ratingTimeout'])
+        self.timer.setRunnable(self.endHangout,[])
         self.validationLabel.setVisible(False)
         self.food1.clicked.connect(lambda: self.markRating("food", 1))
         self.food2.clicked.connect(lambda: self.markRating("food", 2))
@@ -1522,11 +1527,11 @@ class FeedbackScreen(TimeBoundScreen):
         self.music5.clicked.connect(lambda: self.markRating("music", 5))
     
     def navigateBack(self):
-        super().stop()
+        self.timer.stop()
         navigateGoBack()
 
     def markRating(self, type,rating):
-        super().reset()
+        self.timer.reset()
 
         try:
             if self.ratings[type]==rating:
@@ -1544,17 +1549,14 @@ class FeedbackScreen(TimeBoundScreen):
             style = self.selectedStyle if i <= rating else self.normalStyle
             self.__dict__[type+str(i)].setStyleSheet(style)
     def clear(self):
-        
-        global restartApplication
-        super().reset()
-        for i in ["food","service","ambience","music"]:
-            self.markRating(i,0)
-        self.validationLabel.setVisible(False)
-        if(getRestartApp()==False):
+
+        if firstBoot:
             pass
-        else:
-            navigateToRestart()
-        # self.ratings.clear()
+
+        # self.timer.reset()
+        
+
+
     def sendRatings(self,ratings):
         try:
 
@@ -1599,8 +1601,13 @@ class FeedbackScreen(TimeBoundScreen):
             {'ratingType':'Service','rating':0},
             {'ratingType':'Ambience','rating':0}
         ])])
+        global firstBoot
+        firstBoot = False
+        self.validationLabel.setVisible(False)
         serviceCalls.clear()
-        
+        for i in ["food","service","ambience","music"]:
+            self.markRating(i,0)
+        self.timer.stop()
         lightThreadRunner.launch(yellowLight)
         navigateToScreen(IdleLockScreen)
 
@@ -1613,7 +1620,7 @@ class FeedbackScreen(TimeBoundScreen):
                     self.validationLabel.setVisible(True)
                     return
             global callNumber
-            super().stop()
+            self.timer.stop()
 
             hangoutRatings = copy.deepcopy(self.ratings)
 
@@ -1637,7 +1644,13 @@ class FeedbackScreen(TimeBoundScreen):
             
             qWorker.addAPICall(addMultipleRatings,[getTableId(),hangoutId,list(_ratings)])
             serviceCalls.clear()
-
+            
+            self.validationLabel.setVisible(False)
+            global firstBoot
+            firstBoot = False
+            for i in ["food","service","ambience","music"]:
+                self.markRating(i,0)
+            self.timer.stop()
             lightThreadRunner.launch(yellowLight)
             navigateToScreen(ThankYouScreen)
 
