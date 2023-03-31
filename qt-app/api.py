@@ -36,9 +36,8 @@ BASE_URL = API_URL
 TIMEOUT = 15
 
 def getConfig(serialNumber):
-
+    
     response = requests.get(BASE_URL + "/devices/"+serialNumber+"/config", timeout = TIMEOUT)
-
     setRestartApp(response)
     config = response.json().get("data")
     return config
