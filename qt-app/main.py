@@ -36,6 +36,8 @@ serviceCallStartTime=None
 thr=None
 guestCount = None
 table=None
+areaToId = {}
+idToArea = {}
 waiterId=None
 serialNumber=getserial()
 pixmap=None
@@ -91,7 +93,8 @@ def continueJourneyCheck():
     if exist.status_code == 409:
         continueExistingJourney = True
 
-
+def getArea():
+    return storage['area']
 def setIcon(button,path):
     button.setIcon(QIcon(path))
 
@@ -129,7 +132,8 @@ def setupKeyboard(self):
     self.key_del.clicked.connect(lambda: self.onKey("x"))
 
 def getTableId ():
-    global table
+    global storage
+
     tableId = table
     try:
         if "tableId" in storage and storage["tableId"] != None:
@@ -140,6 +144,7 @@ def getTableId ():
         tableId = ""
         with open("logFile.txt","a+") as logFile:
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+
     return tableId
 
 def getRestaurantId ():
@@ -153,6 +158,7 @@ def getRestaurantId ():
     return None
 
 def saveStorage():
+
     with open("storage.json", "w") as f:
         json.dump(storage, f)
 
@@ -379,7 +385,7 @@ class IdleLockScreen(QDialog):
     def navigateToWaiterPinScreen(self):
         global firstJourney
         if firstJourney:
-            navigateToScreen(TableSelectionScreen)
+            navigateToScreen(AreaSelectionScreen)
             return
         navigateToScreen(WaiterPinScreen)
 
@@ -716,7 +722,7 @@ class WaiterMenuScreen(QDialog):
         self.reserveButton.setEnabled(True)
         self.screenSaverButton.setEnabled(True)
         self.clearTableButton.setEnabled(True)
-        self.tableNumber.setText(tableId)
+        self.tableNumber.setText(getTableId())
         setPixMap(self,"assets/WaiterLITE-UI-07.png")
         lightThreadRunner.launch(yellowLight)
 
@@ -742,7 +748,7 @@ class WaiterMenuScreen(QDialog):
     def navigateToTableSelectionScreen(self):
         self.timer.stop()
         
-        navigateToScreen(TableSelectionScreen)
+        navigateToScreen(AreaSelectionScreen)
     
     def navigateToIdleLockScreen(self):
         self.timer.stop()
@@ -769,7 +775,119 @@ class WaiterMenuScreenLoader(TimeBoundScreen):
     def navigateChooseNumGuestsSlot(self):
         super().stop()
         navigateToScreen(ChooseNumberOfGuests)
+
+class AreaSelectionScreen(QDialog):
+    shared_instance = None
+    item = None
+    @staticmethod
+    def getInstance():
+        if(AreaSelectionScreen.shared_instance == None):
+            AreaSelectionScreen.shared_instance = AreaSelectionScreen()
+        return AreaSelectionScreen.shared_instance
+    def __init__(self):
+        super(AreaSelectionScreen, self).__init__()
+        loadUi("ui/AreaSelectionScreen.ui", self)
+        # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
+        self.listWidget.itemClicked.connect(self.tableSelected)
+        self.backButton.clicked.connect(self.navigateGoBackSlot)
+        self.listWidget.setStyleSheet(
+                                  "QListView"
+                                  "{"
+                                    "background-color:#041c40;"
+                                    "font-size:20px;"
+                                    "color:white;"
+                                    "border:0px;"
+                                  "}"
+                                  "QListView::item"
+                                  "{"
+                                    "background-color: #182e4f;"
+                                    "color:white;"
+                                    "margin-bottom: 15px;"
+                                    "border-radius: 10px;"
+                                    "padding: 12px 12px 12px 12px;"
+                                    "padding-top:24px;"
+                                    "padding-bottom:24px;"
+                                    "margin-right:20px;"
+                                  "}"
+                                  "QListView::item:selected"
+                                  "{"
+                                    "background-color: #c09c56;"
+                                    "color:#041C40;"
+                                  "}"
+                                  
+
+                                   
+                                  
+
+                                  
+                                  )
+
+
+        # self.loadTables()
+        # runInNewThread(self, self.loadTables)
+
+
+    def navigateGoBackSlot(self):
+        navigateGoBack()
+
+    def clear(self): 
+        pass
+        # self.confirmSelectionButton.setVisible(False)
+        # if firstJourney:
+        #     setPixMap(self,"assets/WaiterLITE-UI-25 1.png")
+        # else:
+        #     setPixMap(self,"assets/WaiterLITE-UI-25.png")
+        self.loadAreas()   
+    def loadAreas(self):
+        try:
+            
+            
+            self.listWidget.clear()
+            # tables = getAllTables(getRestaurantId())
+            
+            # tables = getAllTables(restaurantId)
+
+            for t in storage['areas']:
+                item = QListWidgetItem(t['name'])
+                item.setSizeHint(QSize(360, 80))
+                self.listWidget.addItem(item)
+
+        except Exception as e:
+
+            areas = storage["areas"]
+
+
+            for t in areas:
+                item = QListWidgetItem(t)
+                item.setSizeHint(QSize(364, 80))
+                self.listWidget.addItem(item)
+
+
+    def tableSelected(self,item):
+        self.item = item
+
+        self.confirmSelection()
+    def confirmSelection(self):
+        global firstJourney
+        try:
+            storage["area"] = self.item.text()
+        except Exception as e:
+            try:
+                storage["area"] = self.item
+            except Exception as e:
+                pass
+        saveStorage()
+        navigateToScreen(TableSelectionScreen)
         
+
+    def navigateToWaiterMenuScreen(self):
+
+        navigateToScreen(WaiterMenuScreen)
+    
+    def navigateToIdleLockScreen(self):
+
+        navigateToRestart()
+    
 class TableSelectionScreen(QDialog):
     shared_instance = None
     item = None
@@ -834,17 +952,29 @@ class TableSelectionScreen(QDialog):
         self.loadTables()   
     def loadTables(self):
         try:
-            
-            
+            global idToArea,areaToId
+            area = getArea()
+
+            tables = storage["tables"]
             self.listWidget.clear()
+
+            filteredTables = []
+            for i in range(len(tables)):
+
+                table = tables[i]
+                if areaToId[area] == table['areaId']:
+                    item = QListWidgetItem(table['referenceId'])
+                    item.setSizeHint(QSize(360, 80))
+                    self.listWidget.addItem(item)
+
             # tables = getAllTables(getRestaurantId())
             
             # tables = getAllTables(restaurantId)
 
-            for t in tables:
-                item = QListWidgetItem(t['referenceId'])
-                item.setSizeHint(QSize(360, 80))
-                self.listWidget.addItem(item)
+            # for t in filteredTables:
+            #     item = QListWidgetItem(t['referenceId'])
+            #     item.setSizeHint(QSize(360, 80))
+            #     self.listWidget.addItem(item)
 
         except Exception as e:
 
@@ -859,7 +989,7 @@ class TableSelectionScreen(QDialog):
         self.item = item
         self.confirmSelectionButton.setVisible(True)
     def confirmSelection(self):
-        global firstJourney
+        global firstJourney,storage
         try:
             storage["tableId"] = self.item.text()
         except Exception as e:
@@ -867,7 +997,10 @@ class TableSelectionScreen(QDialog):
                 storage["tableId"] = self.item
             except Exception as e:
                 pass
+
+
         saveStorage()
+
 
         if firstJourney:
             firstJourney = False
@@ -1695,6 +1828,7 @@ class SplashScreen(TimeBoundScreen):
         payQrscreen = PayQRScreen.getInstance()
         feedbackScreen = FeedbackScreen.getInstance()
         thankYouScreen =  ThankYouScreen.getInstance()
+        areaSelectionScreen = AreaSelectionScreen.getInstance()
         
         # navigateToScreen(ReserveScreen)
         # navigateToScreen(WaiterPinScreen)
@@ -1757,11 +1891,12 @@ class ThankYouScreen(TimeBoundScreen):
         navigateToRestart()
 
 def loadConfig():
-    global storage, table, restaurantChanged
+    global storage, table, restaurantChanged,idToArea,areaToId
     try:
         restaurantId = getRestaurantId()
         try:
             table = storage["tableId"]
+            area = storage['area']
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
@@ -1772,10 +1907,20 @@ def loadConfig():
         storage = config
         try:
             storage['tableId'] = table
+            storage['area'] = area
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
+        
+        newDict = {
+        }
+        
+        for i in storage['areas']:
+            newDict[i['id']] = i['name']
+            areaToId[i['name']] = i['id']
+
+        idToArea.update(newDict)
 
         saveStorage()
         newRestId = getRestaurantId()
@@ -1788,10 +1933,10 @@ def loadConfig():
             restaurantChanged = False
 
         if(storage['tableId']):
-            if(restaurantId!=getRestaurantId() or storage['tableId'] not in storage['tables']):
-                storage['tableId'] = storage['tables'][0]
+            if(restaurantId!=getRestaurantId()):
+                storage['tableId'] = storage['tables'][0]['referenceId']
         else:
-                storage['tableId'] = storage['tables'][0]
+                storage['tableId'] = storage['tables'][0]['referenceId']
           
 
     except Exception as e:
