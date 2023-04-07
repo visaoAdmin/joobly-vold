@@ -1113,10 +1113,10 @@ class TapForServiceScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToCloseServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
-        self.happyButton.clicked.connect(self.notifyHappy)
-        self.sadButton.clicked.connect(self.notifySad)
-        self.neutralButton.clicked.connect(self.notifyNeutral)
-        self.askForCableButton.clicked.connect(self.askForCable)
+        # self.happyButton.clicked.connect(self.notifyHappy)
+        # self.sadButton.clicked.connect(self.notifySad)
+        # self.neutralButton.clicked.connect(self.notifyNeutral)
+        # self.askForCableButton.clicked.connect(self.askForCable)
         self.askedCable = False
         # slider = self.experienceSlider
         # slider.setMinimum(0)
@@ -1127,16 +1127,16 @@ class TapForServiceScreen(QDialog):
         global askingCable,smiley
         askingCable = False
         setPixMap(self,"assets/WaiterLITE-UI-13.png")
-        setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/sad-1.png")
-        setIcon(self.neutralButton,"assets/Average-1.png")
+        # setIcon(self.happyButton,"assets/Happy-1.png")
+        # setIcon(self.sadButton,"assets/sad-1.png")
+        # setIcon(self.neutralButton,"assets/Average-1.png")
 
-        if smiley == "happy":
-            setIcon(self.happyButton,"assets/Happy.png")
-        elif smiley =="sad":
-            setIcon(self.sadButton,"assets/sad.png")
-        elif smiley == "neutral":
-            setIcon(self.neutralButton,"assets/Average.png")
+        # if smiley == "happy":
+        #     setIcon(self.happyButton,"assets/Happy.png")
+        # elif smiley =="sad":
+        #     setIcon(self.sadButton,"assets/sad.png")
+        # elif smiley == "neutral":
+        #     setIcon(self.neutralButton,"assets/Average.png")
         lightThreadRunner.launch(yellowLight)
     def askForCable(self):
         global askingCable
@@ -1145,23 +1145,23 @@ class TapForServiceScreen(QDialog):
     def notifyHappy(self):
         global smiley, hangoutId
         smiley = "happy"
-        setIcon(self.happyButton,"assets/Happy.png")
-        setIcon(self.sadButton,"assets/sad-1.png")
-        setIcon(self.neutralButton,"assets/Average-1.png")
+        # setIcon(self.happyButton,"assets/Happy.png")
+        # setIcon(self.sadButton,"assets/sad-1.png")
+        # setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
         global smiley, hangoutId
         smiley = "sad"
-        setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/sad.png")
-        setIcon(self.neutralButton,"assets/Average-1.png")
+        # setIcon(self.happyButton,"assets/Happy-1.png")
+        # setIcon(self.sadButton,"assets/sad.png")
+        # setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
         global smiley, hangoutId
         smiley = "neutral"
-        setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/sad-1.png")
-        setIcon(self.neutralButton,"assets/Average.png")
+        # setIcon(self.happyButton,"assets/Happy-1.png")
+        # setIcon(self.sadButton,"assets/sad-1.png")
+        # setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     
     def onExperienceChanged(self, value):
@@ -1222,33 +1222,33 @@ class CloseServiceScreen(QDialog):
         self.goToNextButton.clicked.connect(self.navigateToTapForServiceScreen)
         self.menuButton.clicked.connect(self.navigateToDinerActionMenu)
         self.checkoutButton.clicked.connect(self.navigateToCheckoutScreen)
-        self.happyButton.clicked.connect(self.notifyHappy)
-        self.sadButton.clicked.connect(self.notifySad)
-        self.neutralButton.clicked.connect(self.notifyNeutral)
+        # self.happyButton.clicked.connect(self.notifyHappy)
+        # self.sadButton.clicked.connect(self.notifySad)
+        # self.neutralButton.clicked.connect(self.notifyNeutral)
         self.askedCable = False
         # thr.join()
-        self.askForCableButton.clicked.connect(self.navigateToTapForServiceScreen)
+        # self.askForCableButton.clicked.connect(self.navigateToTapForServiceScreen)
 
     def notifyHappy(self):
         global smiley, hangoutId
         smiley = "happy"
-        setIcon(self.happyButton,"assets/Happy.png")
-        setIcon(self.sadButton,"assets/sad-1.png")
-        setIcon(self.neutralButton,"assets/Average-1.png")
+        # setIcon(self.happyButton,"assets/Happy.png")
+        # setIcon(self.sadButton,"assets/sad-1.png")
+        # setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingHappy,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifySad(self):
         global smiley, hangoutId
         smiley = "sad"
-        setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/sad.png")
-        setIcon(self.neutralButton,"assets/Average-1.png")
+        # setIcon(self.happyButton,"assets/Happy-1.png")
+        # setIcon(self.sadButton,"assets/sad.png")
+        # setIcon(self.neutralButton,"assets/Average-1.png")
         smileyRunner.addSmiley(notifyFeelingBad,[hangoutId,waiterId,getRestaurantId(),getTableId()])
     def notifyNeutral(self):
         global smiley, hangoutId
         smiley = "neutral"
-        setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/sad-1.png")
-        setIcon(self.neutralButton,"assets/Average.png")
+        # setIcon(self.happyButton,"assets/Happy-1.png")
+        # setIcon(self.sadButton,"assets/sad-1.png")
+        # setIcon(self.neutralButton,"assets/Average.png")
         smileyRunner.addSmiley(notifyFeelingNeutral,[hangoutId,waiterId,getRestaurantId(),getTableId()])
        
     def clear(self):
@@ -1261,9 +1261,9 @@ class CloseServiceScreen(QDialog):
 
         self.messageLabel.setText(currentWaiter["firstName"][0:10]+" on the way")
         lightThreadRunner.launch(blueLight)
-        setIcon(self.happyButton,"assets/Happy-1.png")
-        setIcon(self.sadButton,"assets/sad-1.png")
-        setIcon(self.neutralButton,"assets/Average-1.png")
+        # setIcon(self.happyButton,"assets/Happy-1.png")
+        # setIcon(self.sadButton,"assets/sad-1.png")
+        # setIcon(self.neutralButton,"assets/Average-1.png")
         if smiley == "happy":
             setIcon(self.happyButton,"assets/Happy.png")
         elif smiley =="sad":
