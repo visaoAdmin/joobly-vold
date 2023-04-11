@@ -91,7 +91,13 @@ def continueJourneyCheck():
     if exist.status_code == 409:
         continueExistingJourney = True
 
-
+def billLight():
+        try:
+            neoxPixel(255, 45, 208)
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+            pass
 def setIcon(button,path):
     button.setIcon(QIcon(path))
 
