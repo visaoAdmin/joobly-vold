@@ -1,6 +1,7 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
+import math
 from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
@@ -896,7 +897,10 @@ class AreaSelectionScreen(QDialog):
     
 class TableSelectionScreen(QDialog):
     shared_instance = None
+    currentPage = 1
+    selectedTable = None
     item = None
+    tables = []
     @staticmethod
     def getInstance():
         if(TableSelectionScreen.shared_instance == None):
@@ -909,6 +913,9 @@ class TableSelectionScreen(QDialog):
         self.listWidget.itemClicked.connect(self.tableSelected)
         self.backButton.clicked.connect(self.navigateGoBackSlot)
         self.confirmSelectionButton.clicked.connect(self.confirmSelection)
+        self.previousPageButton.clicked.connect(self.loadPreviousPage)
+        self.nextPageButton.clicked.connect(self.loadNextPage)
+        
         self.listWidget.setStyleSheet(
                                   "QListView"
                                   "{"
@@ -933,10 +940,6 @@ class TableSelectionScreen(QDialog):
                                     "background-color: #c09c56;"
                                     "color:#041C40;"
                                   "}"
-                                  
-
-                                   
-                                  
 
                                   
                                   )
@@ -955,6 +958,8 @@ class TableSelectionScreen(QDialog):
             setPixMap(self,"assets/WaiterLITE-UI-25 1.png")
         else:
             setPixMap(self,"assets/WaiterLITE-UI-25.png")
+        self.currentPage = 1
+        self.tables = []
         self.loadTables()   
     def loadTables(self):
         try:
@@ -965,22 +970,16 @@ class TableSelectionScreen(QDialog):
             self.listWidget.clear()
 
             filteredTables = []
-            for i in range(len(tables)):
 
+            for i in range(len(tables)):
                 table = tables[i]
                 if areaToId[area] == table['areaId']:
-                    item = QListWidgetItem(table['referenceId'])
-                    item.setSizeHint(QSize(360, 80))
-                    self.listWidget.addItem(item)
+                    self.tables.append(tables[i])
 
-            # tables = getAllTables(getRestaurantId())
-            
-            # tables = getAllTables(restaurantId)
 
-            # for t in filteredTables:
-            #     item = QListWidgetItem(t['referenceId'])
-            #     item.setSizeHint(QSize(360, 80))
-            #     self.listWidget.addItem(item)
+            self.loadCurrentPage()
+
+
 
         except Exception as e:
 
@@ -990,14 +989,40 @@ class TableSelectionScreen(QDialog):
                 item.setSizeHint(QSize(364, 80))
                 self.listWidget.addItem(item)
 
+    def loadCurrentPage(self):
+        self.listWidget.clear()
+        for i in range(6*(self.currentPage-1),min(len(self.tables),6*self.currentPage)):
+                item = QListWidgetItem(self.tables[i]['referenceId'])
+                item.setSizeHint(QSize(360, 80))
+                self.listWidget.addItem(item)
+                if self.selectedTable == self.tables[i]['referenceId']:
+                    self.listWidget.itemClicked.emit(item)
+        self.pageNumber.setText(str(self.currentPage))
+
+        if self.currentPage==1:
+            self.previousPageButton.setEnabled(False)
+        else:
+            self.previousPageButton.setEnabled(True)
+        if self.currentPage == math.ceil(len(self.tables)/6):
+            self.nextPageButton.setEnabled(False)
+        else:
+            self.nextPageButton.setEnabled(True)
+
+    def loadNextPage(self):
+        self.currentPage += 1
+        self.loadCurrentPage()
+
+    def loadPreviousPage(self):
+        self.currentPage -= 1
+        self.loadCurrentPage()
 
     def tableSelected(self,item):
-        self.item = item
+        self.selectedTable = item.text()
         self.confirmSelectionButton.setVisible(True)
     def confirmSelection(self):
         global firstJourney,storage
         try:
-            storage["tableId"] = self.item.text()
+            storage["tableId"] = self.selectedTable
         except Exception as e:
             try:
                 storage["tableId"] = self.item

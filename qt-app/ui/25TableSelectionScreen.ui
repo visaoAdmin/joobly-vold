@@ -60,14 +60,12 @@
      <x>55</x>
      <y>130</y>
      <width>401</width>
-     <height>561</height>
+     <height>491</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -114,6 +112,55 @@
      <width>414</width>
      <height>64</height>
     </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="previousPageButton">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>650</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Previous Page</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="nextPageButton">
+   <property name="geometry">
+    <rect>
+     <x>307</x>
+     <y>650</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Next Page</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="pageNumber">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>650</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:white;</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>
