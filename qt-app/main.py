@@ -1399,7 +1399,8 @@ class BillScreen(QDialog):
         serviceCalls['guestCount'] = guestCount
 
 
-        navigateToScreen(PayQRScreen)
+        # navigateToScreen(PayQRScreen)
+        self.navigateToFeedbackScreen()
     
     def navigateToFeedbackScreen(self):
 
@@ -1558,10 +1559,13 @@ class FeedbackScreen(QDialog):
             self.__dict__[type+str(i)].setStyleSheet(style)
     
     def clear(self):
+        lightThreadRunner.launch(billLight)
         if firstBoot == True:
             pass
         else:
             self.timer.reset()
+        
+
         
 
 
