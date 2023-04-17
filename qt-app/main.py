@@ -995,8 +995,8 @@ class TableSelectionScreen(QDialog):
                 item = QListWidgetItem(self.tables[i]['referenceId'])
                 item.setSizeHint(QSize(360, 80))
                 self.listWidget.addItem(item)
-                if self.selectedTable == self.tables[i]['referenceId']:
-                    self.listWidget.itemClicked.emit(item)
+        self.confirmSelectionButton.setEnabled(False)
+        self.confirmSelectionButton.setVisible(False)
         self.pageNumber.setText(str(self.currentPage))
 
         if self.currentPage==1:
@@ -1019,6 +1019,8 @@ class TableSelectionScreen(QDialog):
     def tableSelected(self,item):
         self.selectedTable = item.text()
         self.confirmSelectionButton.setVisible(True)
+        self.confirmSelectionButton.setEnabled(True)
+        
     def confirmSelection(self):
         global firstJourney,storage
         try:
