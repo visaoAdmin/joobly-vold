@@ -109,7 +109,7 @@
     <number>-1</number>
    </property>
    <property name="styleSheet">
-    <string notr="true">color:white;</string>
+    <string notr="true">color:#041c40;</string>
    </property>
    <property name="lineWidth">
     <number>1</number>
