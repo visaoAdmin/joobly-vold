@@ -79,6 +79,13 @@
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 border-width: 2px;
@@ -99,6 +106,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -121,6 +135,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 border-width: 2px;
@@ -141,6 +162,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -163,6 +191,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 border-width: 2px;
@@ -183,6 +218,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -205,6 +247,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 border-width: 2px;
@@ -225,6 +274,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -247,6 +303,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 border-width: 2px;
@@ -268,6 +331,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 border-width: 2px;
@@ -288,6 +358,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -312,6 +389,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 
@@ -334,6 +418,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -358,6 +449,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 
@@ -380,6 +478,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -404,6 +509,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 
@@ -426,6 +538,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 
@@ -447,6 +566,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
@@ -471,6 +597,13 @@ font-size: 24px;</string>
      <height>70</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
 
@@ -493,6 +626,13 @@ font-size: 24px;</string>
      <width>70</width>
      <height>70</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: #233758;border-color: #4A5C75;
