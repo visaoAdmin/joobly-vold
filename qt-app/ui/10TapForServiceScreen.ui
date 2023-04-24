@@ -44,10 +44,10 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>-10</x>
-     <y>-10</y>
-     <width>491</width>
-     <height>421</height>
+     <x>0</x>
+     <y>0</y>
+     <width>485</width>
+     <height>611</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -60,10 +60,10 @@
   <widget class="QPushButton" name="menuButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>410</y>
-     <width>191</width>
-     <height>81</height>
+     <x>17</x>
+     <y>618</y>
+     <width>221</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -77,106 +77,9 @@
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>410</y>
-     <width>201</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="sadButton">
-   <property name="geometry">
-    <rect>
-     <x>65</x>
-     <y>573</y>
-     <width>113</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset resource="../WaiterLITE01.qrc">
-     <normaloff>:/Screens/assets/sad-1.png</normaloff>:/Screens/assets/sad-1.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>70</width>
-     <height>70</height>
-    </size>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="neutralButton">
-   <property name="geometry">
-    <rect>
-     <x>184</x>
-     <y>578</y>
-     <width>113</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset resource="../WaiterLITE01.qrc">
-     <normaloff>:/Screens/assets/Average-1.png</normaloff>:/Screens/assets/Average-1.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>70</width>
-     <height>70</height>
-    </size>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="happyButton">
-   <property name="geometry">
-    <rect>
-     <x>296</x>
-     <y>578</y>
-     <width>113</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset resource="../WaiterLITE01.qrc">
-     <normaloff>:/Screens/assets/Happy-1.png</normaloff>:/Screens/assets/Happy-1.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>70</width>
-     <height>70</height>
-    </size>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="askForCableButton">
-   <property name="geometry">
-    <rect>
-     <x>-10</x>
-     <y>710</y>
-     <width>501</width>
-     <height>91</height>
+     <y>619</y>
+     <width>231</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -190,7 +93,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>280</y>
+     <y>450</y>
      <width>461</width>
      <height>112</height>
     </rect>
@@ -203,7 +106,7 @@
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">color:white;</string>
+    <string notr="true">color:#041c40;</string>
    </property>
    <property name="text">
     <string>Tap for Service</string>
@@ -218,10 +121,6 @@
   <zorder>label_2</zorder>
   <zorder>menuButton</zorder>
   <zorder>checkoutButton</zorder>
-  <zorder>sadButton</zorder>
-  <zorder>neutralButton</zorder>
-  <zorder>happyButton</zorder>
-  <zorder>askForCableButton</zorder>
   <zorder>messageLabel</zorder>
   <zorder>goToNextButton</zorder>
  </widget>
