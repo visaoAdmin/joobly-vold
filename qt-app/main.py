@@ -406,6 +406,66 @@ class IdleLockScreen(QDialog):
             return
         navigateToScreen(WaiterPinScreen)
 
+class WaiterSelectionScreen(QDialog):
+    shared_instance=None
+    @staticmethod
+    def getInstance():
+        if(WaiterSelectionScreen.shared_instance == None):
+            WaiterSelectionScreen.shared_instance = WaiterSelectionScreen()
+        return WaiterSelectionScreen.shared_instance
+    def __init__(self):
+        super(WaiterSelectionScreen, self).__init__()
+        loadUi("ui/WaiterSelectionScreen.ui", self)
+        self.backButton.clicked.connect(self.navigateBack)
+        self.listWidget.itemClicked.connect(self.waiterSelected)
+        self.listWidget.setStyleSheet(
+                                  "QListView"
+                                  "{"
+                                    "background-color:#041c40;"
+                                    "font-size:20px;"
+                                    "color:white;"
+                                    "border:0px;"
+                                  "}"
+                                  "QListView::item"
+                                  "{"
+                                    "background-color: #182e4f;"
+                                    "color:white;"
+                                    "margin-bottom: 15px;"
+                                    "border-radius: 10px;"
+                                    "padding: 12px 12px 12px 12px;"
+                                    "padding-top:24px;"
+                                    "padding-bottom:24px;"
+                                    "margin-right:20px;"
+                                  "}"
+                                  "QListView::item:selected"
+                                  "{"
+                                    "background-color: #c09c56;"
+                                    "color:#041C40;"
+                                  "}"
+                                  )
+    def navigateBack(self):
+        navigateGoBack()
+    def clear(self):
+        self.loadWaiters()
+        pass
+    def loadWaiters(self):
+
+        self.listWidget.clear()
+        for waiter in storage["waiters"]:
+            item = QListWidgetItem(waiter['firstName'])
+            item.setSizeHint(QSize(360, 80))
+            self.listWidget.addItem(item)
+    def waiterSelected(self,item):
+        global currentWaiter,waiterId
+        waiterName = item.text()
+        for waiter in storage["waiters"]:
+            if waiterName == waiter["firstName"]:
+                waiterId = waiter["referenceId"][1:]
+                currentWaiter = waiter
+                navigateToScreen(ChooseNumberOfGuests)
+
+
+
 class WaiterPinScreen(QDialog):
     pin=[]
     signal = pyqtSignal()
@@ -417,6 +477,9 @@ class WaiterPinScreen(QDialog):
         if(WaiterPinScreen.shared_instance == None):
             WaiterPinScreen.shared_instance = WaiterPinScreen()
         return WaiterPinScreen.shared_instance
+    
+
+
     def __init__(self):
         super(WaiterPinScreen, self).__init__()
         self.pin=[]
@@ -807,6 +870,7 @@ class AreaSelectionScreen(QDialog):
         # self.goToNextButton.clicked.connect(self.navigateToWaiterMenuScreen)
         self.listWidget.itemClicked.connect(self.tableSelected)
         self.backButton.clicked.connect(self.navigateGoBackSlot)
+        self.goToAboutScreenButton.clicked.connect(self.navigateToAboutScreen)
         self.listWidget.setStyleSheet(
                                   "QListView"
                                   "{"
@@ -846,7 +910,8 @@ class AreaSelectionScreen(QDialog):
 
     def navigateGoBackSlot(self):
         navigateGoBack()
-
+    def navigateToAboutScreen(self):
+        navigateToScreen(AboutScreen)
     def clear(self): 
         pass
         # self.confirmSelectionButton.setVisible(False)
@@ -904,7 +969,7 @@ class AreaSelectionScreen(QDialog):
     def navigateToIdleLockScreen(self):
 
         navigateToRestart()
-    
+
 class TableSelectionScreen(QDialog):
     shared_instance = None
     currentPage = 1
@@ -1045,19 +1110,22 @@ class TableSelectionScreen(QDialog):
         saveStorage()
 
 
-        if firstJourney:
-            firstJourney = False
-            navigateToScreen(IdleLockScreen)
-            return
-        self.navigateToWaiterMenuScreen()
-        
+        # if firstJourney:
+        #     firstJourney = False
+        #     navigateToScreen(IdleLockScreen)
+        #     return
+        # self.navigateToWaiterMenuScreen()
+        self.navigateToWaiterSelectionScreen()
+    def navigateToWaiterSelectionScreen(self):
+        navigateToScreen(WaiterSelectionScreen)
+
+    def navigateToChooseNumberOfGuests(self):
+        navigateToScreen(ChooseNumberOfGuests)
 
     def navigateToWaiterMenuScreen(self):
-
         navigateToScreen(WaiterMenuScreen)
     
     def navigateToIdleLockScreen(self):
-
         navigateToRestart()
 class ContinueExistingJourneyScreen(QDialog):
     shared_instance = None
@@ -1877,7 +1945,7 @@ class SplashScreen(TimeBoundScreen):
         feedbackScreen = FeedbackScreen.getInstance()
         thankYouScreen =  ThankYouScreen.getInstance()
         areaSelectionScreen = AreaSelectionScreen.getInstance()
-        
+        selectWaiterScreen  = WaiterSelectionScreen.getInstance()
         # navigateToScreen(ReserveScreen)
         # navigateToScreen(WaiterPinScreen)
         # navigateToScreen(AboutScreen)

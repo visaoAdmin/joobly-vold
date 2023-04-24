@@ -32,7 +32,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../assets/SelectAreaScreen.png</pixmap>
+    <pixmap>../assets/WaiterSelectionScreen.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -58,9 +58,9 @@
    <property name="geometry">
     <rect>
      <x>55</x>
-     <y>130</y>
+     <y>264</y>
      <width>401</width>
-     <height>521</height>
+     <height>401</height>
     </rect>
    </property>
    <property name="font">
@@ -78,22 +78,6 @@
      <x>10</x>
      <y>0</y>
      <width>121</width>
-     <height>111</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="goToAboutScreenButton">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>678</y>
-     <width>461</width>
      <height>111</height>
     </rect>
    </property>
