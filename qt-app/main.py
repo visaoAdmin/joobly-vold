@@ -1184,7 +1184,8 @@ class ChooseNumberOfGuests(QDialog):
             ChooseNumberOfGuests.shared_instance = ChooseNumberOfGuests()
         return ChooseNumberOfGuests.shared_instance
     def navigateBack(self):
-        navigateToScreen(WaiterMenuScreen)
+        navigateGoBack()
+
 
     def __init__(self):
         super(ChooseNumberOfGuests, self).__init__()
@@ -1272,8 +1273,8 @@ class CorrectChooseNumberOfGuests(QDialog):
         self.signal.emit()
 
     def navigateBack(self):
-
         navigateGoBack()
+
     def setupKeyboard(self):
         setupKeyboard(self)
 
