@@ -29,7 +29,7 @@ class ServiceCallDebouncer(object):
             if self.runnable and self.timer:
                 executeRunnable = False
                 try:
-                    executeRunnable = 33
+                    executeRunnable = (time.time() - self.timer)>3
                 except:
                     pass
                 if(executeRunnable):
