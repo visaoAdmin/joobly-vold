@@ -7,6 +7,8 @@ from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
 import PyQt5.QtGui as QtGui
 from TimeBoundScreen import TimeBoundScreen
 import os 
+from ServiceCallDebouncer import ServiceCallDebouncer
+
 from SmileyRunner import SmileyRunner
 import copy 
 from datetime import datetime
@@ -56,6 +58,7 @@ firstJourney = True
 feedbackRedirectTimer = RedirectTimer()
 waiterMenuRedirectTimer = RedirectTimer()
 waiterPinRedirectTimer = RedirectTimer()
+serviceCallDebouncer = ServiceCallDebouncer()
 smiley = "neutral"
 timeOuts = {
     'generalTimeout':60,
@@ -1194,13 +1197,14 @@ class TapForServiceScreen(QDialog):
     
     def callWaiter(self):
         try:
-            global hangoutId, serviceCallStartTime,table,serviceCalls
+            global hangoutId, serviceCallStartTime,table,serviceCalls,serviceCallDebouncer
             top = len(serviceCalls)
             serviceCalls[callNumber]={}
             serviceCalls[callNumber]['open']=time.time()
             serviceCallStartTime=getCurrentTime()
+            # qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
 
-            qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
+            serviceCallDebouncer.call(qWorker.addAPICall,[callWaiter,[getTableId(),  hangoutId,callNumber]])
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
@@ -1297,9 +1301,9 @@ class CloseServiceScreen(QDialog):
             
             isWaiterCalled = False
             
-
-            qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
-            callNumber = callNumber+1
+            if serviceCallDebouncer.stop() == False:
+                qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
+                callNumber = callNumber+1
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
