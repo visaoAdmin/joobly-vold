@@ -27,7 +27,12 @@ class ServiceCallDebouncer(object):
     def syncCalls(self):
         while(self.timer):
             if self.runnable and self.timer:
-                if((time.time() - self.timer)>3):
+                executeRunnable = False
+                try:
+                    executeRunnable = (time.time() - self.timer)>3
+                except:
+                    pass
+                if(executeRunnable):
                     try:
                         self.runnable[0](*self.runnable[1])
                     except:
