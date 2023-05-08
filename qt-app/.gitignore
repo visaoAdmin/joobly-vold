@@ -5,3 +5,4 @@ function_queue.file
 background_queue.file
 logFile.txt
 lastLaunchLog.txt
+venv
