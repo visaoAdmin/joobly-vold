@@ -1,6 +1,6 @@
 import subprocess
-API_URL="https://api.mywoobly.com"
-APP_VERSION="1.1.3"
+API_URL="https://api.woobly.squareboat.info"
+APP_VERSION="1.2.1"
 # API_URL="http://localhost:3000"
 def getConnectedWifi():
     try:
