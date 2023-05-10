@@ -1447,7 +1447,7 @@ class TapForServiceScreen(QDialog):
             pass
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(DinerActionMenuScreen)
+        navigateToScreen(ChefSpecialScreen)
     
     def navigateToCheckoutScreen(self):
         
@@ -1547,7 +1547,7 @@ class CloseServiceScreen(QDialog):
 
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(DinerActionMenuScreen)
+        navigateToScreen(ChefSpecialScreen)
     
     def navigateToCheckoutScreen(self):
         navigateToScreen(BillScreen)
@@ -1613,9 +1613,56 @@ class DinerActionMenuScreen(TimeBoundScreen):
 
 
 
+class ChefSpecialScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ChefSpecialScreen.shared_instance == None):
+            ChefSpecialScreen.shared_instance = ChefSpecialScreen()
+        return ChefSpecialScreen.shared_instance
+    def __init__(self):
+        super(ChefSpecialScreen, self).__init__()
+        loadUi("ui/ChefSpecialScreen.ui", self)
+        self.backButton.clicked.connect(self.navigateBack)
+        self.openChefMenuItems.clicked.connect(self.navigateToMenuItems)
+        self.loadQRCode()
+    def loadQRCode(self):
 
+        try:
+            url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
 
+            if "menuQr" in storage:
+                url = storage["menuQr"] 
+                
 
+                data = loadPicture("restaurantData/menuQr",url)
+
+                image = QImage()
+                image.loadFromData(data)
+                pixmap = QPixmap(image)
+                self.qrimage.setPixmap(pixmap.scaled(170, 170))
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+            pass
+    def navigateToMenuItems(self):
+        navigateToScreen(ChefSpecialMenuItemsScreen)
+    def navigateBack(self):
+        navigateGoBack()
+
+class ChefSpecialMenuItemsScreen(QDialog):
+    shared_instance = None
+    @staticmethod
+    def getInstance():
+        if(ChefSpecialMenuItemsScreen.shared_instance == None):
+            ChefSpecialMenuItemsScreen.shared_instance = ChefSpecialMenuItemsScreen()
+        return ChefSpecialMenuItemsScreen.shared_instance
+    def __init__(self):
+        super(ChefSpecialMenuItemsScreen, self).__init__()
+        loadUi("ui/ChefSpecialMenuItemScreen.ui", self)
+        self.backButton.clicked.connect(self.navigateBack)
+    def navigateBack(self):
+        navigateGoBack()
 class BillScreen(QDialog):
     shared_instance = None
     @staticmethod
@@ -1947,6 +1994,7 @@ class SplashScreen(TimeBoundScreen):
         thankYouScreen =  ThankYouScreen.getInstance()
         areaSelectionScreen = AreaSelectionScreen.getInstance()
         selectWaiterScreen  = WaiterSelectionScreen.getInstance()
+        chefSpecialScreen = ChefSpecialScreen.getInstance()
         # navigateToScreen(ReserveScreen)
         # navigateToScreen(WaiterPinScreen)
         # navigateToScreen(AboutScreen)
