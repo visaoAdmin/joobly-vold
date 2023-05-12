@@ -1,6 +1,7 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
+import traceback
 import math
 from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
@@ -1038,9 +1039,10 @@ class TableSelectionScreen(QDialog):
         self.loadTables()   
     def loadTables(self):
         try:
-            global idToArea,areaToId
-            area = getArea()
 
+            global idToArea,areaToId,storage
+            area = getArea()
+            
             tables = storage["tables"]
             self.listWidget.clear()
 
@@ -1051,12 +1053,12 @@ class TableSelectionScreen(QDialog):
                 if areaToId[area] == table['areaId']:
                     self.tables.append(tables[i])
 
-
             self.loadCurrentPage()
 
 
 
         except Exception as e:
+            print(traceback.print_exc())
 
             tables = storage["tables"]
             for t in tables:
@@ -2030,14 +2032,7 @@ def loadConfig():
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         
-        newDict = {
-        }
         
-        for i in storage['areas']:
-            newDict[i['id']] = i['name']
-            areaToId[i['name']] = i['id']
-
-        idToArea.update(newDict)
 
         saveStorage()
         newRestId = getRestaurantId()
@@ -2061,6 +2056,15 @@ def loadConfig():
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         restaurantChanged = False
         storage=loadStorage()
+    finally:
+        newDict = {
+        }
+        
+        for i in storage['areas']:
+            newDict[i['id']] = i['name']
+            areaToId[i['name']] = i['id']
+
+        idToArea.update(newDict)
 
 
 
