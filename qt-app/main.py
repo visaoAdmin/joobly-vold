@@ -2055,6 +2055,9 @@ class ThankYouScreen(TimeBoundScreen):
         super().stop()
         navigateToRestart()
 
+def loadChefSpecials():
+    pass
+
 def loadConfig():
     global storage, table, restaurantChanged,idToArea,areaToId
     try:
