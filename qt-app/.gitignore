@@ -6,3 +6,4 @@ background_queue.file
 logFile.txt
 lastLaunchLog.txt
 venv
+restaurantData/dishes

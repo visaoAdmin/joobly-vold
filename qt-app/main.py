@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
 import PyQt5.QtGui as QtGui
+import shutil
 from TimeBoundScreen import TimeBoundScreen
 import os 
 from ServiceCallDebouncer import ServiceCallDebouncer
@@ -63,6 +64,7 @@ waiterMenuRedirectTimer = RedirectTimer()
 waiterPinRedirectTimer = RedirectTimer()
 serviceCallDebouncer = ServiceCallDebouncer()
 smiley = "neutral"
+serviceCallStatus = "completed"
 timeOuts = {
     'generalTimeout':60,
     'thankYouTimeout':600,
@@ -128,13 +130,13 @@ def loadPicture(filepath,url):
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         pass
     finally:
-
-
         if(url=="" or url==None):
             return None
-        with open(filepath,"rb") as logo:
-            return logo.read()
-
+        try:
+            with open(filepath,"rb") as logo:
+                return logo.read()
+        except:
+            return "NO_INTERNET"
 def setupKeyboard(self):
     self.key1.clicked.connect(lambda: self.onKey("1"))
     self.key2.clicked.connect(lambda: self.onKey("2"))
@@ -270,6 +272,39 @@ def navigateToRestart():
 menuScreenTime = None
 isOnMenuScreen = False
 
+def initiateServiceCall():
+    try:
+        global serviceCallStatus,hangoutId, serviceCallStartTime,table,serviceCalls,serviceCallDebouncer
+        top = len(serviceCalls)
+        serviceCallStatus = "ongoing"
+        serviceCalls[callNumber]={}
+        serviceCalls[callNumber]['open']=time.time()
+        serviceCallStartTime=getCurrentTime()
+        # qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
+
+        serviceCallDebouncer.call(qWorker.addAPICall,[callWaiter,[getTableId(),  hangoutId,callNumber]])
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+        pass
+
+def terminateServiceCall(order=None):
+    global isWaiterCalled,callNumber
+    try:
+        global serviceCalls, serviceCallStatus
+        serviceCallStatus = "completed"
+        serviceCalls[callNumber]['close']=time.time()
+        serviceCalls[callNumber]['total'] = serviceCalls[callNumber]['close']-serviceCalls[callNumber]['open']
+        
+        isWaiterCalled = False
+        
+        if serviceCallDebouncer.stop() == False:
+            qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total'],order])
+            callNumber = callNumber+1
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+        pass
 def goBackAutomatically():
     if isOnMenuScreen:
         navigateGoBack()
@@ -1432,19 +1467,8 @@ class TapForServiceScreen(QDialog):
             navigateToScreen(CloseServiceScreen)
     
     def callWaiter(self):
-        try:
-            global hangoutId, serviceCallStartTime,table,serviceCalls,serviceCallDebouncer
-            top = len(serviceCalls)
-            serviceCalls[callNumber]={}
-            serviceCalls[callNumber]['open']=time.time()
-            serviceCallStartTime=getCurrentTime()
-            # qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
-
-            serviceCallDebouncer.call(qWorker.addAPICall,[callWaiter,[getTableId(),  hangoutId,callNumber]])
-        except Exception as e:
-            with open("logFile.txt","a+") as logFile:
-                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
-            pass
+        initiateServiceCall()
+        
     
     def navigateToDinerActionMenu(self):
         navigateToScreen(ChefSpecialScreen)
@@ -1528,22 +1552,7 @@ class CloseServiceScreen(QDialog):
             navigateToScreen(TapForServiceScreen)
     
     def waiterArrived(self):
-        global isWaiterCalled,callNumber
-        try:
-            global serviceCalls
-            
-            serviceCalls[callNumber]['close']=time.time()
-            serviceCalls[callNumber]['total'] = serviceCalls[callNumber]['close']-serviceCalls[callNumber]['open']
-            
-            isWaiterCalled = False
-            
-            if serviceCallDebouncer.stop() == False:
-                qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
-                callNumber = callNumber+1
-        except Exception as e:
-            with open("logFile.txt","a+") as logFile:
-                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
-            pass
+        terminateServiceCall()
 
     
     def navigateToDinerActionMenu(self):
@@ -1652,6 +1661,10 @@ class ChefSpecialScreen(QDialog):
 
 class ChefSpecialMenuItemsScreen(QDialog):
     shared_instance = None
+    cur = 0
+    ordered = {}
+    
+
     @staticmethod
     def getInstance():
         if(ChefSpecialMenuItemsScreen.shared_instance == None):
@@ -1661,6 +1674,67 @@ class ChefSpecialMenuItemsScreen(QDialog):
         super(ChefSpecialMenuItemsScreen, self).__init__()
         loadUi("ui/ChefSpecialMenuItemScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
+        self.goToPreviousDish.clicked.connect(self.previousDish)
+        self.goToNextDish.clicked.connect(self.nextDish)
+        self.orderButton.clicked.connect(self.orderItem)
+        self.serviceEndButton.clicked.connect(self.confirmOrder)
+    
+    def confirmOrder(self):
+        finalOrder = []
+        for key in self.ordered.keys():
+            if self.ordered[key] == True:
+                finalOrder.append(storage["chefSpecials"][key]["id"])
+        terminateServiceCall(finalOrder)
+        self.ordered.clear()
+        self.cur = 0
+        navigateToScreen(TapForServiceScreen)
+    def clear(self):
+        self.loadDish()
+        if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
+            self.orderButton.setIcon(QIcon('assets/CancelOrder.png'))
+
+        else:
+            self.orderButton.setIcon(QIcon('assets/OrderButton.png'))
+
+
+    def orderItem(self):
+        if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
+            self.cancelOrder()
+            return
+        if serviceCallStatus=="completed":
+            initiateServiceCall()
+        self.ordered[self.cur]=True
+        self.clear()
+
+    def cancelOrder(self):
+        self.ordered[self.cur]=False
+        self.clear()
+
+    def loadDish(self):
+        dish = storage["chefSpecials"][self.cur]
+        if os.path.isfile("restaurantData/dishes/"+dish["name"]):
+            data = ""
+            with open("restaurantData/dishes/"+dish["name"],"rb") as img:
+                data = img.read()
+        else:
+            data = loadPicture("restaurantData/dishes/"+dish["name"],dish["imageUrl"])
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+        self.label_2.setPixmap(pixmap)
+
+    def previousDish(self):
+        if self.cur == 0:
+            self.cur = len(storage["chefSpecials"]) - 1
+        else:
+            self.cur -= 1
+        self.clear()
+
+    def nextDish(self):
+        self.cur += 1
+        self.cur = self.cur%(len(storage["chefSpecials"]))
+        self.clear()
+
     def navigateBack(self):
         navigateGoBack()
 class BillScreen(QDialog):
@@ -2056,7 +2130,19 @@ class ThankYouScreen(TimeBoundScreen):
         navigateToRestart()
 
 def loadChefSpecials():
-    pass
+    if internetWorking("http://www.google.com"):
+        shutil.rmtree("restaurantData/dishes")
+        os.mkdir("restaurantData/dishes")
+
+    for i in storage["chefSpecials"]:
+        data = loadPicture("restaurantData/dishes/"+i["name"],i["imageUrl"])
+
+def internetWorking(url):
+    try:
+        if urllib.request.urlopen(url).read():
+            return True
+    except:
+        return False
 
 def loadConfig():
     global storage, table, restaurantChanged,idToArea,areaToId
@@ -2081,14 +2167,7 @@ def loadConfig():
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         
-        newDict = {
-        }
-        
-        for i in storage['areas']:
-            newDict[i['id']] = i['name']
-            areaToId[i['name']] = i['id']
 
-        idToArea.update(newDict)
 
         saveStorage()
         newRestId = getRestaurantId()
@@ -2112,6 +2191,17 @@ def loadConfig():
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         restaurantChanged = False
         storage=loadStorage()
+
+    finally:
+        loadChefSpecials()
+        newDict = {
+        }
+        if storage['areas']:
+            for i in storage['areas']:
+                newDict[i['id']] = i['name']
+                areaToId[i['name']] = i['id']
+
+            idToArea.update(newDict)
 
 
 

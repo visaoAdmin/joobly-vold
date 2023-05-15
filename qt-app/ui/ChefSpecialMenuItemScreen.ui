@@ -32,7 +32,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../assets/ChefSpecialMenuItemScreen.png</pixmap>
+    <pixmap>../../../../Desktop/1.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -48,7 +48,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:transparent;</string>
+    <string notr="true">background-color: transparent; border: 0px;</string>
    </property>
    <property name="text">
     <string/>
@@ -64,7 +64,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:transparent;</string>
+    <string notr="true">background-color: transparent; border: 0px;</string>
    </property>
    <property name="text">
     <string/>
@@ -80,23 +80,23 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:transparent;</string>
+    <string notr="true">background-color: transparent; border: 0px;</string>
    </property>
    <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="orderButton">
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>650</y>
+     <x>280</x>
+     <y>698</y>
      <width>171</width>
      <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:transparent</string>
+    <string notr="true">background-color: transparent; border: 0px;</string>
    </property>
    <property name="text">
     <string/>
@@ -151,13 +151,30 @@
     <pixmap>../assets/OrderSample.png</pixmap>
    </property>
   </widget>
-  <zorder>label_2</zorder>
+  <widget class="QPushButton" name="serviceEndButton">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>10</y>
+     <width>151</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: transparent; border: 0px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>price</zorder>
   <zorder>itemImageLabel</zorder>
+  <zorder>label_2</zorder>
   <zorder>backButton</zorder>
   <zorder>goToPreviousDish</zorder>
   <zorder>goToNextDish</zorder>
-  <zorder>pushButton</zorder>
-  <zorder>price</zorder>
+  <zorder>orderButton</zorder>
+  <zorder>serviceEndButton</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>

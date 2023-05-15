@@ -115,7 +115,7 @@ def callWaiterFailureHandler(job, connection, type, value, traceback):
     # background_jobs.append(job1)
     # index+=1
 
-def waiterArrived(table, hangoutId, callNumber, responseTime):
+def waiterArrived(table, hangoutId, callNumber, responseTime,order=None):
     
 
     response = requests.post(BASE_URL + "/pod-events", json={
@@ -123,7 +123,8 @@ def waiterArrived(table, hangoutId, callNumber, responseTime):
         "hangout": hangoutId,
         "callNumber": callNumber,
         "responseTime": responseTime,
-        "type": "WAITER_ARRIVED"
+        "type": "WAITER_ARRIVED",
+        "order":order
     },headers={"device-serial":getserial()}, timeout = TIMEOUT)
     if(response.status_code==503):
         raise Exception()
