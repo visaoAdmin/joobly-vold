@@ -1622,21 +1622,27 @@ class DinerActionMenuScreen(TimeBoundScreen):
 
 
 
-class ChefSpecialScreen(QDialog):
+class ChefSpecialScreen(TimeBoundScreen):
     shared_instance = None
+    signal = pyqtSignal()
     @staticmethod
     def getInstance():
         if(ChefSpecialScreen.shared_instance == None):
             ChefSpecialScreen.shared_instance = ChefSpecialScreen()
         return ChefSpecialScreen.shared_instance
     def __init__(self):
-        super(ChefSpecialScreen, self).__init__()
+        super(ChefSpecialScreen, self).__init__(timeOuts['generalTimeout'])
         loadUi("ui/ChefSpecialScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.openChefMenuItems.clicked.connect(self.navigateToMenuItems)
         self.loadQRCode()
+        self.signal.connect(self.navigateBack)
+        super().setRunnable(self.navigateBackSlot,[])
+    def navigateBackSlot(self):
+        self.signal.emit()
+    def clear(self):
+        super().reset()
     def loadQRCode(self):
-
         try:
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
 
@@ -1655,15 +1661,18 @@ class ChefSpecialScreen(QDialog):
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
     def navigateToMenuItems(self):
+        super().stop()
         navigateToScreen(ChefSpecialMenuItemsScreen)
+
     def navigateBack(self):
+        super().stop()
         navigateGoBack()
 
-class ChefSpecialMenuItemsScreen(QDialog):
+class ChefSpecialMenuItemsScreen(TimeBoundScreen):
     shared_instance = None
     cur = 0
     ordered = {}
-    
+    signal = pyqtSignal()
 
     @staticmethod
     def getInstance():
@@ -1671,24 +1680,32 @@ class ChefSpecialMenuItemsScreen(QDialog):
             ChefSpecialMenuItemsScreen.shared_instance = ChefSpecialMenuItemsScreen()
         return ChefSpecialMenuItemsScreen.shared_instance
     def __init__(self):
-        super(ChefSpecialMenuItemsScreen, self).__init__()
+        super(ChefSpecialMenuItemsScreen, self).__init__(300)
         loadUi("ui/ChefSpecialMenuItemScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToPreviousDish.clicked.connect(self.previousDish)
         self.goToNextDish.clicked.connect(self.nextDish)
         self.orderButton.clicked.connect(self.orderItem)
         self.serviceEndButton.clicked.connect(self.confirmOrder)
+        self.signal.connect(self.navigateBack)
+        super().setRunnable(self.navigateBackSlot,[])
+
+    def navigateBackSlot(self):
+        self.signal.emit()
     
     def confirmOrder(self):
-        finalOrder = []
-        for key in self.ordered.keys():
-            if self.ordered[key] == True:
-                finalOrder.append(storage["chefSpecials"][key]["id"])
-        terminateServiceCall(finalOrder)
+        if(serviceCallStatus=="ongoing"):
+            finalOrder = []
+            for key in self.ordered.keys():
+                if self.ordered[key] == True:
+                    chefSpecial = storage["chefSpecials"][key]
+                    finalOrder.append(chefSpecial)
+            terminateServiceCall(finalOrder)
         self.ordered.clear()
         self.cur = 0
         navigateToScreen(TapForServiceScreen)
     def clear(self):
+        super().reset()
         self.loadDish()
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
             self.orderButton.setIcon(QIcon('assets/CancelOrder.png'))
@@ -1698,6 +1715,7 @@ class ChefSpecialMenuItemsScreen(QDialog):
 
 
     def orderItem(self):
+        super().reset()
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
             self.cancelOrder()
             return
@@ -1736,6 +1754,9 @@ class ChefSpecialMenuItemsScreen(QDialog):
         self.clear()
 
     def navigateBack(self):
+        super().stop()
+        self.ordered.clear()
+        self.cur = 0
         navigateGoBack()
 class BillScreen(QDialog):
     shared_instance = None
