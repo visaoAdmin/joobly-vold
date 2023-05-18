@@ -2158,7 +2158,10 @@ class ThankYouScreen(TimeBoundScreen):
 
 def loadChefSpecials():
     if internetWorking("http://www.google.com"):
-        shutil.rmtree("restaurantData/dishes")
+        try:
+            shutil.rmtree("restaurantData/dishes")
+        except:
+            pass
         os.mkdir("restaurantData/dishes")
 
     for i in storage["chefSpecials"]:
