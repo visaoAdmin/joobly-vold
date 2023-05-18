@@ -1728,6 +1728,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
             return
         if serviceCallStatus=="completed":
             initiateServiceCall()
+            lightThreadRunner.launch(blueLight)
         self.ordered[self.cur]=True
         self.clear()
 
