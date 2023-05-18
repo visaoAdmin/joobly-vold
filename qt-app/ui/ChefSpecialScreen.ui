@@ -48,7 +48,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:transparent;</string>
+    <string notr="true">background-color: transparent; border: 0px;</string>
    </property>
    <property name="text">
     <string/>
@@ -64,7 +64,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:transparent;</string>
+    <string notr="true">background-color: transparent; border: 0px;</string>
    </property>
    <property name="text">
     <string/>
