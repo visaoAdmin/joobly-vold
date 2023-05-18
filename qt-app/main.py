@@ -354,10 +354,10 @@ def renderLogo(self, key="logo", width=220, height=220):
         # self.__dict__[key].setIcon(QIcon("restaurantData/logo"))
         self.__dict__[key].setStyleSheet(
                     "border-image : url('restaurantData/logo');"
-                    "border-top-left-radius :30px;"
-                    "border-top-right-radius : 30px; "
-                    "border-bottom-left-radius : 30px; "
-                    "border-bottom-right-radius : 30px;")
+                    "border-top-left-radius :20px;"
+                    "border-top-right-radius : 20px; "
+                    "border-bottom-left-radius : 20px; "
+                    "border-bottom-right-radius : 20px;")
 
 # class Communicate(QObject):
 #     pass
@@ -468,6 +468,7 @@ class WaiterSelectionScreen(QDialog):
                                     "margin-bottom: 15px;"
                                     "border-radius: 10px;"
                                     "padding: 12px 12px 12px 12px;"
+                                    "border:1px solid rgba(255, 255, 255, 0.2);"
                                     "padding-top:24px;"
                                     "padding-bottom:24px;"
                                     "margin-right:20px;"
@@ -912,7 +913,7 @@ class AreaSelectionScreen(QDialog):
                                     "background-color:#041c40;"
                                     "font-size:20px;"
                                     "color:white;"
-                                    "border:0px;"
+                                    "border:0px;" 
                                   "}"
                                   "QListView::item"
                                   "{"
@@ -922,6 +923,7 @@ class AreaSelectionScreen(QDialog):
                                     "border-radius: 10px;"
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
+                                    "border:1px solid rgba(255, 255, 255, 0.2);"
                                     "padding-bottom:24px;"
                                     "margin-right:20px;"
                                   "}"
@@ -1040,6 +1042,7 @@ class TableSelectionScreen(QDialog):
                                     "color:white;"
                                     "margin-bottom: 15px;"
                                     "border-radius: 10px;"
+                                    "border:1px solid rgba(255, 255, 255, 0.2);"
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
                                     "padding-bottom:24px;"
@@ -1529,7 +1532,7 @@ class CloseServiceScreen(QDialog):
         else:
             setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
 
-        self.messageLabel.setText(currentWaiter["firstName"][0:10]+" on the way")
+        self.messageLabel.setText((currentWaiter["firstName"][0:10]+" on the way").upper())
         lightThreadRunner.launch(blueLight)
         # setIcon(self.happyButton,"assets/Happy-1.png")
         # setIcon(self.sadButton,"assets/sad-1.png")
@@ -1700,7 +1703,10 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
                 if self.ordered[key] == True:
                     chefSpecial = storage["chefSpecials"][key]
                     finalOrder.append(chefSpecial)
-            terminateServiceCall(finalOrder)
+            if finalOrder == []:
+                terminateServiceCall()
+            else:
+                terminateServiceCall(finalOrder)
         self.ordered.clear()
         self.cur = 0
         navigateToScreen(TapForServiceScreen)
@@ -2008,7 +2014,7 @@ class FeedbackScreen(QDialog):
         for i in ["food","service","ambience","music"]:
             self.markRating(i,0)
         self.timer.stop()
-        lightThreadRunner.launch(yellowLight)
+
         navigateToScreen(IdleLockScreen)
 
     def navigateToPaymentOptionScreen(self):
@@ -2051,7 +2057,7 @@ class FeedbackScreen(QDialog):
             for i in ["food","service","ambience","music"]:
                 self.markRating(i,0)
             self.timer.stop()
-            lightThreadRunner.launch(yellowLight)
+
             navigateToScreen(ThankYouScreen)
 
 class SplashScreen(TimeBoundScreen):
