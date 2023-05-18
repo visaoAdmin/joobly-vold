@@ -62,6 +62,7 @@ firstJourney = True
 feedbackRedirectTimer = RedirectTimer()
 waiterMenuRedirectTimer = RedirectTimer()
 waiterPinRedirectTimer = RedirectTimer()
+idleLockScreen = None
 serviceCallDebouncer = ServiceCallDebouncer()
 smiley = "neutral"
 serviceCallStatus = "completed"
@@ -2073,8 +2074,11 @@ class SplashScreen(TimeBoundScreen):
     def initializeEmit(self):
         self.signal.emit()
     def initialize(self):
-        global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen
+        global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen,idleLockScreen
 
+        qWorker = QueueWorker()
+        lightThreadRunner = ReUsableThreadRunner()
+        smileyRunner = SmileyRunner()
 
         reserveScreen = ReserveScreen.getInstance()
         waiterPinScreen =  WaiterPinScreen.getInstance()
@@ -2096,6 +2100,7 @@ class SplashScreen(TimeBoundScreen):
         areaSelectionScreen = AreaSelectionScreen.getInstance()
         selectWaiterScreen  = WaiterSelectionScreen.getInstance()
         chefSpecialScreen = ChefSpecialScreen.getInstance()
+        idleLockScreen = IdleLockScreen.getInstance()
         # navigateToScreen(ReserveScreen)
         # navigateToScreen(WaiterPinScreen)
         # navigateToScreen(AboutScreen)
@@ -2223,7 +2228,8 @@ def loadConfig():
         storage=loadStorage()
 
     finally:
-        loadChefSpecials()
+        qWorker.addAPICall(loadChefSpecials,[])
+        # loadChefSpecials()
         newDict = {
         }
         if storage and storage['areas']:
@@ -2254,7 +2260,7 @@ mainStackedWidget=QtWidgets.QStackedWidget()
 # idleLockScreen = IdleLockScreen()
 
 
-idleLockScreen = IdleLockScreen.getInstance()
+# idleLockScreen = IdleLockScreen.getInstance()
 
 
 if ENV == "dev":
