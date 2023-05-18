@@ -2163,9 +2163,9 @@ def loadChefSpecials():
         except:
             pass
         os.mkdir("restaurantData/dishes")
-
-    for i in storage["chefSpecials"]:
-        data = loadPicture("restaurantData/dishes/"+i["name"],i["imageUrl"])
+    if storage["chefSpecials"]:
+        for i in storage["chefSpecials"]:
+            data = loadPicture("restaurantData/dishes/"+i["name"],i["imageUrl"])
 
 def internetWorking(url):
     try:
