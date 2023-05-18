@@ -2226,7 +2226,7 @@ def loadConfig():
         loadChefSpecials()
         newDict = {
         }
-        if storage['areas']:
+        if storage and storage['areas']:
             for i in storage['areas']:
                 newDict[i['id']] = i['name']
                 areaToId[i['name']] = i['id']
