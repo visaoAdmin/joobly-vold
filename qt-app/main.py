@@ -2163,7 +2163,7 @@ def loadChefSpecials():
         except:
             pass
         os.mkdir("restaurantData/dishes")
-    if storage["chefSpecials"]:
+    if storage and storage["chefSpecials"]:
         for i in storage["chefSpecials"]:
             data = loadPicture("restaurantData/dishes/"+i["name"],i["imageUrl"])
 
