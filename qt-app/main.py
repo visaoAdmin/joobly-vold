@@ -1693,7 +1693,11 @@ class ChefSpecialScreen(TimeBoundScreen):
 
     def navigateBack(self):
         super().stop()
-        navigateGoBack()
+        if(serviceCallStatus=="ongoing"):
+            navigateToScreen(CloseServiceScreen)
+        else:
+            navigateToScreen(TapForServiceScreen)
+        # navigateGoBack()
 
 class ChefSpecialMenuItemsScreen(TimeBoundScreen):
     shared_instance = None
@@ -1748,8 +1752,10 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
             self.orderButton.setIcon(QIcon('assets/OrderButton.png'))
         if(self.ordered_count!=0):
             self.serviceEndButton.setVisible(True)
+            self.backButton.setVisible(False)
         else:
             self.serviceEndButton.setVisible(False)
+            self.backButton.setVisible(True)
 
     def orderItem(self):
         super().reset()
@@ -1770,6 +1776,8 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
 
     def cancelOrder(self):
         self.ordered[self.cur]=False
+        if self.ordered_count ==0:
+            terminateServiceCall()
         self.clear()
 
     def loadDish(self):
