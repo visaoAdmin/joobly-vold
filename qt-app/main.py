@@ -7,6 +7,8 @@ from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
 import PyQt5.QtGui as QtGui
+from uuid import uuid4
+import shutil
 from TimeBoundScreen import TimeBoundScreen
 import os 
 from ServiceCallDebouncer import ServiceCallDebouncer
@@ -62,8 +64,10 @@ firstJourney = True
 feedbackRedirectTimer = RedirectTimer()
 waiterMenuRedirectTimer = RedirectTimer()
 waiterPinRedirectTimer = RedirectTimer()
+idleLockScreen = None
 serviceCallDebouncer = ServiceCallDebouncer()
 smiley = "neutral"
+serviceCallStatus = "completed"
 timeOuts = {
     'generalTimeout':60,
     'thankYouTimeout':600,
@@ -129,13 +133,13 @@ def loadPicture(filepath,url):
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         pass
     finally:
-
-
         if(url=="" or url==None):
             return None
-        with open(filepath,"rb") as logo:
-            return logo.read()
-
+        try:
+            with open(filepath,"rb") as logo:
+                return logo.read()
+        except:
+            return "NO_INTERNET"
 def setupKeyboard(self):
     self.key1.clicked.connect(lambda: self.onKey("1"))
     self.key2.clicked.connect(lambda: self.onKey("2"))
@@ -206,7 +210,8 @@ def getHangoutId ():
     # return 4 digit random string
     def getRandomString():
         import random
-        return ''.join(random.choice('0123456789') for i in range(4))
+        id =  ''.join(random.choice('0123456789') for i in range(4))
+        return id
     return getRandomString()
     
 
@@ -271,6 +276,39 @@ def navigateToRestart():
 menuScreenTime = None
 isOnMenuScreen = False
 
+def initiateServiceCall():
+    try:
+        global serviceCallStatus,hangoutId, serviceCallStartTime,table,serviceCalls,serviceCallDebouncer
+        top = len(serviceCalls)
+        serviceCallStatus = "ongoing"
+        serviceCalls[callNumber]={}
+        serviceCalls[callNumber]['open']=time.time()
+        serviceCallStartTime=getCurrentTime()
+        # qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
+
+        serviceCallDebouncer.call(qWorker.addAPICall,[callWaiter,[getTableId(),  hangoutId,callNumber]])
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+        pass
+
+def terminateServiceCall(order=None):
+    global isWaiterCalled,callNumber
+    try:
+        global serviceCalls, serviceCallStatus
+        serviceCallStatus = "completed"
+        serviceCalls[callNumber]['close']=time.time()
+        serviceCalls[callNumber]['total'] = serviceCalls[callNumber]['close']-serviceCalls[callNumber]['open']
+        
+        isWaiterCalled = False
+        
+        if serviceCallDebouncer.stop() == False:
+            qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total'],order])
+            callNumber = callNumber+1
+    except Exception as e:
+        with open("logFile.txt","a+") as logFile:
+            logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+        pass
 def goBackAutomatically():
     if isOnMenuScreen:
         navigateGoBack()
@@ -320,10 +358,10 @@ def renderLogo(self, key="logo", width=220, height=220):
         # self.__dict__[key].setIcon(QIcon("restaurantData/logo"))
         self.__dict__[key].setStyleSheet(
                     "border-image : url('restaurantData/logo');"
-                    "border-top-left-radius :30px;"
-                    "border-top-right-radius : 30px; "
-                    "border-bottom-left-radius : 30px; "
-                    "border-bottom-right-radius : 30px;")
+                    "border-top-left-radius :20px;"
+                    "border-top-right-radius : 20px; "
+                    "border-bottom-left-radius : 20px; "
+                    "border-bottom-right-radius : 20px;")
 
 # class Communicate(QObject):
 #     pass
@@ -434,6 +472,7 @@ class WaiterSelectionScreen(QDialog):
                                     "margin-bottom: 15px;"
                                     "border-radius: 10px;"
                                     "padding: 12px 12px 12px 12px;"
+                                    "border:1px solid rgba(255, 255, 255, 0.2);"
                                     "padding-top:24px;"
                                     "padding-bottom:24px;"
                                     "margin-right:20px;"
@@ -878,7 +917,7 @@ class AreaSelectionScreen(QDialog):
                                     "background-color:#041c40;"
                                     "font-size:20px;"
                                     "color:white;"
-                                    "border:0px;"
+                                    "border:0px;" 
                                   "}"
                                   "QListView::item"
                                   "{"
@@ -888,6 +927,7 @@ class AreaSelectionScreen(QDialog):
                                     "border-radius: 10px;"
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
+                                    "border:1px solid rgba(255, 255, 255, 0.2);"
                                     "padding-bottom:24px;"
                                     "margin-right:20px;"
                                   "}"
@@ -1006,6 +1046,7 @@ class TableSelectionScreen(QDialog):
                                     "color:white;"
                                     "margin-bottom: 15px;"
                                     "border-radius: 10px;"
+                                    "border:1px solid rgba(255, 255, 255, 0.2);"
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
                                     "padding-bottom:24px;"
@@ -1235,7 +1276,9 @@ class ChooseNumberOfGuests(QDialog):
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" Trying to add hangout"+"\n"+"\n")
             table = getTableId()
-            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = "$".join(hangoutId.split(' '))
+            hangoutId = str(uuid4())
             serviceCalls['hangoutId'] = hangoutId
             if(guestCount==0 or guestCount==""):
                 setPixMap(self,"assets/WaiterLITE-UI-09-2.png")
@@ -1244,7 +1287,9 @@ class ChooseNumberOfGuests(QDialog):
                 navigateToScreen(ContinueExistingJourneyScreen)
                 continueExistingJourney = False
                 return
-            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = "$".join(hangoutId.split(' '))
+
             serviceCalls['hangoutId'] = hangoutId
             qWorker.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
 
@@ -1309,7 +1354,9 @@ class CorrectChooseNumberOfGuests(QDialog):
                 return
             table = getTableId()
 
-            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = "$".join(hangoutId.split(' '))
+
             serviceCalls['hangoutId'] = hangoutId
 
             # startHangout(table, guestCount, waiterId, hangoutId)
@@ -1434,22 +1481,11 @@ class TapForServiceScreen(QDialog):
             navigateToScreen(CloseServiceScreen)
     
     def callWaiter(self):
-        try:
-            global hangoutId, serviceCallStartTime,table,serviceCalls,serviceCallDebouncer
-            top = len(serviceCalls)
-            serviceCalls[callNumber]={}
-            serviceCalls[callNumber]['open']=time.time()
-            serviceCallStartTime=getCurrentTime()
-            # qWorker.addAPICall(callWaiter,[getTableId(),  hangoutId,callNumber])
-
-            serviceCallDebouncer.call(qWorker.addAPICall,[callWaiter,[getTableId(),  hangoutId,callNumber]])
-        except Exception as e:
-            with open("logFile.txt","a+") as logFile:
-                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
-            pass
+        initiateServiceCall()
+        
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(DinerActionMenuScreen)
+        navigateToScreen(ChefSpecialScreen)
     
     def navigateToCheckoutScreen(self):
         
@@ -1507,7 +1543,7 @@ class CloseServiceScreen(QDialog):
         else:
             setPixMap(self,"assets/WaiterLITE-UI-13-1 2.png")
 
-        self.messageLabel.setText(currentWaiter["firstName"][0:10]+" on the way")
+        self.messageLabel.setText((currentWaiter["firstName"][0:10]+" on the way").upper())
         lightThreadRunner.launch(blueLight)
         # setIcon(self.happyButton,"assets/Happy-1.png")
         # setIcon(self.sadButton,"assets/sad-1.png")
@@ -1530,26 +1566,11 @@ class CloseServiceScreen(QDialog):
             navigateToScreen(TapForServiceScreen)
     
     def waiterArrived(self):
-        global isWaiterCalled,callNumber
-        try:
-            global serviceCalls
-            
-            serviceCalls[callNumber]['close']=time.time()
-            serviceCalls[callNumber]['total'] = serviceCalls[callNumber]['close']-serviceCalls[callNumber]['open']
-            
-            isWaiterCalled = False
-            
-            if serviceCallDebouncer.stop() == False:
-                qWorker.addAPICall(waiterArrived,[ getTableId(),hangoutId, callNumber, serviceCalls[callNumber]['total']])
-                callNumber = callNumber+1
-        except Exception as e:
-            with open("logFile.txt","a+") as logFile:
-                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
-            pass
+        terminateServiceCall()
 
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(DinerActionMenuScreen)
+        navigateToScreen(ChefSpecialScreen)
     
     def navigateToCheckoutScreen(self):
         navigateToScreen(BillScreen)
@@ -1615,9 +1636,146 @@ class DinerActionMenuScreen(TimeBoundScreen):
 
 
 
+class ChefSpecialScreen(TimeBoundScreen):
+    shared_instance = None
+    signal = pyqtSignal()
+    @staticmethod
+    def getInstance():
+        if(ChefSpecialScreen.shared_instance == None):
+            ChefSpecialScreen.shared_instance = ChefSpecialScreen()
+        return ChefSpecialScreen.shared_instance
+    def __init__(self):
+        super(ChefSpecialScreen, self).__init__(timeOuts['generalTimeout'])
+        loadUi("ui/ChefSpecialScreen.ui", self)
+        self.backButton.clicked.connect(self.navigateBack)
+        self.openChefMenuItems.clicked.connect(self.navigateToMenuItems)
+        self.loadQRCode()
+        self.signal.connect(self.navigateBack)
+        super().setRunnable(self.navigateBackSlot,[])
+    def navigateBackSlot(self):
+        self.signal.emit()
+    def clear(self):
+        super().reset()
+    def loadQRCode(self):
+        try:
+            url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
+
+            if "menuQr" in storage:
+                url = storage["menuQr"] 
+                
+
+                data = loadPicture("restaurantData/menuQr",url)
+
+                image = QImage()
+                image.loadFromData(data)
+                pixmap = QPixmap(image)
+                self.qrimage.setPixmap(pixmap.scaled(170, 170))
+        except Exception as e:
+            with open("logFile.txt","a+") as logFile:
+                logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
+            pass
+    def navigateToMenuItems(self):
+        super().stop()
+        navigateToScreen(ChefSpecialMenuItemsScreen)
+
+    def navigateBack(self):
+        super().stop()
+        navigateGoBack()
+
+class ChefSpecialMenuItemsScreen(TimeBoundScreen):
+    shared_instance = None
+    cur = 0
+    ordered = {}
+    signal = pyqtSignal()
+
+    @staticmethod
+    def getInstance():
+        if(ChefSpecialMenuItemsScreen.shared_instance == None):
+            ChefSpecialMenuItemsScreen.shared_instance = ChefSpecialMenuItemsScreen()
+        return ChefSpecialMenuItemsScreen.shared_instance
+    def __init__(self):
+        super(ChefSpecialMenuItemsScreen, self).__init__(300)
+        loadUi("ui/ChefSpecialMenuItemScreen.ui", self)
+        self.backButton.clicked.connect(self.navigateBack)
+        self.goToPreviousDish.clicked.connect(self.previousDish)
+        self.goToNextDish.clicked.connect(self.nextDish)
+        self.orderButton.clicked.connect(self.orderItem)
+        self.serviceEndButton.clicked.connect(self.confirmOrder)
+        self.signal.connect(self.navigateBack)
+        super().setRunnable(self.navigateBackSlot,[])
+
+    def navigateBackSlot(self):
+        self.signal.emit()
+    
+    def confirmOrder(self):
+        if(serviceCallStatus=="ongoing"):
+            finalOrder = []
+            for key in self.ordered.keys():
+                if self.ordered[key] == True:
+                    chefSpecial = storage["chefSpecials"][key]
+                    finalOrder.append(chefSpecial)
+            if finalOrder == []:
+                terminateServiceCall()
+            else:
+                terminateServiceCall(finalOrder)
+        self.ordered.clear()
+        self.cur = 0
+        navigateToScreen(TapForServiceScreen)
+    def clear(self):
+        super().reset()
+        self.loadDish()
+        if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
+            self.orderButton.setIcon(QIcon('assets/CancelOrder.png'))
+
+        else:
+            self.orderButton.setIcon(QIcon('assets/OrderButton.png'))
 
 
+    def orderItem(self):
+        super().reset()
+        if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
+            self.cancelOrder()
+            return
+        if serviceCallStatus=="completed":
+            initiateServiceCall()
+            lightThreadRunner.launch(blueLight)
+        self.ordered[self.cur]=True
+        self.clear()
 
+    def cancelOrder(self):
+        self.ordered[self.cur]=False
+        self.clear()
+
+    def loadDish(self):
+        dish = storage["chefSpecials"][self.cur]
+        if os.path.isfile("restaurantData/dishes/"+dish["name"]):
+            data = ""
+            with open("restaurantData/dishes/"+dish["name"],"rb") as img:
+                data = img.read()
+        else:
+            data = loadPicture("restaurantData/dishes/"+dish["name"],dish["imageUrl"])
+        image = QImage()
+        image.loadFromData(data)
+        pixmap = QPixmap(image)
+        self.label_2.setPixmap(pixmap)
+
+    def previousDish(self):
+        if self.cur == 0:
+            self.cur = len(storage["chefSpecials"]) - 1
+        else:
+            self.cur -= 1
+        self.clear()
+
+    def nextDish(self):
+        self.cur += 1
+        self.cur = self.cur%(len(storage["chefSpecials"]))
+        self.clear()
+
+    def navigateBack(self):
+        super().stop()
+        self.ordered.clear()
+        self.cur = 0
+        navigateGoBack()
 class BillScreen(QDialog):
     shared_instance = None
     @staticmethod
@@ -1868,7 +2026,7 @@ class FeedbackScreen(QDialog):
         for i in ["food","service","ambience","music"]:
             self.markRating(i,0)
         self.timer.stop()
-        lightThreadRunner.launch(yellowLight)
+
         navigateToScreen(IdleLockScreen)
 
     def navigateToPaymentOptionScreen(self):
@@ -1911,7 +2069,7 @@ class FeedbackScreen(QDialog):
             for i in ["food","service","ambience","music"]:
                 self.markRating(i,0)
             self.timer.stop()
-            lightThreadRunner.launch(yellowLight)
+
             navigateToScreen(ThankYouScreen)
 
 class SplashScreen(TimeBoundScreen):
@@ -1927,8 +2085,11 @@ class SplashScreen(TimeBoundScreen):
     def initializeEmit(self):
         self.signal.emit()
     def initialize(self):
-        global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen
+        global qWorker,lightThreadRunner,smileyRunner,waiterMenuScreen,idleLockScreen
 
+        qWorker = QueueWorker()
+        lightThreadRunner = ReUsableThreadRunner()
+        smileyRunner = SmileyRunner()
 
         reserveScreen = ReserveScreen.getInstance()
         waiterPinScreen =  WaiterPinScreen.getInstance()
@@ -1949,6 +2110,8 @@ class SplashScreen(TimeBoundScreen):
         thankYouScreen =  ThankYouScreen.getInstance()
         areaSelectionScreen = AreaSelectionScreen.getInstance()
         selectWaiterScreen  = WaiterSelectionScreen.getInstance()
+        chefSpecialScreen = ChefSpecialScreen.getInstance()
+        idleLockScreen = IdleLockScreen.getInstance()
         # navigateToScreen(ReserveScreen)
         # navigateToScreen(WaiterPinScreen)
         # navigateToScreen(AboutScreen)
@@ -2009,6 +2172,24 @@ class ThankYouScreen(TimeBoundScreen):
         super().stop()
         navigateToRestart()
 
+def loadChefSpecials():
+    if internetWorking("http://www.google.com"):
+        try:
+            shutil.rmtree("restaurantData/dishes")
+        except:
+            pass
+        os.mkdir("restaurantData/dishes")
+    if storage and storage["chefSpecials"]:
+        for i in storage["chefSpecials"]:
+            data = loadPicture("restaurantData/dishes/"+i["name"],i["imageUrl"])
+
+def internetWorking(url):
+    try:
+        if urllib.request.urlopen(url).read():
+            return True
+    except:
+        return False
+
 def loadConfig():
     global storage, table, restaurantChanged,idToArea,areaToId
     try:
@@ -2032,7 +2213,7 @@ def loadConfig():
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
         
-        
+
 
         saveStorage()
         newRestId = getRestaurantId()
@@ -2056,15 +2237,18 @@ def loadConfig():
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         restaurantChanged = False
         storage=loadStorage()
+
     finally:
+        qWorker.addAPICall(loadChefSpecials,[])
+        # loadChefSpecials()
         newDict = {
         }
-        
-        for i in storage['areas']:
-            newDict[i['id']] = i['name']
-            areaToId[i['name']] = i['id']
+        if storage and storage['areas']:
+            for i in storage['areas']:
+                newDict[i['id']] = i['name']
+                areaToId[i['name']] = i['id']
 
-        idToArea.update(newDict)
+            idToArea.update(newDict)
 
 
 
@@ -2087,7 +2271,7 @@ mainStackedWidget=QtWidgets.QStackedWidget()
 # idleLockScreen = IdleLockScreen()
 
 
-idleLockScreen = IdleLockScreen.getInstance()
+# idleLockScreen = IdleLockScreen.getInstance()
 
 
 if ENV == "dev":
