@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
 import PyQt5.QtGui as QtGui
+from ulid import ULID
 import shutil
 from TimeBoundScreen import TimeBoundScreen
 import os 
@@ -208,7 +209,8 @@ def getHangoutId ():
     # return 4 digit random string
     def getRandomString():
         import random
-        return ''.join(random.choice('0123456789') for i in range(4))
+        id =  ''.join(random.choice('0123456789') for i in range(4))
+        return id
     return getRandomString()
     
 
@@ -1272,7 +1274,9 @@ class ChooseNumberOfGuests(QDialog):
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" Trying to add hangout"+"\n"+"\n")
             table = getTableId()
-            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = "$".join(hangoutId.split(' '))
+            hangoutId = str(ULID())
             serviceCalls['hangoutId'] = hangoutId
             if(guestCount==0 or guestCount==""):
                 setPixMap(self,"assets/WaiterLITE-UI-09-2.png")
@@ -1281,7 +1285,9 @@ class ChooseNumberOfGuests(QDialog):
                 navigateToScreen(ContinueExistingJourneyScreen)
                 continueExistingJourney = False
                 return
-            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = "$".join(hangoutId.split(' '))
+
             serviceCalls['hangoutId'] = hangoutId
             qWorker.addAPICall(startHangout,[table, guestCount, waiterId, hangoutId])
 
@@ -1346,7 +1352,9 @@ class CorrectChooseNumberOfGuests(QDialog):
                 return
             table = getTableId()
 
-            hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
+            # hangoutId = "$".join(hangoutId.split(' '))
+
             serviceCalls['hangoutId'] = hangoutId
 
             # startHangout(table, guestCount, waiterId, hangoutId)
