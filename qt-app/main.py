@@ -457,6 +457,7 @@ class WaiterSelectionScreen(QDialog):
         loadUi("ui/WaiterSelectionScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.listWidget.itemClicked.connect(self.waiterSelected)
+        self.confirmSelectionButton.clicked.connect(self.navigateToScreenChooseNumberOfGuests)
         self.listWidget.setStyleSheet(
                                   "QListView"
                                   "{"
@@ -486,6 +487,7 @@ class WaiterSelectionScreen(QDialog):
     def navigateBack(self):
         navigateGoBack()
     def clear(self):
+        self.confirmSelectionButton.setVisible(False)
         self.loadWaiters()
         pass
     def loadWaiters(self):
@@ -502,8 +504,10 @@ class WaiterSelectionScreen(QDialog):
             if waiterName == waiter["firstName"]:
                 waiterId = waiter["referenceId"][1:]
                 currentWaiter = waiter
-                navigateToScreen(ChooseNumberOfGuests)
-
+                self.confirmSelectionButton.setVisible(True)
+                # navigateToScreen(ChooseNumberOfGuests)
+    def navigateToScreenChooseNumberOfGuests(self):
+        navigateToScreen(ChooseNumberOfGuests)
 
 
 class WaiterPinScreen(QDialog):
