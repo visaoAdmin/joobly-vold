@@ -82,14 +82,16 @@
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -108,14 +110,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -134,14 +138,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -160,14 +166,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -186,14 +194,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -212,14 +222,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -238,14 +250,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -264,14 +278,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -290,14 +306,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -316,14 +334,16 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
 border-width: 2px;
 border-radius: 35px;
 padding: 4px;
-color: white;
+color: 041c40;
 font-size: 24px;</string>
    </property>
    <property name="text">
@@ -342,17 +362,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>1</string>
@@ -370,17 +390,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>2</string>
@@ -398,17 +418,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>3</string>
@@ -426,17 +446,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>4</string>
@@ -454,17 +474,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>5</string>
@@ -482,16 +502,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>1</string>
@@ -509,16 +530,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>2</string>
@@ -536,17 +558,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>3</string>
@@ -564,17 +586,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>4</string>
@@ -592,17 +614,17 @@ font-size: 24px;</string>
    <property name="font">
     <font>
      <pointsize>-1</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #233758;border-color: #4A5C75;
-
- border-width: 2px;
- border-radius: 35px;
-
- padding: 4px;
- color: white;
- font-size: 24px;</string>
+    <string notr="true">border:1px solid #9BA4B3;background-color: #ffffff;border-color: #9BA4B3;
+border-width: 2px;
+border-radius: 35px;
+padding: 4px;
+color: 041c40;
+font-size: 24px;</string>
    </property>
    <property name="text">
     <string>5</string>

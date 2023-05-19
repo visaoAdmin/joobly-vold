@@ -362,6 +362,8 @@ def renderLogo(self, key="logo", width=220, height=220):
                     "border-top-right-radius : 20px; "
                     "border-bottom-left-radius : 20px; "
                     "border-bottom-right-radius : 20px;")
+def renderChefSpecial(self,path,key="itemImageLabel"):
+    self.__dict__[key].setStyleSheet("border-image : url('"+path+"');border-top-left-radius :20px;border-top-right-radius : 20px; ")
 
 # class Communicate(QObject):
 #     pass
@@ -1697,6 +1699,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
     shared_instance = None
     cur = 0
     ordered = {}
+    ordered_count = 0
     signal = pyqtSignal()
 
     @staticmethod
@@ -1713,6 +1716,8 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         self.orderButton.clicked.connect(self.orderItem)
         self.serviceEndButton.clicked.connect(self.confirmOrder)
         self.signal.connect(self.navigateBack)
+
+        # self.itemImageLabel.setStyle("border-top-left-radius:40px;border-top-right-radius:40px;")
         super().setRunnable(self.navigateBackSlot,[])
 
     def navigateBackSlot(self):
@@ -1731,6 +1736,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
                 terminateServiceCall(finalOrder)
         self.ordered.clear()
         self.cur = 0
+        self.ordered_count = 0
         navigateToScreen(TapForServiceScreen)
     def clear(self):
         super().reset()
@@ -1740,17 +1746,26 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
 
         else:
             self.orderButton.setIcon(QIcon('assets/OrderButton.png'))
-
+        if(self.ordered_count!=0):
+            self.serviceEndButton.setVisible(True)
+        else:
+            self.serviceEndButton.setVisible(False)
 
     def orderItem(self):
         super().reset()
+
+
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
+            self.ordered_count-=1
             self.cancelOrder()
             return
         if serviceCallStatus=="completed":
             initiateServiceCall()
             lightThreadRunner.launch(blueLight)
         self.ordered[self.cur]=True
+        self.ordered_count+=1
+        if(self.ordered_count!=0):
+            self.serviceEndButton.setVisible(True)
         self.clear()
 
     def cancelOrder(self):
@@ -1765,10 +1780,12 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
                 data = img.read()
         else:
             data = loadPicture("restaurantData/dishes/"+dish["name"],dish["imageUrl"])
-        image = QImage()
-        image.loadFromData(data)
-        pixmap = QPixmap(image)
-        self.label_2.setPixmap(pixmap)
+        # image = QImage()
+        # image.loadFromData(data)
+        # pixmap = QPixmap(image)
+        # self.itemImageLabel.setPixmap(pixmap)
+        renderChefSpecial(self,"restaurantData/dishes/"+dish["name"])
+
 
     def previousDish(self):
         if self.cur == 0:
@@ -1905,8 +1922,8 @@ class PayQRScreen(TimeBoundScreen):
 
 class FeedbackScreen(QDialog):
     signal = pyqtSignal()
-    buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: white;font-size: 24px;"
-    normalStyle = buttonStyle+"background-color: #223757;border-color: #4A5C75;"
+    buttonStyle = "border-width: 2px;border-radius: 35px;padding: 4px;color: #041C40;font-size: 24px;"
+    normalStyle = buttonStyle+"border:2px solid #9BA4B3;border-color:#9BA4B3;background-color: #ffffff;"
     selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40; font-weight:bold;"
     ratings = {}
     timer = feedbackRedirectTimer
