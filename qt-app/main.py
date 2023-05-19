@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage,QIcon
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
 import PyQt5.QtGui as QtGui
-from ulid import ULID
+from uuid import uuid4
 import shutil
 from TimeBoundScreen import TimeBoundScreen
 import os 
@@ -1276,7 +1276,7 @@ class ChooseNumberOfGuests(QDialog):
             table = getTableId()
             # hangoutId = table+ datetime.today().strftime('-%Y-%m-%d-') +getHangoutId()
             # hangoutId = "$".join(hangoutId.split(' '))
-            hangoutId = str(ULID())
+            hangoutId = str(uuid4())
             serviceCalls['hangoutId'] = hangoutId
             if(guestCount==0 or guestCount==""):
                 setPixMap(self,"assets/WaiterLITE-UI-09-2.png")
