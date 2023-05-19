@@ -1489,7 +1489,11 @@ class TapForServiceScreen(QDialog):
         
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(ChefSpecialScreen)
+        if(storage["chefSpecials"] and len(storage["chefSpecials"])>0):
+            navigateToScreen(ChefSpecialScreen)
+        else:
+            navigateToScreen(DinerActionMenuScreen)
+        
     
     def navigateToCheckoutScreen(self):
         
@@ -1574,7 +1578,10 @@ class CloseServiceScreen(QDialog):
 
     
     def navigateToDinerActionMenu(self):
-        navigateToScreen(ChefSpecialScreen)
+        if(storage["chefSpecials"] and len(storage["chefSpecials"])>0):
+            navigateToScreen(ChefSpecialScreen)
+        else:
+            navigateToScreen(DinerActionMenuScreen)
     
     def navigateToCheckoutScreen(self):
         navigateToScreen(BillScreen)
