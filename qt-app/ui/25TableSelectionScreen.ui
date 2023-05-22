@@ -92,9 +92,9 @@
    <property name="geometry">
     <rect>
      <x>6</x>
-     <y>690</y>
+     <y>680</y>
      <width>471</width>
-     <height>131</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -131,7 +131,9 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../assets/moveLeft.png</normaloff>../assets/moveLeft.png</iconset>
+     <normaloff>../assets/moveLeft.png</normaloff>
+     <disabledoff>../assets/moveLeft.png</disabledoff>
+     <selectedoff>../assets/moveLeft.png</selectedoff>../assets/moveLeft.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -157,7 +159,9 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../assets/moveRight.png</normaloff>../assets/moveRight.png</iconset>
+     <normaloff>../assets/moveRight.png</normaloff>
+     <disabledoff>../assets/moveRight.png</disabledoff>
+     <selectedoff>../assets/moveRight.png</selectedoff>../assets/moveRight.png</iconset>
    </property>
    <property name="iconSize">
     <size>

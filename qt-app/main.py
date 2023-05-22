@@ -363,7 +363,7 @@ def renderLogo(self, key="logo", width=220, height=220):
                     "border-bottom-left-radius : 20px; "
                     "border-bottom-right-radius : 20px;")
 def renderChefSpecial(self,path,key="itemImageLabel"):
-    self.__dict__[key].setStyleSheet("border-image : url('"+path+"');border-top-left-radius :20px;border-top-right-radius : 20px; ")
+    self.__dict__[key].setStyleSheet("border-image : url('"+path+"');")
 
 # class Communicate(QObject):
 #     pass
@@ -1498,8 +1498,7 @@ class TapForServiceScreen(QDialog):
         
     
     def navigateToCheckoutScreen(self):
-        
-        navigateToScreen(BillScreen)
+        navigateToScreen(FeedbackScreen)
 
 class CloseServiceScreen(QDialog):
     shared_instance = None
@@ -1586,7 +1585,7 @@ class CloseServiceScreen(QDialog):
             navigateToScreen(DinerActionMenuScreen)
     
     def navigateToCheckoutScreen(self):
-        navigateToScreen(BillScreen)
+        navigateToScreen(FeedbackScreen)
 
 class DinerActionMenuScreen(TimeBoundScreen):
     
@@ -2127,26 +2126,27 @@ class SplashScreen(TimeBoundScreen):
         lightThreadRunner = ReUsableThreadRunner()
         smileyRunner = SmileyRunner()
 
-        reserveScreen = ReserveScreen.getInstance()
-        waiterPinScreen =  WaiterPinScreen.getInstance()
+        # reserveScreen = ReserveScreen.getInstance()
+        # waiterPinScreen =  WaiterPinScreen.getInstance()
         aboutScreen = AboutScreen.getInstance()
         confirmTable = ConfirmTable.getInstance()
-        waiterMenuScreen =  WaiterMenuScreen.getInstance()
+        # waiterMenuScreen =  WaiterMenuScreen.getInstance()
         tableSelectionScreen = TableSelectionScreen.getInstance()
-        continueExistingJourneyScreen = ContinueExistingJourneyScreen.getInstance()
+        # continueExistingJourneyScreen = ContinueExistingJourneyScreen.getInstance()
         chooseNumberOfGuests =  ChooseNumberOfGuests.getInstance()
-        checkedInScreen =  CheckedInScreen.getInstance()
+        # checkedInScreen =  CheckedInScreen.getInstance()
         tapForServiceScreen = TapForServiceScreen.getInstance()
         closeServiceScreen = CloseServiceScreen.getInstance()
-        dinerActionMenuScreen = DinerActionMenuScreen.getInstance()
-        billScreen = BillScreen.getInstance()
-        serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
-        payQrscreen = PayQRScreen.getInstance()
+        # dinerActionMenuScreen = DinerActionMenuScreen.getInstance()
+        # billScreen = BillScreen.getInstance()
+        # serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
+        # payQrscreen = PayQRScreen.getInstance()
         feedbackScreen = FeedbackScreen.getInstance()
         thankYouScreen =  ThankYouScreen.getInstance()
         areaSelectionScreen = AreaSelectionScreen.getInstance()
         selectWaiterScreen  = WaiterSelectionScreen.getInstance()
         chefSpecialScreen = ChefSpecialScreen.getInstance()
+        chefSpecialMenuItemsScreen = ChefSpecialMenuItemsScreen.getInstance()
         idleLockScreen = IdleLockScreen.getInstance()
         # navigateToScreen(ReserveScreen)
         # navigateToScreen(WaiterPinScreen)

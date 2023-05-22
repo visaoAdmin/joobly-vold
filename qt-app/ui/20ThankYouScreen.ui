@@ -41,10 +41,10 @@
   <widget class="QPushButton" name="goToNextButton">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>471</width>
-     <height>791</height>
+     <x>100</x>
+     <y>60</y>
+     <width>281</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -86,6 +86,10 @@
     <string/>
    </property>
   </widget>
+  <zorder>label_2</zorder>
+  <zorder>logo</zorder>
+  <zorder>logoBorder</zorder>
+  <zorder>goToNextButton</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>
