@@ -1737,10 +1737,16 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
                 terminateServiceCall()
             else:
                 terminateServiceCall(finalOrder)
+            lightThreadRunner.launch(yellowLight)
+        else:
+            initiateServiceCall()
+            lightThreadRunner.launch(blueLight)
+        
         self.ordered.clear()
         self.cur = 0
         self.ordered_count = 0
-        navigateToScreen(TapForServiceScreen)
+        self.clear()
+        # navigateToScreen(TapForServiceScreen)
     def clear(self):
         super().reset()
         self.loadDish()
@@ -1749,12 +1755,12 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
 
         else:
             self.orderButton.setIcon(QIcon('assets/OrderButton.png'))
-        if(self.ordered_count!=0):
-            self.serviceEndButton.setVisible(True)
-            self.backButton.setVisible(False)
+        if(serviceCallStatus == "ongoing"):
+            # self.serviceEndButton.setVisible(True)
+            self.serviceEndButton.setIcon(QIcon("assets/chefSpecialEnd.png"))
         else:
-            self.serviceEndButton.setVisible(False)
-            self.backButton.setVisible(True)
+            # self.serviceEndButton.setVisible(False)
+            self.serviceEndButton.setIcon(QIcon("assets/chefSpecialStart.png"))
 
     def orderItem(self):
         super().reset()
@@ -1769,14 +1775,14 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
             lightThreadRunner.launch(blueLight)
         self.ordered[self.cur]=True
         self.ordered_count+=1
-        if(self.ordered_count!=0):
-            self.serviceEndButton.setVisible(True)
+
         self.clear()
 
     def cancelOrder(self):
         self.ordered[self.cur]=False
         if self.ordered_count ==0:
             terminateServiceCall()
+            lightThreadRunner.launch(yellowLight)
         self.clear()
 
     def loadDish(self):
@@ -1807,10 +1813,23 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         self.clear()
 
     def navigateBack(self):
+        
+        if serviceCallStatus == "ongoing":
+            finalOrder = []
+            for key in self.ordered.keys():
+                if self.ordered[key] == True:
+                    chefSpecial = storage["chefSpecials"][key]
+                    finalOrder.append(chefSpecial)
+            if finalOrder == []:
+                terminateServiceCall()
+            else:
+                terminateServiceCall(finalOrder)
         super().stop()
         self.ordered.clear()
         self.cur = 0
-        navigateGoBack()
+        navigateToScreen(TapForServiceScreen)
+        
+        
 class BillScreen(QDialog):
     shared_instance = None
     @staticmethod
