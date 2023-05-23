@@ -2138,6 +2138,12 @@ class SplashScreen(TimeBoundScreen):
         self.signal.connect(self.initialize)
         super().setRunnable(self.initializeEmit,[])
         super().reset()
+        try:
+            with open("logFile.txt","w") as file:
+                file.write("")
+        except:
+            pass
+
    
     def initializeEmit(self):
         self.signal.emit()
