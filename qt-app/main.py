@@ -1790,17 +1790,17 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
 
     def loadDish(self):
         dish = storage["chefSpecials"][self.cur]
-        if os.path.isfile("restaurantData/dishes/"+dish["name"]):
+        if os.path.isfile("restaurantData/dishes/"+dish["id"]):
             data = ""
-            with open("restaurantData/dishes/"+dish["name"],"rb") as img:
+            with open("restaurantData/dishes/"+dish["id"],"rb") as img:
                 data = img.read()
         else:
-            data = loadPicture("restaurantData/dishes/"+dish["name"],dish["imageUrl"])
+            data = loadPicture("restaurantData/dishes/"+dish["id"],dish["imageUrl"])
         # image = QImage()
         # image.loadFromData(data)
         # pixmap = QPixmap(image)
         # self.itemImageLabel.setPixmap(pixmap)
-        renderChefSpecial(self,"restaurantData/dishes/"+dish["name"])
+        renderChefSpecial(self,"restaurantData/dishes/"+dish["id"])
 
 
     def previousDish(self):
@@ -2231,15 +2231,28 @@ class ThankYouScreen(TimeBoundScreen):
         navigateToRestart()
 
 def loadChefSpecials():
+    localFiles = []
+    listChefSpecialIds = []
+    networkFine = False
+    try:
+            localFiles = os.listdir("restaurantData/dishes")
+    except:
+            os.mkdir("restaurantData/dishes")
     if internetWorking("http://www.google.com"):
-        try:
-            shutil.rmtree("restaurantData/dishes")
-        except:
-            pass
-        os.mkdir("restaurantData/dishes")
-    if storage and storage["chefSpecials"]:
+        networkFine = True
+        pass
+    else:
+        return
+    if networkFine and storage and storage["chefSpecials"]:
         for i in storage["chefSpecials"]:
-            data = loadPicture("restaurantData/dishes/"+i["name"],i["imageUrl"])
+            listChefSpecialIds.append(i["id"])
+            if  i ["id"] not in localFiles:
+                data = loadPicture("restaurantData/dishes/"+i["id"],i["imageUrl"])
+        for i in localFiles:
+            if i not in listChefSpecialIds:
+                os.remove("restaurantData/dishes/"+i)
+    else:
+        return
 
 def internetWorking(url):
     try:
