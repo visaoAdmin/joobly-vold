@@ -1498,7 +1498,7 @@ class TapForServiceScreen(QDialog):
         
     
     def navigateToCheckoutScreen(self):
-        navigateToScreen(FeedbackScreen)
+        navigateToScreen(BillScreen)
 
 class CloseServiceScreen(QDialog):
     shared_instance = None
@@ -1585,7 +1585,7 @@ class CloseServiceScreen(QDialog):
             navigateToScreen(DinerActionMenuScreen)
     
     def navigateToCheckoutScreen(self):
-        navigateToScreen(FeedbackScreen)
+        navigateToScreen(BillScreen)
 
 class DinerActionMenuScreen(TimeBoundScreen):
     
@@ -1748,7 +1748,6 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         self.clear()
         # navigateToScreen(TapForServiceScreen)
     def clear(self):
-        super().reset()
         self.loadDish()
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
             self.orderButton.setIcon(QIcon('assets/CancelOrder.png'))
@@ -1761,6 +1760,10 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         else:
             # self.serviceEndButton.setVisible(False)
             self.serviceEndButton.setIcon(QIcon("assets/chefSpecialStart.png"))
+        if self.ordered_count == 0:
+            super().reset()
+        else:
+            super().stop()
 
     def orderItem(self):
         super().reset()
@@ -2157,7 +2160,7 @@ class SplashScreen(TimeBoundScreen):
         tapForServiceScreen = TapForServiceScreen.getInstance()
         closeServiceScreen = CloseServiceScreen.getInstance()
         # dinerActionMenuScreen = DinerActionMenuScreen.getInstance()
-        # billScreen = BillScreen.getInstance()
+        billScreen = BillScreen.getInstance()
         # serverWillAssistScreen =  ServerWillAssistScreen.getInstance()
         # payQrscreen = PayQRScreen.getInstance()
         feedbackScreen = FeedbackScreen.getInstance()
