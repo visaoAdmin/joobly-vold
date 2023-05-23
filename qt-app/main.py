@@ -3,7 +3,7 @@ from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
 import traceback
 import math
-from PyQt5.QtGui import QPixmap, QImage,QIcon
+from PyQt5.QtGui import QPixmap, QImage,QIcon,QFont
 from PyQt5.QtWidgets import QApplication, QDialog, QListWidgetItem
 from PyQt5.QtCore import QSize,pyqtSignal,pyqtSlot
 import PyQt5.QtGui as QtGui
@@ -930,6 +930,7 @@ class AreaSelectionScreen(QDialog):
                                     "background-color: #182e4f;"
                                     "color:white;"
                                     "margin-bottom: 15px;"
+                                    "font-weight: 500;"
                                     "border-radius: 10px;"
                                     "padding: 12px 12px 12px 12px;"
                                     "padding-top:24px;"
@@ -977,12 +978,13 @@ class AreaSelectionScreen(QDialog):
             # tables = getAllTables(restaurantId)
 
             for t in storage['areas']:
-                item = QListWidgetItem(t['name'])
+                item = QListWidgetItem(t["name"])
                 item.setSizeHint(QSize(360, 80))
+
                 self.listWidget.addItem(item)
 
         except Exception as e:
-
+            print(e)
             areas = storage["areas"]
 
 
@@ -1760,7 +1762,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         else:
             # self.serviceEndButton.setVisible(False)
             self.serviceEndButton.setIcon(QIcon("assets/chefSpecialStart.png"))
-        if self.ordered_count == 0:
+        if self.ordered_count == 0 and serviceCallStatus=="completed":
             super().reset()
         else:
             super().stop()
