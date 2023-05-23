@@ -73,9 +73,9 @@
   <widget class="QPushButton" name="orderButton">
    <property name="geometry">
     <rect>
-     <x>250</x>
+     <x>200</x>
      <y>650</y>
-     <width>231</width>
+     <width>271</width>
      <height>151</height>
     </rect>
    </property>
@@ -91,7 +91,7 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>164</width>
+     <width>250</width>
      <height>448</height>
     </size>
    </property>
