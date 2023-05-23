@@ -1751,6 +1751,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         # navigateToScreen(TapForServiceScreen)
     def clear(self):
         self.loadDish()
+        print(self.ordered_count)
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
             self.orderButton.setIcon(QIcon('assets/CancelOrder.png'))
 
@@ -1769,10 +1770,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
 
     def orderItem(self):
         super().reset()
-
-
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
-            self.ordered_count-=1
             self.cancelOrder()
             return
         if serviceCallStatus=="completed":
@@ -1784,10 +1782,12 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         self.clear()
 
     def cancelOrder(self):
+        self.ordered_count-=1
         self.ordered[self.cur]=False
         if self.ordered_count ==0:
             terminateServiceCall()
             lightThreadRunner.launch(yellowLight)
+
         self.clear()
 
     def loadDish(self):
@@ -1832,6 +1832,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         super().stop()
         self.ordered.clear()
         self.cur = 0
+        self.ordered_count = 0
         navigateToScreen(TapForServiceScreen)
         
         
