@@ -742,6 +742,7 @@ class AboutScreen(TimeBoundScreen):
         self.refreshed = False
 
     def navigateBack(self):
+        super().stop()
         self.signal.emit()
     def navigateBackSlot(self):
         super().stop()
@@ -787,7 +788,9 @@ class AboutScreen(TimeBoundScreen):
         try:
             if(getRestaurantId()!=restId):
                 super().stop()
-                navigateToScreen(WaiterPinScreen)
+                os.remove("restaurantData/logo")
+                os.remove("restaurantData/menuQr")
+                os.remove("restaurantData/upiQr")
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
@@ -1259,6 +1262,7 @@ class ChooseNumberOfGuests(QDialog):
         guestCount=""
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
+        setPixMap(self,"assets/WaiterLITE-UI-09-1.png")
 
         # qWorker.addAPICall(continueJourneyCheck,[])
 
@@ -1616,6 +1620,7 @@ class DinerActionMenuScreen(TimeBoundScreen):
         qWorker.addAPICall(self.loadQRCode,[])
 
     def navigateGoBack(self):
+        super().stop()
         self.signal.emit()
     def navigateGoBackSlot(self):
         global isOnMenuScreen
@@ -1667,9 +1672,11 @@ class ChefSpecialScreen(TimeBoundScreen):
         self.signal.connect(self.navigateBack)
         super().setRunnable(self.navigateBackSlot,[])
     def navigateBackSlot(self):
+        super().stop()
         self.signal.emit()
     def clear(self):
         super().reset()
+        qWorker.addAPICall(self.loadQRCode,[])
     def loadQRCode(self):
         try:
             url = 'https://i.ibb.co/vh9pSWS/qrcode.png'
@@ -1713,7 +1720,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
             ChefSpecialMenuItemsScreen.shared_instance = ChefSpecialMenuItemsScreen()
         return ChefSpecialMenuItemsScreen.shared_instance
     def __init__(self):
-        super(ChefSpecialMenuItemsScreen, self).__init__(300)
+        super(ChefSpecialMenuItemsScreen, self).__init__(120)
         loadUi("ui/ChefSpecialMenuItemScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToPreviousDish.clicked.connect(self.previousDish)
@@ -1751,7 +1758,6 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
         # navigateToScreen(TapForServiceScreen)
     def clear(self):
         self.loadDish()
-        print(self.ordered_count)
         if self.cur in self.ordered.keys() and self.ordered[self.cur]==True:
             self.orderButton.setIcon(QIcon('assets/CancelOrder.png'))
 

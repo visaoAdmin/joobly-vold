@@ -141,14 +141,14 @@
   <widget class="QPushButton" name="serviceEndButton">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>8</y>
-     <width>151</width>
+     <x>261</x>
+     <y>12</y>
+     <width>191</width>
      <height>121</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: transparent; border: 0px;</string>
+    <string notr="true">background-color: transparent; border: 0px;text-align:right;</string>
    </property>
    <property name="text">
     <string/>
@@ -159,8 +159,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>60</width>
-     <height>60</height>
+     <width>75</width>
+     <height>75</height>
     </size>
    </property>
   </widget>
@@ -195,12 +195,12 @@
   </widget>
   <zorder>label_2</zorder>
   <zorder>price</zorder>
-  <zorder>serviceEndButton</zorder>
   <zorder>itemImageLabel</zorder>
   <zorder>goToNextDish</zorder>
   <zorder>goToPreviousDish</zorder>
   <zorder>orderButton</zorder>
   <zorder>backButton</zorder>
+  <zorder>serviceEndButton</zorder>
  </widget>
  <resources>
   <include location="../WaiterLITE01.qrc"/>
