@@ -2255,8 +2255,9 @@ def loadChefSpecials():
     if networkFine and storage and storage["chefSpecials"]:
         for i in storage["chefSpecials"]:
             listChefSpecialIds.append(i["id"])
-            if  i ["id"] not in localFiles:
+            if i ["id"] not in localFiles or os.stat("restaurantData/dishes/"+i["id"]).st_size==0:
                 data = loadPicture("restaurantData/dishes/"+i["id"],i["imageUrl"])
+
         for i in localFiles:
             if i not in listChefSpecialIds:
                 os.remove("restaurantData/dishes/"+i)
