@@ -36,6 +36,7 @@ class QueueWorker(object):
                     
                     foregroundAPI = self.queue.peek()
                 except Exception as e:
+
                     with open("logFile.txt","a+") as logFile:
                         logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
                 if foregroundAPI:
@@ -108,6 +109,7 @@ class QueueWorker(object):
                 except  requests.exceptions.ConnectionError:
                     pass
                 except Exception as e:
+                    print(3)
                     with open("logFile.txt","a+") as logFile:
                         logFile.write("\n"+str(datetime.datetime.now())+" "+runFunction.__name__+" "+str(args)+"\n"+str(e)+"\n")
                     pass

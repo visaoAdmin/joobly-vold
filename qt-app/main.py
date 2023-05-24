@@ -123,8 +123,12 @@ def billLight():
 def loadPicture(filepath,url):
         
     try:
-
-        data = urllib.request.urlopen(url).read()
+        data = ""
+        if(url=="" or url==None):
+            with open("assets/Imageplaceholder.png","rb") as logo:
+                data = logo.read()
+        else:
+            data = urllib.request.urlopen(url).read()
         with open(filepath,"wb") as logo:
             logo.write(data)
 
@@ -133,8 +137,6 @@ def loadPicture(filepath,url):
             logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
         pass
     finally:
-        if(url=="" or url==None):
-            return None
         try:
             with open(filepath,"rb") as logo:
                 return logo.read()
@@ -351,7 +353,9 @@ def loadLogoPixmap():
     return pixmap
 
 def renderLogo(self, key="logo", width=220, height=220):
+
     pixmap = loadLogoPixmap()
+
     if pixmap != None:
         
         # self.__dict__[key].setPixmap(pixmap)
@@ -421,10 +425,8 @@ class IdleLockScreen(QDialog):
     def clear(self):
         global serviceCalls,callNumber,smiley
         smiley = "neutral"
-        if restaurantChanged:
-            self.loadConfigAndLogo()
         try:
-            qWorker.addAPICall(self.loadConfigAndLogo,[])
+            self.loadConfigAndLogo()  
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
@@ -435,9 +437,12 @@ class IdleLockScreen(QDialog):
         lightThreadRunner.launch(yellowLight)
         
     def loadConfigAndLogo(self):
-        loadConfig()
-        # pixmap = loadLogoPixmap()
-        renderLogo(self, width=220, height=220)
+        try:
+            loadConfig()
+            renderLogo(self, width=220, height=220)
+        except Exception as e:
+            print(e)
+            pass
         # self.logo.setPixmap(pixmap.scaled(220, 220))
 
     def navigateToWaiterPinScreen(self):
@@ -779,6 +784,7 @@ class AboutScreen(TimeBoundScreen):
     
     def refresh(self):
         if(self.refreshed):
+            super().stop()
             navigateGoBack()
         super().reset()
         restId = getRestaurantId()
@@ -788,13 +794,11 @@ class AboutScreen(TimeBoundScreen):
         try:
             if(getRestaurantId()!=restId):
                 super().stop()
-                os.remove("restaurantData/logo")
-                os.remove("restaurantData/menuQr")
-                os.remove("restaurantData/upiQr")
-        except Exception as e:
+                navigateToScreen(IdleLockScreen)
+        except:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
-            pass
+
         self.renderLabels()
 
         
@@ -960,7 +964,9 @@ class AreaSelectionScreen(QDialog):
 
 
     def navigateGoBackSlot(self):
-        navigateGoBack()
+        navigateToScreen(IdleLockScreen)
+        # IdleLockScreen.clear(IdleLockScreen)
+        # navigateGoBack()
     def navigateToAboutScreen(self):
         navigateToScreen(AboutScreen)
     def clear(self): 
@@ -987,7 +993,7 @@ class AreaSelectionScreen(QDialog):
                 self.listWidget.addItem(item)
 
         except Exception as e:
-            print(e)
+
             areas = storage["areas"]
 
 
@@ -1019,7 +1025,6 @@ class AreaSelectionScreen(QDialog):
         navigateToScreen(WaiterMenuScreen)
     
     def navigateToIdleLockScreen(self):
-
         navigateToRestart()
 
 class TableSelectionScreen(QDialog):
@@ -1110,7 +1115,7 @@ class TableSelectionScreen(QDialog):
 
 
         except Exception as e:
-            print(traceback.print_exc())
+
 
             tables = storage["tables"]
             for t in tables:
@@ -1686,12 +1691,13 @@ class ChefSpecialScreen(TimeBoundScreen):
                 
 
                 data = loadPicture("restaurantData/menuQr",url)
-
+                
                 image = QImage()
                 image.loadFromData(data)
                 pixmap = QPixmap(image)
                 self.qrimage.setPixmap(pixmap.scaled(170, 170))
         except Exception as e:
+
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             pass
