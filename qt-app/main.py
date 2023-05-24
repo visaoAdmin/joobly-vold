@@ -653,6 +653,7 @@ class WaiterNotExist(TimeBoundScreen):
         self.signal.emit()
 
     def navigateToIdleLockScreenSlot(self):
+        super().stop()
         navigateToScreen(IdleLockScreen)
 
     def setupKeyboard(self):
@@ -1268,7 +1269,6 @@ class ChooseNumberOfGuests(QDialog):
         countLabel = "10+" if guestCount == "10" else guestCount
         self.__dict__["inputCount"].setText(countLabel)
         setPixMap(self,"assets/WaiterLITE-UI-09-1.png")
-
         # qWorker.addAPICall(continueJourneyCheck,[])
 
     def onKey(self, key):
@@ -2143,6 +2143,8 @@ class FeedbackScreen(QDialog):
             self.timer.stop()
 
             navigateToScreen(ThankYouScreen)
+        else:
+            self.validationLabel.setVisible(True)
 
 class SplashScreen(TimeBoundScreen):
     signal = pyqtSignal()
