@@ -2219,12 +2219,9 @@ class SplashScreen(TimeBoundScreen):
         # navigateToScreen(IdleLockScreen)
 
 
+        loadConfig()
+
         
-        qWorker = QueueWorker()
-        lightThreadRunner = ReUsableThreadRunner()
-        smileyRunner = SmileyRunner()
-
-
         navigateToScreen(idleLockScreen)
         del self
     def clear(self):
