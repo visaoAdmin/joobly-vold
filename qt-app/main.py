@@ -787,6 +787,7 @@ class AboutScreen(TimeBoundScreen):
         if(self.refreshed):
             super().stop()
             navigateGoBack()
+            return
         super().reset()
         restId = getRestaurantId()
         setIcon(self.refreshButton,"assets/refreshDoneButton.png")
