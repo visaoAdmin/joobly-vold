@@ -1758,7 +1758,6 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
             lightThreadRunner.launch(blueLight)
         
         self.ordered.clear()
-        self.cur = 0
         self.ordered_count = 0
         self.clear()
         # navigateToScreen(TapForServiceScreen)
