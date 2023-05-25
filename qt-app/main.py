@@ -52,6 +52,7 @@ continueExistingJourney = False
 previousJourneyData = None
 logoData =None
 qWorker = None
+qWorkerChefSPecial = QueueWorker()
 lightThreadRunner = None
 smileyRunner =  None
 firstBoot = True
@@ -2338,7 +2339,7 @@ def loadConfig():
         storage=loadStorage()
 
     finally:
-        qWorker.addAPICall(loadChefSpecials,[])
+        qWorkerChefSPecial.addAPICall(loadChefSpecials,[])
         # loadChefSpecials()
         newDict = {
         }
