@@ -446,7 +446,6 @@ class IdleLockScreen(QDialog):
             loadConfig()
             renderLogo(self, width=220, height=220)
         except Exception as e:
-            print(e)
             pass
         # self.logo.setPixmap(pixmap.scaled(220, 220))
 
