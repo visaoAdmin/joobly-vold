@@ -61,9 +61,9 @@ waiterMenuScreen = None
 smileyTimer =None
 askingCable = False
 firstJourney = True
-feedbackRedirectTimer = RedirectTimer()
-waiterMenuRedirectTimer = RedirectTimer()
-waiterPinRedirectTimer = RedirectTimer()
+# feedbackRedirectTimer = RedirectTimer()
+# waiterMenuRedirectTimer = RedirectTimer()
+# waiterPinRedirectTimer = RedirectTimer()
 idleLockScreen = None
 serviceCallDebouncer = ServiceCallDebouncer()
 smiley = "neutral"
@@ -426,7 +426,12 @@ class IdleLockScreen(QDialog):
         global serviceCalls,callNumber,smiley
         smiley = "neutral"
         try:
-            self.loadConfigAndLogo()  
+            self.__dict__["logo"].setStyleSheet(
+                    "border-image : url('restaurantData/logo');"
+                    "border-top-left-radius :20px;"
+                    "border-top-right-radius : 20px; "
+                    "border-bottom-left-radius : 20px; "
+                    "border-bottom-right-radius : 20px;")
         except Exception as e:
             with open("logFile.txt","a+") as logFile:
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
@@ -447,10 +452,10 @@ class IdleLockScreen(QDialog):
 
     def navigateToWaiterPinScreen(self):
         global firstJourney
-        if firstJourney:
-            navigateToScreen(AreaSelectionScreen)
-            return
-        navigateToScreen(WaiterPinScreen)
+        # if firstJourney:
+        navigateToScreen(AreaSelectionScreen)
+            # return
+        # navigateToScreen(WaiterPinScreen)
 
 class WaiterSelectionScreen(QDialog):
     shared_instance=None
@@ -521,7 +526,7 @@ class WaiterPinScreen(QDialog):
     pin=[]
     signal = pyqtSignal()
     isWrong = False
-    timer = waiterPinRedirectTimer
+    # timer = waiterPinRedirectTimer
     shared_instance = None
     @staticmethod
     def getInstance():
@@ -727,7 +732,7 @@ class WaiterNotExist(TimeBoundScreen):
                 logFile.write("\n"+str(datetime.now())+" "+"\n"+str(e)+"\n")
             navigateToScreen(WaiterNotExist)
               
-class AboutScreen(TimeBoundScreen):
+class AboutScreen(QDialog):
     signal = pyqtSignal()
     shared_instance = None
     @staticmethod
@@ -736,26 +741,26 @@ class AboutScreen(TimeBoundScreen):
             AboutScreen.shared_instance = AboutScreen()
         return AboutScreen.shared_instance
     def __init__(self):
-        super(AboutScreen, self).__init__(timeOuts["generalTimeout"])
+        super(AboutScreen, self).__init__()
         loadUi("ui/24AboutScreen.ui", self)
         self.refreshButton.clicked.connect(self.refresh)
         self.backButton.clicked.connect(self.navigateBack)
         self.renderLabels()
         self.signal.connect(self.navigateBackSlot)
-        super().setRunnable(self.navigateBack,[])
+        # super().setRunnable(self.navigateBack,[])
         self.wifiLabel.setText(getConnectedWifi())
         setIcon(self.refreshButton,"assets/refreshButton.png")
         self.refreshed = False
 
     def navigateBack(self):
-        super().stop()
+        # super().stop()
         self.signal.emit()
     def navigateBackSlot(self):
-        super().stop()
+        # super().stop()
         navigateGoBack()
     def clear(self):
         self.refreshed = False
-        super().reset()
+        # super().reset()
         self.wifiLabel.setText(getConnectedWifi())
         setIcon(self.refreshButton,"assets/refreshButton.png")
 
@@ -785,17 +790,18 @@ class AboutScreen(TimeBoundScreen):
     
     def refresh(self):
         if(self.refreshed):
-            super().stop()
+            # super().stop()
             navigateGoBack()
             return
-        super().reset()
+        # super().reset()
         restId = getRestaurantId()
         setIcon(self.refreshButton,"assets/refreshDoneButton.png")
         loadConfig()
+        loadPicture("restaurantData/logo",storage["restaurantLogo"])
         self.refreshed = True
         try:
             if(getRestaurantId()!=restId):
-                super().stop()
+                
                 navigateToScreen(IdleLockScreen)
         except:
             with open("logFile.txt","a+") as logFile:
@@ -824,7 +830,7 @@ class ConfirmTable(QDialog):
 class WaiterMenuScreen(QDialog):
     shared_instance = None
     signal = pyqtSignal()
-    timer = waiterMenuRedirectTimer
+    # timer = waiterMenuRedirectTimer
     gotoGuestSelectionScreenSignal = pyqtSignal()
     @staticmethod
     def getInstance():
@@ -1970,7 +1976,7 @@ class FeedbackScreen(QDialog):
     normalStyle = buttonStyle+"border:2px solid #9BA4B3;border-color:#9BA4B3;background-color: #ffffff;"
     selectedStyle = buttonStyle+"background-color: #D6AD60;border-color: #D6AD60; color: #041c40; font-weight:bold;"
     ratings = {}
-    timer = feedbackRedirectTimer
+    # timer = feedbackRedirectTimer
     redirectSet = False
     shared_instance = None
     @staticmethod
@@ -1980,8 +1986,8 @@ class FeedbackScreen(QDialog):
         return FeedbackScreen.shared_instance
     def __init__(self):
         super(FeedbackScreen, self).__init__()
-        self.timer.setRedirectTime(timeOuts['ratingTimeout'])
-        self.timer.setRunnable(self.endHangout,[])
+        # self.timer.setRedirectTime(timeOuts['ratingTimeout'])
+        # self.timer.setRunnable(self.endHangout,[])
         loadUi("ui/19FeedbackScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToNextButton.clicked.connect(self.navigateToPaymentOptionScreen)
@@ -2014,11 +2020,11 @@ class FeedbackScreen(QDialog):
         self.music5.clicked.connect(lambda: self.markRating("music", 5))
     
     def navigateBack(self):
-        self.timer.stop()
+        # self.timer.stop()
         navigateGoBack()
 
     def markRating(self, type,rating):
-        self.timer.reset()
+        # self.timer.reset()
 
         try:
             if self.ratings[type]==rating:
@@ -2041,7 +2047,8 @@ class FeedbackScreen(QDialog):
         if firstBoot == True:
             pass
         else:
-            self.timer.reset()
+            pass
+            # self.timer.reset()
         
 
         
@@ -2097,7 +2104,7 @@ class FeedbackScreen(QDialog):
         serviceCalls.clear()
         for i in ["food","service","ambience","music"]:
             self.markRating(i,0)
-        self.timer.stop()
+        # self.timer.stop()
 
         navigateToScreen(IdleLockScreen)
 
@@ -2110,7 +2117,7 @@ class FeedbackScreen(QDialog):
                     self.validationLabel.setVisible(True)
                     return
             global callNumber
-            self.timer.stop()
+            # self.timer.stop()
 
             hangoutRatings = copy.deepcopy(self.ratings)
 
@@ -2140,7 +2147,7 @@ class FeedbackScreen(QDialog):
             firstBoot = False
             for i in ["food","service","ambience","music"]:
                 self.markRating(i,0)
-            self.timer.stop()
+            # self.timer.stop()
 
             navigateToScreen(ThankYouScreen)
         else:
@@ -2174,7 +2181,7 @@ class SplashScreen(TimeBoundScreen):
         # reserveScreen = ReserveScreen.getInstance()
         # waiterPinScreen =  WaiterPinScreen.getInstance()
         aboutScreen = AboutScreen.getInstance()
-        confirmTable = ConfirmTable.getInstance()
+        # confirmTable = ConfirmTable.getInstance()
         # waiterMenuScreen =  WaiterMenuScreen.getInstance()
         tableSelectionScreen = TableSelectionScreen.getInstance()
         # continueExistingJourneyScreen = ContinueExistingJourneyScreen.getInstance()
@@ -2220,10 +2227,11 @@ class SplashScreen(TimeBoundScreen):
 
 
         navigateToScreen(idleLockScreen)
+        del self
     def clear(self):
         super().reset() 
         # navigateToScreen(IdleLockScreen)
-class ThankYouScreen(TimeBoundScreen):
+class ThankYouScreen(QDialog):
     signal = pyqtSignal()
     shared_instance = None
     @staticmethod
@@ -2232,16 +2240,16 @@ class ThankYouScreen(TimeBoundScreen):
             ThankYouScreen.shared_instance = ThankYouScreen()
         return ThankYouScreen.shared_instance
     def __init__(self):
-        super(ThankYouScreen, self).__init__(timeOuts["thankYouTimeout"])
+        super(ThankYouScreen, self).__init__()
         loadUi("ui/20ThankYouScreen.ui", self)
         self.goToNextButton.clicked.connect(self.navigateToIdleLockScreen)
         self.signal.connect(self.navigateToIdleLockScreenSlot)
         self.loadLogo()
-        self.setRunnable(self.navigateToIdleLockScreen,[])
+        # self.setRunnable(self.navigateToIdleLockScreen,[])
         # runInNewThread(self, self.loadLogo)
     
     def clear(self):
-        super().reset()
+        # super().reset()
         qWorker.addAPICall(self.loadLogo,[])
 
     def loadLogo(self):
@@ -2250,7 +2258,7 @@ class ThankYouScreen(TimeBoundScreen):
     def navigateToIdleLockScreen(self):
         self.signal.emit()
     def navigateToIdleLockScreenSlot(self):
-        super().stop()
+        # super().stop()
         navigateToRestart()
 
 def loadChefSpecials():
