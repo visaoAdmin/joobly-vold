@@ -30,7 +30,7 @@ def startServiceCall(table, hangoutId, callNumber):
     },headers={"device-serial":getserial()},timeout=TIMEOUT)
     if(response.status_code==503):
         raise requests.exceptions.ConnectionError()
-def endServiceCall(table, hangoutId, callNumber, responseTime,order):
+def endServiceCall(table, hangoutId, callNumber, responseTime,order=None):
     url = BASE_URL + "/serviceCalls/end"
     response = requests.post(url,json={
         "table":table,
