@@ -1733,7 +1733,7 @@ class ChefSpecialMenuItemsScreen(TimeBoundScreen):
             ChefSpecialMenuItemsScreen.shared_instance = ChefSpecialMenuItemsScreen()
         return ChefSpecialMenuItemsScreen.shared_instance
     def __init__(self):
-        super(ChefSpecialMenuItemsScreen, self).__init__(120)
+        super(ChefSpecialMenuItemsScreen, self).__init__(40)
         loadUi("ui/ChefSpecialMenuItemScreen.ui", self)
         self.backButton.clicked.connect(self.navigateBack)
         self.goToPreviousDish.clicked.connect(self.previousDish)
