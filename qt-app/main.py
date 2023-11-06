@@ -2209,6 +2209,7 @@ class SplashScreen(TimeBoundScreen):
     def clear(self):
         super().reset() 
         # navigateToScreen(IdleLockScreen)
+        
 class ThankYouScreen(TimeBoundScreen):
     signal = pyqtSignal()
     shared_instance = None
